@@ -25,6 +25,7 @@ const InputTextArea: React.FC<InputTextProps> = ({ label, password, multiline,va
             multiline={multiline}
             required={required}
             sx={{
+                marginBottom: '20px',
                 '& .MuiOutlinedInput-root': {
                     borderRadius: BORDER.radius,
                     backgroundColor: COLORS.white,
@@ -44,6 +45,7 @@ const InputTextArea: React.FC<InputTextProps> = ({ label, password, multiline,va
                 },
                 '& label': {
                     color: COLORS.primary,
+                    margin: 0,
                 }
             }}
         />

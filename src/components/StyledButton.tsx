@@ -9,7 +9,7 @@ interface ButtonProps {
     label: string;
     color: 'primary' | 'secondary' | 'edit' | 'delete';
     size: 'small' | 'medium' | 'large';
-    onClick: () => void;
+    onClick?: () => void;
     disabled?: boolean;
     border?: boolean;
     icon?: React.ReactNode;
@@ -33,12 +33,10 @@ const StyledButton: React.FC<ButtonProps> = ({ label, color, size, onClick, disa
                 borderWidth: border ? BORDER.weight : 0,
                 borderStyle: border ? 'solid' : 'none',
                 '&:hover': {
-                    backgroundColor: darken(color === 'primary' ? COLORS.primary : color === 'secondary' ? COLORS.secondary : color === 'edit' ? COLORS.edit : COLORS.delete, 0.1),
+                    backgroundColor: darken(color === 'primary' ? COLORS.primary : color === 'secondary' ? COLORS.secondary : color === 'edit' ? COLORS.edit : COLORS.delete, 0.3),
                     boxShadow: '0px 6px 10px rgba(0, 0, 0, 0.15)',
-                    borderColor: border ? COLORS.secondary : 'transparent',
-                    borderWidth: border ? BORDER.weight : 0,
-                    borderStyle: border ? 'solid' : 'none',
-                    color: COLORS.secondary,
+                    bolderStyle: 'none',
+                    borderColor: border ? COLORS.white : 'transparent',
                 },
             }}
         >

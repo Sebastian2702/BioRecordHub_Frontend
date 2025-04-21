@@ -1,15 +1,16 @@
-import InputTextField from "../components/InputTextField"
-import StyledButton from "../components/StyledButton.tsx"
-import {FONT_SIZES, COLORS, BORDER} from "../constants/ui.ts";
+import {COLORS} from "../constants/ui.ts";
 import {useState} from "react";
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-
+import LoginInputCard from "../components/LoginInputCard.tsx";
+import LogInSideCard from "../components/LoginSideCard.tsx";
+import RegisterInputCard from "../components/ResgisterInputCard.tsx";
+import RegisterSideCard from "../components/RegisterSideCard.tsx";
 
 function LoginRegistration() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [name, setName] = useState("");
 
     return (
         <Box sx={{
@@ -21,34 +22,26 @@ function LoginRegistration() {
             justifyContent: "center",
             flexDirection: "row",
         }}>
-            <Box sx={{
-                backgroundColor: COLORS.white,
-                width: "20vw",
-                height: "60vh",
-                borderRadius: `${BORDER.radius} 0 0 ${BORDER.radius}`,
-                boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "20px"
-            }}>
+            {/*<LoginInputCard
+                email={email}
+                password={password}
+                onEmailChange={(e) => setEmail(e.target.value)}
+                onPasswordChange={(e) => setPassword(e.target.value)}
+                onClick={() => console.log("Login clicked")}
+            />
+            <LogInSideCard onClick={() => console.log("Sign Up clicked")} />*/}
+            <RegisterSideCard onClick = {() => console.log("Login")}/>
+            <RegisterInputCard
+                email={email}
+                password={password}
+                name={name}
+                onEmailChange={(e) => setEmail(e.target.value)}
+                onPasswordChange={(e) => setPassword(e.target.value)}
+                onNameChange={(e) => setName(e.target.value)}
+                onClick={() => console.log("Login clicked")}
+            />
 
-            </Box>
-            <Box sx={{
-                backgroundColor: COLORS.primary,
-                width: "20vw",
-                height: "60vh",
-                borderRadius: `0 ${BORDER.radius} ${BORDER.radius} 0`,
-                boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "20px"
-            }}>
 
-            </Box>
         </Box>
 
 
