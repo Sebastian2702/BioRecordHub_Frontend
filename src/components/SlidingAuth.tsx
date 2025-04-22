@@ -5,12 +5,19 @@ import RegisterInputCard from "../components/ResgisterInputCard";
 import LoginSideCard from "../components/LoginSideCard";
 import RegisterSideCard from "../components/RegisterSideCard";
 import { COLORS } from "../constants/ui.ts";
+import {useNavigate} from "react-router-dom";
 
-const SlidingAuth = () => {
-    const [isSignIn, setIsSignIn] = useState(true);
+interface SlidingAuthProps {
+    isLogin: boolean;
+}
+
+const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
+    const [isSignIn, setIsSignIn] = useState(isLogin);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
+
+    const navigateTo = useNavigate();
 
     return (
         <Box
@@ -41,7 +48,7 @@ const SlidingAuth = () => {
                         password={password}
                         onEmailChange={(e) => setEmail(e.target.value)}
                         onPasswordChange={(e) => setPassword(e.target.value)}
-                        onClick={() => console.log("Login")}
+                        onClick={() => navigateTo('/dashboard')}
                     />
                     <LoginSideCard onClick={() => setIsSignIn(false)} />
                 </Box>

@@ -2,7 +2,11 @@ import { COLORS } from "../constants/ui.ts";
 import Box from "@mui/material/Box";
 import SlidingAuth from "../components/SlidingAuth.tsx";
 
-function LoginRegistration() {
+interface LoginRegistrationProps {
+    isLogin: boolean;
+}
+
+const LoginRegistration: React.FC<LoginRegistrationProps> = ({ isLogin }) => {
 
     return (
         <Box
@@ -15,7 +19,7 @@ function LoginRegistration() {
                 display: "flex",
             }}
         >
-            <SlidingAuth/>
+            <SlidingAuth isLogin={isLogin}/>
         </Box>
 
     );
