@@ -19,8 +19,8 @@ const RegisterInputCard: React.FC<RegisterInputCardProps> = ({ email, password, 
     return(
         <Box sx={{
             backgroundColor: COLORS.white,
-            width: "25vw",
-            height: "50vh",
+            width: "30vw",
+            height: "60vh",
             borderRadius: `0 ${BORDER.radius} ${BORDER.radius} 0`,
             boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
             display: "flex",
@@ -29,7 +29,7 @@ const RegisterInputCard: React.FC<RegisterInputCardProps> = ({ email, password, 
             alignItems: "center",
             padding: "40px"
         }}>
-            <Typography variant="h2" sx={{ color: COLORS.primary, fontSize: FONT_SIZES.large, marginBottom: "20px", fontWeight: "bold" }}>
+            <Typography variant="h2" sx={{ color: COLORS.primary, fontSize: FONT_SIZES.large, marginBottom: "30px", fontWeight: "bold" }}>
                 Create Account
             </Typography>
             <InputTextField label="Name" fullWidth required fontSize={FONT_SIZES.medium} value={name} onChange={onNameChange} />

@@ -3,7 +3,7 @@ import InputTextField from "../components/InputTextField"
 import StyledButton from "../components/StyledButton.tsx"
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { Card } from "@mui/material";
+
 
 
 interface LoginInputCardProps {
@@ -18,8 +18,8 @@ const LoginInputCard: React.FC<LoginInputCardProps> = ({ email, password, onEmai
     return(
         <Box sx={{
             backgroundColor: COLORS.white,
-            width: "25vw",
-            height: "50vh",
+            width: "30vw",
+            height: "55vh",
             borderRadius: `${BORDER.radius} 0 0 ${BORDER.radius}`,
             boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
             display: "flex",
@@ -28,7 +28,7 @@ const LoginInputCard: React.FC<LoginInputCardProps> = ({ email, password, onEmai
             alignItems: "center",
             padding: "40px"
         }}>
-            <Typography variant="h2" sx={{ color: COLORS.primary, fontSize: FONT_SIZES.large, marginBottom: "20px", fontWeight: "bold" }}>
+            <Typography variant="h1" sx={{ color: COLORS.primary, fontSize: FONT_SIZES.large, marginBottom: "50px", fontWeight: "bold" }}>
                 Sign In
             </Typography>
             <InputTextField label="Email" fullWidth required fontSize={FONT_SIZES.medium} value={email} onChange={onEmailChange} />

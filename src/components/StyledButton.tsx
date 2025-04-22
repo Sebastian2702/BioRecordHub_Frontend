@@ -35,8 +35,19 @@ const StyledButton: React.FC<ButtonProps> = ({ label, color, size, onClick, disa
                 '&:hover': {
                     backgroundColor: darken(color === 'primary' ? COLORS.primary : color === 'secondary' ? COLORS.secondary : color === 'edit' ? COLORS.edit : COLORS.delete, 0.3),
                     boxShadow: '0px 6px 10px rgba(0, 0, 0, 0.15)',
-                    bolderStyle: 'none',
                     borderColor: border ? COLORS.white : 'transparent',
+                },
+                '&:focus': {
+                    outline: 'none',
+                    boxShadow: 'none',
+                },
+                '&:active': {
+                    outline: 'none',
+                    boxShadow: 'none',
+                },
+                '&.Mui-focusVisible': {
+                    outline: 'none',
+                    boxShadow: 'none',
                 },
             }}
         >
