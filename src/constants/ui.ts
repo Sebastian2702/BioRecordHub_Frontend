@@ -18,4 +18,5 @@ export const FONT_SIZES = {
 export const BORDER = {
     weight: 2,
     radius: "10px",
+    sideMenu: "0px 30px 30px 0px",
 }
