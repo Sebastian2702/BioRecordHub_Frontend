@@ -16,6 +16,7 @@ const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     const navigateTo = useNavigate();
 
@@ -60,9 +61,11 @@ const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
                         name={name}
                         email={email}
                         password={password}
+                        confirmPassword={confirmPassword}
                         onNameChange={(e) => setName(e.target.value)}
                         onEmailChange={(e) => setEmail(e.target.value)}
                         onPasswordChange={(e) => setPassword(e.target.value)}
+                        onConfirmPasswordChange={(e) => setConfirmPassword(e.target.value)}
                         onClick={() => console.log("Register")}
                     />
                 </Box>
