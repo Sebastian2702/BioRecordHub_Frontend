@@ -6,10 +6,14 @@ import LoginSideCard from "../components/LoginSideCard";
 import RegisterSideCard from "../components/RegisterSideCard";
 import { COLORS } from "../constants/ui.ts";
 import {useNavigate} from "react-router-dom";
+import {handleLogin} from "../services/authHandler.ts";
 
 interface SlidingAuthProps {
     isLogin: boolean;
 }
+
+
+
 
 const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
     const [isSignIn, setIsSignIn] = useState(isLogin);
@@ -17,8 +21,19 @@ const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const navigate = useNavigate();
+    const [error, setError] = useState("");
 
-    const navigateTo = useNavigate();
+
+    const onLoginClick = () => {
+        handleLogin({
+            email,
+            password,
+            navigate,
+            setError,
+        });
+    };
+
 
     return (
         <Box
@@ -49,7 +64,7 @@ const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
                         password={password}
                         onEmailChange={(e) => setEmail(e.target.value)}
                         onPasswordChange={(e) => setPassword(e.target.value)}
-                        onClick={() => navigateTo('/dashboard')}
+                        onClick={onLoginClick}
                     />
                     <LoginSideCard onClick={() => setIsSignIn(false)} />
                 </Box>

@@ -6,7 +6,7 @@ export const register = async (data: {
     password: string;
     password_confirmation: string;
 }) => {
-    await api.get('/sanctum/csrf-cookie'); // 👈 Required
+    await api.get('/sanctum/csrf-cookie'); // Required
     const response = await api.post('/register', data);
     return response.data;
 };

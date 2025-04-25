@@ -2,17 +2,16 @@ import {BORDER, COLORS} from "../constants/ui.ts";
 import {darken} from "@mui/system";
 import Button from "@mui/material/Button";
 import getIcon from "../utils/getIconHelper.tsx";
-import {useNavigate} from "react-router-dom";
 
 interface SideMenuButtonProps {
     url: string;
-    type: "Dashboard" | "Nomenclature" | "Bibliography" | "Occurrences" | "Projects" | "Reports" | "Logout";
+    type: "Dashboard" | "Nomenclature" | "Bibliography" | "Occurrences" | "Projects" | "Reports" | "Logout" | "Admin";
+    onClick?: () => void;
 }
 
-const SideMenuButton: React.FC<SideMenuButtonProps> = ({ url, type }) => {
+const SideMenuButton: React.FC<SideMenuButtonProps> = ({ url, type, onClick }) => {
 
     const icon = getIcon(type);
-    const navigateTo = useNavigate();
     const pathname = window.location.pathname;
     const currentPage = pathname.includes(url.toLowerCase());
 
@@ -20,7 +19,7 @@ const SideMenuButton: React.FC<SideMenuButtonProps> = ({ url, type }) => {
     return (
         <Button
             variant="contained"
-            onClick={() => {navigateTo(url)}}
+            onClick={onClick}
             startIcon={icon}
             sx={{
                 backgroundColor: currentPage ? COLORS.secondary : 'transparent',
