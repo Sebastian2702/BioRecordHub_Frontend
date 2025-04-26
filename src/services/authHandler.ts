@@ -1,44 +1,46 @@
-import {getUser, login, logout, register} from "./auth.ts";
-import {ROUTES} from "../routes/frontendRoutes.ts";
-
+import { ROUTES } from "../routes/frontendRoutes.ts";
 
 export const handleLogin = async ({
     email,
     password,
     navigate,
     setError,
-    }: {
+    contextLogin,
+}: {
     email: string;
     password: string;
     navigate: (url: string) => void;
     setError: (msg: string) => void;
+    contextLogin: (data: { email: string; password: string }) => Promise<void>;
 }) => {
     try {
-        await login({email, password});
+        await contextLogin({ email, password });
         navigate(ROUTES.dashboard);
-    } catch (err: any) {
+    } catch (err) {
         console.error("Login failed:", err);
         setError("Invalid email or password");
     }
 };
 
 export const handleRegister = async ({
-     name,
-     email,
-     password,
-     password_confirmation,
-     navigate,
-     setError,
- }: {
+    name,
+    email,
+    password,
+    password_confirmation,
+    navigate,
+    setError,
+    contextRegister,
+}: {
     name: string;
     email: string;
     password: string;
     password_confirmation: string;
     navigate: (url: string) => void;
     setError: (msg: string) => void;
+    contextRegister: (data: { name: string; email: string; password: string; password_confirmation: string }) => Promise<void>;
 }) => {
     try {
-        await register({ name, email, password, password_confirmation });
+        await contextRegister({ name, email, password, password_confirmation });
         navigate(ROUTES.dashboard);
     } catch (err: any) {
         console.error("Register error:", err);
@@ -46,21 +48,17 @@ export const handleRegister = async ({
     }
 };
 
-export const handleLogout = async (navigate: (url: string) => void) => {
+export const handleLogout = async ({
+    navigate,
+    contextLogout,
+   }: {
+    navigate: (url: string) => void;
+    contextLogout: () => Promise<void>;
+}) => {
     try {
-        await logout();
+        await contextLogout();
         navigate(ROUTES.login);
     } catch (err) {
         console.error("Logout error:", err);
-    }
-};
-
-export const handleGetUser = async () => {
-    try {
-        const user = await getUser();
-        return user;
-    } catch (err) {
-        console.error("Fetch user error:", err);
-        return null;
     }
 };

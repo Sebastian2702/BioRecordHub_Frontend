@@ -7,23 +7,23 @@ import RegisterSideCard from "../components/RegisterSideCard";
 import { COLORS } from "../constants/ui.ts";
 import {useNavigate} from "react-router-dom";
 import {handleLogin} from "../services/authHandler.ts";
+import {handleRegister} from "../services/authHandler.ts";
+import {useAuth} from "../context/AuthContext.tsx";
 
 interface SlidingAuthProps {
     isLogin: boolean;
 }
-
-
-
 
 const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
     const [isSignIn, setIsSignIn] = useState(isLogin);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [password_confirmation, setPassword_confirmation] = useState("");
     const navigate = useNavigate();
     const [error, setError] = useState("");
 
+    const { login: contextLogin, register: contextRegister } = useAuth();
 
     const onLoginClick = () => {
         handleLogin({
@@ -31,7 +31,23 @@ const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
             password,
             navigate,
             setError,
+            contextLogin,
         });
+    };
+
+    const onRegisterClick = () => {
+        // Handle registration logic here
+       handleRegister(
+            {
+                name,
+                email,
+                password,
+                password_confirmation,
+                navigate,
+                setError,
+                contextRegister,
+            }
+        )
     };
 
 
@@ -76,12 +92,12 @@ const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
                         name={name}
                         email={email}
                         password={password}
-                        confirmPassword={confirmPassword}
+                        confirmPassword={password_confirmation}
                         onNameChange={(e) => setName(e.target.value)}
                         onEmailChange={(e) => setEmail(e.target.value)}
                         onPasswordChange={(e) => setPassword(e.target.value)}
-                        onConfirmPasswordChange={(e) => setConfirmPassword(e.target.value)}
-                        onClick={() => console.log("Register")}
+                        onConfirmPasswordChange={(e) => setPassword_confirmation(e.target.value)}
+                        onClick={onRegisterClick}
                     />
                 </Box>
             </Box>

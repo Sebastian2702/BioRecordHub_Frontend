@@ -6,7 +6,6 @@ const ProtectedRoute = () => {
 
     if (loading) return null; // Or a spinner/loading screen
 
-    console.log(isAuthenticated);
 
     return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 };

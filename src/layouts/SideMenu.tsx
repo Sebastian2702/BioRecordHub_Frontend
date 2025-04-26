@@ -10,7 +10,11 @@ import { useAuth} from "../context/AuthContext.tsx";
 const SideMenu = () => {
 
     const navigate = useNavigate();
-    const { isAdmin } = useAuth();
+    const { isAdmin, logout: contextLogout } = useAuth();
+
+    const onLogoutClick = () => {
+        handleLogout({navigate, contextLogout});
+    }
 
     return (
         <Box
@@ -55,7 +59,7 @@ const SideMenu = () => {
                     <SideMenuButton url={ROUTES.admin} type="Admin" onClick={() => navigate(ROUTES.admin)} />
                 )}
 
-                <SideMenuButton url={ROUTES.logout} type="Logout" onClick={() => {handleLogout(navigate)}}/>
+                <SideMenuButton url={ROUTES.logout} type="Logout" onClick={onLogoutClick}/>
             </Box>
         </Box>
     );
