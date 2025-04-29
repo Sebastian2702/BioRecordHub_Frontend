@@ -6,7 +6,7 @@ const AdminRoute = () => {
     const { isAuthenticated, isAdmin, } = useAuth();
 
 
-    return isAuthenticated && isAdmin ? <Outlet /> : <Navigate to={ROUTES.login} />;
+    return isAuthenticated && isAdmin ? <Outlet /> : <Navigate to={ROUTES.dashboard} />;
 };
 
 export default AdminRoute;

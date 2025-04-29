@@ -24,6 +24,10 @@ function App() {
                     <Route element={<AppLayout />}>
                         <Route path={ROUTES.dashboard} element={<Dashboard />} />
                         <Route path={ROUTES.nomenclature} element={<Dashboard />} />
+                        <Route path={ROUTES.bibliography} element={<Dashboard />} />
+                        <Route path={ROUTES.occurrences} element={<Dashboard />} />
+                        <Route path={ROUTES.projects} element={<Dashboard />} />
+                        <Route path={ROUTES.reports} element={<Dashboard />} />
                     </Route>
                 </Route>
 
