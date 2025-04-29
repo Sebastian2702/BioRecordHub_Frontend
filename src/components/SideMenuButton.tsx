@@ -30,7 +30,7 @@ const SideMenuButton: React.FC<SideMenuButtonProps> = ({ url, type, onClick }) =
                 border: 'none',
                 boxShadow: currentPage ? '0px 4px 6px rgba(0, 0, 0, 0.1)' : 'none',
                 width: '100%',
-                height: '70px',
+                height: `clamp(50px, 3vw, 100px)`,
                 marginBottom: '30px',
                 padding: '20px',
                 justifyContent: 'flex-start',
