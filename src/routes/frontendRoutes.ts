@@ -8,4 +8,5 @@ export const ROUTES = {
     projects: '/projects',
     reports: '/reports',
     logout: '/logout',
+    admin: '/administrator',
 }

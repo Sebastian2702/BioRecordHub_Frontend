@@ -3,8 +3,19 @@ import { COLORS, BORDER } from "../constants/ui.ts";
 import logo from "../assets/images/full-logo.png";
 import SideMenuButton from "../components/SideMenuButton.tsx";
 import { ROUTES } from "../routes/frontendRoutes.ts";
+import { useNavigate } from "react-router-dom";
+import {handleLogout} from "../services/authHandler.ts";
+import { useAuth} from "../context/AuthContext.tsx";
 
 const SideMenu = () => {
+
+    const navigate = useNavigate();
+    const { isAdmin, logout: contextLogout } = useAuth();
+
+    const onLogoutClick = () => {
+        handleLogout({navigate, contextLogout});
+    }
+
     return (
         <Box
             sx={{
@@ -37,13 +48,18 @@ const SideMenu = () => {
                     width: "100%",
                 }}
             >
-                <SideMenuButton url={ROUTES.dashboard} type="Dashboard" />
-                <SideMenuButton url={ROUTES.nomenclature} type="Nomenclature" />
-                <SideMenuButton url={ROUTES.bibliography} type="Bibliography" />
-                <SideMenuButton url={ROUTES.occurrences} type="Occurrences" />
-                <SideMenuButton url={ROUTES.projects} type="Projects" />
-                <SideMenuButton url={ROUTES.reports} type="Reports" />
-                <SideMenuButton url={ROUTES.logout} type="Logout" />
+                <SideMenuButton url={ROUTES.dashboard} type="Dashboard" onClick={() => {navigate(ROUTES.dashboard)}}/>
+                <SideMenuButton url={ROUTES.nomenclature} type="Nomenclature" onClick={() => {navigate(ROUTES.nomenclature)}}/>
+                <SideMenuButton url={ROUTES.bibliography} type="Bibliography" onClick={() => {navigate(ROUTES.bibliography)}}/>
+                <SideMenuButton url={ROUTES.occurrences} type="Occurrences" onClick={() => {navigate(ROUTES.occurrences)}}/>
+                <SideMenuButton url={ROUTES.projects} type="Projects" onClick={() => {navigate(ROUTES.projects)}}/>
+                <SideMenuButton url={ROUTES.reports} type="Reports" onClick={() => {navigate(ROUTES.reports)}}/>
+
+                {isAdmin && (
+                    <SideMenuButton url={ROUTES.admin} type="Admin" onClick={() => navigate(ROUTES.admin)} />
+                )}
+
+                <SideMenuButton url={ROUTES.logout} type="Logout" onClick={onLogoutClick}/>
             </Box>
         </Box>
     );

@@ -3,20 +3,35 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import LoginRegistration from './pages/LoginRegistration.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import { ROUTES } from './routes/frontendRoutes.ts';
-import AppLayout from './layouts/AppLayout.tsx'; // The one you just created
+import AppLayout from './layouts/AppLayout.tsx';
+import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute.tsx';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
+
     return (
         <Router>
             <Routes>
 
+                // Public routes
                 <Route path="/" element={<Navigate to={ROUTES.login} />} />
                 <Route path={ROUTES.login} element={<LoginRegistration isLogin={true} />} />
                 <Route path={ROUTES.register} element={<LoginRegistration isLogin={false} />} />
 
-                <Route element={<AppLayout />}>
-                    <Route path={ROUTES.dashboard} element={<Dashboard />} />
-                    <Route path={ROUTES.nomenclature} element={<Dashboard />} />
+                // Authenticated users
+                <Route element={<ProtectedRoute />}>
+                    <Route element={<AppLayout />}>
+                        <Route path={ROUTES.dashboard} element={<Dashboard />} />
+                        <Route path={ROUTES.nomenclature} element={<Dashboard />} />
+                    </Route>
+                </Route>
+
+                // Admin only
+                <Route element={<AdminRoute />}>
+                    <Route element={<AppLayout />}>
+                        <Route path={ROUTES.admin} element={<Dashboard />} />
+                    </Route>
                 </Route>
             </Routes>
         </Router>
