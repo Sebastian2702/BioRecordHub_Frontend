@@ -6,8 +6,10 @@ import { ROUTES } from './routes/frontendRoutes.ts';
 import AppLayout from './layouts/AppLayout.tsx';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute.tsx';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
+
     return (
         <Router>
             <Routes>

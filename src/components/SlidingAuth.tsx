@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Box } from "@mui/material";
+import { useState, useEffect } from "react";
+import { Box, CircularProgress } from "@mui/material";
 import LoginInputCard from "../components/LoginInputCard";
 import RegisterInputCard from "../components/ResgisterInputCard";
 import LoginSideCard from "../components/LoginSideCard";
@@ -9,6 +9,7 @@ import {useNavigate} from "react-router-dom";
 import {handleLogin} from "../services/authHandler.ts";
 import {handleRegister} from "../services/authHandler.ts";
 import {useAuth} from "../context/AuthContext.tsx";
+import { ToastContainer, toast } from 'react-toastify';
 
 interface SlidingAuthProps {
     isLogin: boolean;
@@ -22,6 +23,7 @@ const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
     const [password_confirmation, setPassword_confirmation] = useState("");
     const navigate = useNavigate();
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const { login: contextLogin, register: contextRegister } = useAuth();
 
@@ -32,13 +34,12 @@ const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
             navigate,
             setError,
             contextLogin,
+            setLoading,
         });
     };
 
     const onRegisterClick = () => {
-        // Handle registration logic here
-       handleRegister(
-            {
+        handleRegister({
                 name,
                 email,
                 password,
@@ -46,9 +47,24 @@ const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
                 navigate,
                 setError,
                 contextRegister,
-            }
-        )
+                setLoading,
+        });
     };
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            setError("");
+        }
+    }, [error]);
 
 
     return (
@@ -64,6 +80,7 @@ const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
                 background: `${COLORS.primary}`,
             }}
         >
+            <ToastContainer />
             {/* Sliding container */}
             <Box
                 sx={{
@@ -101,6 +118,25 @@ const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
                     />
                 </Box>
             </Box>
+
+            {loading && (
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 10,
+                    }}
+                >
+                    <CircularProgress color="inherit" />
+                </Box>
+            )}
         </Box>
     );
 };
