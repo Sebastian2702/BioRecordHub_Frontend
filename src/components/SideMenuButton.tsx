@@ -18,7 +18,6 @@ const SideMenuButton: React.FC<SideMenuButtonProps> = ({ url, type, onClick }) =
 
     return (
         <Button
-            variant="contained"
             onClick={onClick}
             startIcon={icon}
             sx={{
@@ -26,12 +25,11 @@ const SideMenuButton: React.FC<SideMenuButtonProps> = ({ url, type, onClick }) =
                 borderRadius: `${BORDER.radius}`,
                 color: COLORS.white,
                 fontWeight: 'bold',
-                fontSize: `clamp(1rem, 1.5vw + 0.5rem, 2rem)`,
+                fontSize: `clamp(1rem, 3vw, 1.5rem)`,
                 border: 'none',
                 boxShadow: currentPage ? '0px 4px 6px rgba(0, 0, 0, 0.1)' : 'none',
                 width: '100%',
                 height: `clamp(50px, 3vw, 100px)`,
-                marginBottom: '30px',
                 padding: '20px',
                 justifyContent: 'flex-start',
                 textTransform: 'none',

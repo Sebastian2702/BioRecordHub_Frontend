@@ -19,7 +19,7 @@ const LoginInputCard: React.FC<LoginInputCardProps> = ({ email, password, onEmai
         <Box sx={{
             backgroundColor: COLORS.white,
             width: "30vw",
-            height: "55vh",
+            height: "100%",
             borderRadius: `${BORDER.radius} 0 0 ${BORDER.radius}`,
             boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
             display: "flex",

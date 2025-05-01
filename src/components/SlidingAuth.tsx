@@ -71,7 +71,7 @@ const SlidingAuth : React.FC<SlidingAuthProps> = ({ isLogin }) => {
         <Box
             sx={{
                 width: "60vw",
-                height: "60vh",
+                height: "70vh",
                 display: "flex",
                 position: "relative",
                 overflow: "hidden",

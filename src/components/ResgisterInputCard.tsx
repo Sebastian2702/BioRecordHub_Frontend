@@ -22,7 +22,7 @@ const RegisterInputCard: React.FC<RegisterInputCardProps> = ({ email, password, 
         <Box sx={{
             backgroundColor: COLORS.white,
             width: "30vw",
-            height: "60vh",
+            height: "100%",
             borderRadius: `0 ${BORDER.radius} ${BORDER.radius} 0`,
             boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
             display: "flex",

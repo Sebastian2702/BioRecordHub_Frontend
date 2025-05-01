@@ -13,7 +13,7 @@ const RegisterSideCard: React.FC<RegisterSideCardProps> = ({ onClick }) => {
         <Box sx={{
             backgroundColor: COLORS.primary,
             width: "30vw",
-            height: "55vh",
+            height: "100%",
             borderRadius: `${BORDER.radius} 0 0 ${BORDER.radius}`,
             boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
             display: "flex",

@@ -19,7 +19,7 @@ const SideMenu = () => {
     return (
         <Box
             sx={{
-                width: "18vw",
+                width: "19vw",
                 height: "100dvh",
                 display: "flex",
                 flexDirection: "column",
@@ -35,7 +35,7 @@ const SideMenu = () => {
             <img
                 src={logo}
                 alt="logo"
-                style={{ width: "80%", height: "auto", marginBottom: "40px" }}
+                style={{ width: "80%", height: "auto" }}
             />
 
             <Box
@@ -46,6 +46,7 @@ const SideMenu = () => {
                     justifyContent: "center",
                     alignItems: "center",
                     width: "100%",
+                    gap: "25px",
                 }}
             >
                 <SideMenuButton url={ROUTES.dashboard} type="Dashboard" onClick={() => {navigate(ROUTES.dashboard)}}/>
