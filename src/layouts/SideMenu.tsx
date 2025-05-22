@@ -54,7 +54,6 @@ const SideMenu = () => {
                 <SideMenuButton url={ROUTES.bibliography} type="Bibliography" onClick={() => {navigate(ROUTES.bibliography)}}/>
                 <SideMenuButton url={ROUTES.occurrences} type="Occurrences" onClick={() => {navigate(ROUTES.occurrences)}}/>
                 <SideMenuButton url={ROUTES.projects} type="Projects" onClick={() => {navigate(ROUTES.projects)}}/>
-                <SideMenuButton url={ROUTES.reports} type="Reports" onClick={() => {navigate(ROUTES.reports)}}/>
 
                 {isAdmin && (
                     <SideMenuButton url={ROUTES.admin} type="Admin" onClick={() => navigate(ROUTES.admin)} />
