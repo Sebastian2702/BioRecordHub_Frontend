@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import LoginRegistration from './pages/LoginRegistration.tsx';
 import Dashboard from './pages/Dashboard.tsx';
+import Bibliographies from "./pages/Bibliographies.tsx";
 import { ROUTES } from './routes/frontendRoutes.ts';
 import AppLayout from './layouts/AppLayout.tsx';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -24,7 +25,7 @@ function App() {
                     <Route element={<AppLayout />}>
                         <Route path={ROUTES.dashboard} element={<Dashboard />} />
                         <Route path={ROUTES.nomenclature} element={<Dashboard />} />
-                        <Route path={ROUTES.bibliography} element={<Dashboard />} />
+                        <Route path={ROUTES.bibliography} element={<Bibliographies />} />
                         <Route path={ROUTES.occurrences} element={<Dashboard />} />
                         <Route path={ROUTES.projects} element={<Dashboard />} />
                         <Route path={ROUTES.reports} element={<Dashboard />} />

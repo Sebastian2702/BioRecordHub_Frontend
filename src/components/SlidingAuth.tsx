@@ -6,8 +6,8 @@ import LoginSideCard from "../components/LoginSideCard";
 import RegisterSideCard from "../components/RegisterSideCard";
 import { COLORS } from "../constants/ui.ts";
 import {useNavigate} from "react-router-dom";
-import {handleLogin} from "../services/authHandler.ts";
-import {handleRegister} from "../services/authHandler.ts";
+import {handleLogin} from "../services/auth/authHandler.ts";
+import {handleRegister} from "../services/auth/authHandler.ts";
 import {useAuth} from "../context/AuthContext.tsx";
 import { ToastContainer, toast } from 'react-toastify';
 

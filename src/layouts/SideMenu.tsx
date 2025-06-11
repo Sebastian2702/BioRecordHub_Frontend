@@ -4,7 +4,7 @@ import logo from "../assets/images/full-logo.png";
 import SideMenuButton from "../components/SideMenuButton.tsx";
 import { ROUTES } from "../routes/frontendRoutes.ts";
 import { useNavigate } from "react-router-dom";
-import {handleLogout} from "../services/authHandler.ts";
+import {handleLogout} from "../services/auth/authHandler.ts";
 import { useAuth} from "../context/AuthContext.tsx";
 
 const SideMenu = () => {

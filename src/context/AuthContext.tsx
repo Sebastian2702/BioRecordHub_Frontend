@@ -4,7 +4,7 @@ import {
     register as apiRegister,
     logout as apiLogout,
     getUser,
-} from '../services/auth';
+} from '../services/auth/auth.ts';
 
 interface User {
     id: number;
