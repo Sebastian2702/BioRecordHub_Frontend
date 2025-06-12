@@ -1,5 +1,6 @@
 import TextField from '@mui/material/TextField';
 import {COLORS, BORDER} from "../constants/ui.ts";
+import InputAdornment from '@mui/material/InputAdornment';
 
 
 interface InputTextProps {
@@ -11,9 +12,11 @@ interface InputTextProps {
     required?: boolean;
     fontSize?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    startAdornment?: React.ReactNode;
+    width?: string;
 }
 
-const InputTextArea: React.FC<InputTextProps> = ({ label, password, multiline,value, fullWidth, required, fontSize, onChange }) => {
+const InputTextArea: React.FC<InputTextProps> = ({ label, password, multiline,value, fullWidth, required, fontSize, onChange,startAdornment,width }) => {
     return (
         <TextField
             variant="outlined"
@@ -24,8 +27,18 @@ const InputTextArea: React.FC<InputTextProps> = ({ label, password, multiline,va
             type={password ? 'password' : 'text'}
             multiline={multiline}
             required={required}
+            slotProps={{
+                input: {
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            {startAdornment}
+                        </InputAdornment>
+                    ),
+                },
+            }}
             sx={{
                 marginBottom: '20px',
+                width: width || '100%',
                 '& .MuiOutlinedInput-root': {
                     borderRadius: BORDER.radius,
                     backgroundColor: COLORS.white,
