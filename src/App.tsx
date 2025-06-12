@@ -29,6 +29,7 @@ function App() {
                         <Route path={ROUTES.occurrences} element={<Dashboard />} />
                         <Route path={ROUTES.projects} element={<Dashboard />} />
                         <Route path={ROUTES.reports} element={<Dashboard />} />
+                        <Route path={ROUTES.profile} element={<Dashboard />} />
                     </Route>
                 </Route>
 
