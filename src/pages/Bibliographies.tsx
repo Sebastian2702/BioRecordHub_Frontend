@@ -7,7 +7,9 @@ import SearchFilter from "../components/SearchFilter.tsx";
 import DropdownFilter from "../components/DropdownFilter";
 import { useState } from "react";
 import { SelectChangeEvent } from '@mui/material/Select';
-
+import DateFilter from "../components/DateFilter.tsx";
+import RefreshButton from "../components/RefreshButton.tsx";
+import NewEntryButton from "../components/NewEntryButton.tsx";
 
 function Bibliographies(){
     const [searchValue, setSearchValue] = useState('');
@@ -49,18 +51,19 @@ function Bibliographies(){
     return (
         <Box sx={{
             width: '97%',
-            height: 'calc(100vh - 140px)',
+            height: 'calc(100vh - 150px)',
             backgroundColor: COLORS.white,
             color: COLORS.primary,
             borderRadius: BORDER.radius,
             margin: 'auto',
             paddingTop: "20px"
         }}>
-            <Box display="flex" justifyContent="space-evenly">
-                <SearchFilter value={searchValue} onChange={handleSearchChange} width={"500px"}/>
-                <DropdownFilter value={dropdownValue} options={DropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} width={"118px"}/>
-
-
+            <Box display="flex" gap={"20px"} paddingLeft={"10px"} paddingRight={"10px"}>
+                <SearchFilter value={searchValue} onChange={handleSearchChange} width={"35vw"}/>
+                <DropdownFilter value={dropdownValue} options={DropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} width={"11vw"}/>
+                <DateFilter label={"Year"} width={"12vw"} type={["year"]} />
+                <RefreshButton width={"7vw"}/>
+                <NewEntryButton manualEntryLink={"/bibliography/new"} fileUploadLink={"/bibliography/new_file_upload"} width={"10vw"}/>
 
             </Box>
 
