@@ -10,4 +10,5 @@ export const ROUTES = {
     logout: '/logout',
     admin: '/administrator',
     profile: '/profile',
+    bibliographyId: '/bibliography/:id',
 }

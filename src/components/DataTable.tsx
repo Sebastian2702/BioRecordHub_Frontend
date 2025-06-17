@@ -38,6 +38,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
 
     const handleDelete = async  (id:number, type:string) => {
         setLoadingId(id);
+        console.log("Delete function called for ID: " + id + " Type: " + type);
         try {
             await handleDeleteData(id, type);
             handleRefresh?.();
@@ -45,7 +46,6 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
             setLoadingId(null);
         }
     }
-
 
 
     return (
@@ -73,7 +73,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.map((row, index) => (
+                    {data.map((row, index) =>  (
                         <TableRow key={index}>
                             {columns.map((column) => (
                                 <TableCell key={column.id} align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
@@ -97,7 +97,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                                         label={"View"}
                                         color={"primary"}
                                         size={"small"}
-                                        onClick={() => window.location.href = viewLink + `/${row.id}}`}
+                                        onClick={() => window.location.href = viewLink + row.id}
                                     />
                                 </TableCell>
                             }
