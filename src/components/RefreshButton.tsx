@@ -7,17 +7,18 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface RegisterInputCardProps {
     width?: string;
+    onClick: () => void;
 }
 
 
-const RegisterInputCard: React.FC<RegisterInputCardProps> = ({ width}) => {
+const RegisterInputCard: React.FC<RegisterInputCardProps> = ({ width, onClick}) => {
     return (
         <Box
             sx={{ display: 'flex', flexDirection: 'row', gap:'10px', alignItems: 'center', height: '55px', paddingTop: '8px', width: width || '100%' }}
         >
             <Button
                 variant="contained"
-                onClick={() => { window.location.reload()}}
+                onClick={onClick}
                 sx={{
                     borderRadius: BORDER.radius,
                     backgroundColor: COLORS.primary,

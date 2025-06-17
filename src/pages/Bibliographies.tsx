@@ -1,19 +1,23 @@
-import Button from "@mui/material/Button";
-import {GetBibliographyById} from "../services/bibliography/bibliography.ts";
 import {GetBibliography} from '../services/bibliography/bibliography.ts';
 import { Box } from "@mui/material";
 import { COLORS,BORDER } from '../constants/ui';
 import SearchFilter from "../components/SearchFilter.tsx";
 import DropdownFilter from "../components/DropdownFilter";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { SelectChangeEvent } from '@mui/material/Select';
 import DateFilter from "../components/DateFilter.tsx";
 import RefreshButton from "../components/RefreshButton.tsx";
 import NewEntryButton from "../components/NewEntryButton.tsx";
+import DataTable from "../components/DataTable";
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 function Bibliographies(){
     const [searchValue, setSearchValue] = useState('');
     const [dropdownValue, setDropdownValue] = useState('');
+    const [data, setData] = useState<any[]>([]);
+    const [refresh, setRefresh] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
@@ -29,25 +33,29 @@ function Bibliographies(){
          { display: "Report", value: "report" },
      ];
 
-    /*const handleGetBibliography = async () => {
-        console.log('Get Bibliography');
-        try {
-            const data = await GetBibliography();
-            console.log(data);
-        } catch (error) {
-            console.error("Error fetching bibliography:", error);
-        }
-    }
 
-    const handleGetBibliographyById = async (id: number) => {
-        console.log('Get Bibliography By Id');
+    const handleRefresh = () => {
+        setRefresh(prev => !prev);
+    };
+
+    const fetchData = async () => {
         try {
-            const data = await GetBibliographyById(id);
-            console.log(data);
+            setLoading(true);
+            const response = await GetBibliography();
+            setData(response);
         } catch (error) {
-            console.error("Error fetching bibliography by ID:", error);
+            console.error("Error fetching data:", error);
+        }finally {
+            setLoading(false);
         }
-    }*/
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [refresh]);
+
+
+
     return (
         <Box sx={{
             width: '97%',
@@ -58,13 +66,37 @@ function Bibliographies(){
             margin: 'auto',
             paddingTop: "20px"
         }}>
-            <Box display="flex" gap={"20px"} paddingLeft={"10px"} paddingRight={"10px"}>
+            <Box display="flex" gap={"20px"} padding={"0px 10px"}>
                 <SearchFilter value={searchValue} onChange={handleSearchChange} width={"35vw"}/>
                 <DropdownFilter value={dropdownValue} options={DropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} width={"11vw"}/>
                 <DateFilter label={"Year"} width={"12vw"} type={["year"]} />
-                <RefreshButton width={"7vw"}/>
+                <RefreshButton width={"7vw"} onClick={handleRefresh}/>
                 <NewEntryButton manualEntryLink={"/bibliography/new"} fileUploadLink={"/bibliography/new_file_upload"} width={"10vw"}/>
-
+            </Box>
+            <Box sx={{padding: '0px 10px', overflowY: 'auto'}}>
+                {loading ? (
+                    <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
+                        <CircularProgress />
+                    </Box>
+                ):
+                    <DataTable
+                        data={data}
+                        columns={[
+                            { id: 'key', label: 'Key' },
+                            { id: 'item_type', label: 'Item Type' },
+                            { id: 'title', label: 'Title' },
+                            { id: 'author', label: 'Author' },
+                            { id: 'publication_year', label: 'Publication Year' }
+                        ]}
+                        editButton={false}
+                        viewButton={true}
+                        viewLink={"/bibliography/"}
+                        deleteButton={false}
+                        trashCanButton={true}
+                        dataType={"bibliography"}
+                        handleRefresh={handleRefresh}
+                    />
+                }
             </Box>
 
         </Box>

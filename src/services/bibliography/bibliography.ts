@@ -10,3 +10,8 @@ export const GetBibliographyById = async (id: number) => {
     const response = await api.get(BIBLIROGRAPHY_ROUTES.bibliographyById(id));
     return response.data;
 }
+
+export const DeleteBibliography = async (id: number) => {
+    const response = await api.delete(BIBLIROGRAPHY_ROUTES.bibliographyById(id));
+    return response.data;
+}
