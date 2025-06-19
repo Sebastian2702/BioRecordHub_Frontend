@@ -9,15 +9,14 @@ import SaveIcon from '@mui/icons-material/Save';
 
 
 interface NewEntryButtonProps {
-    width?: string;
     manualEntryLink: string;
     fileUploadLink: string;
 }
 
-const NewEntryButton: React.FC<NewEntryButtonProps> = ({ width, manualEntryLink, fileUploadLink }) => {
+const NewEntryButton: React.FC<NewEntryButtonProps> = ({ manualEntryLink, fileUploadLink }) => {
     return (
         <Box sx={{ paddingTop: "8px" }}>
-            <FormControl variant="outlined" sx={{width: width || '100%'}}>
+            <FormControl variant="outlined" sx={{width: '100%'}}>
                 <InputLabel id="dropdown-filter" sx={{ color: COLORS.white, fontSize: '16px', marginBottom: '8px', fontWeight: 'bold', alignItems: 'center' }}>
                     {'New Entry'}
                 </InputLabel>
@@ -25,12 +24,11 @@ const NewEntryButton: React.FC<NewEntryButtonProps> = ({ width, manualEntryLink,
                     value={''}
                     id="dropdown-filter"
                     displayEmpty
-                    autoWidth
                     inputProps={{ 'aria-label': 'New Entry' }}
                     MenuProps={{
                         PaperProps: {
                             sx: {
-                                width: width,
+                                width: '150px',
                                 backgroundColor: COLORS.white,
                                 borderRadius: `0 0 ${BORDER.radius} ${BORDER.radius}`,
                                 boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',

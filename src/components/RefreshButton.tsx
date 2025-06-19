@@ -5,15 +5,14 @@ import Box from "@mui/material/Box";
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface RegisterInputCardProps {
-    width?: string;
     onClick: () => void;
 }
 
 
-const RegisterInputCard: React.FC<RegisterInputCardProps> = ({ width, onClick}) => {
+const RegisterInputCard: React.FC<RegisterInputCardProps> = ({ onClick }) => {
     return (
         <Box
-            sx={{ display: 'flex', flexDirection: 'row', gap:'10px', alignItems: 'center', height: '55px', paddingTop: '8px', width: width || '100%' }}
+            sx={{ display: 'flex', flexDirection: 'row', gap:'10px', alignItems: 'center', height: '55px', paddingTop: '8px', width: '100%' }}
         >
             <Button
                 variant="contained"

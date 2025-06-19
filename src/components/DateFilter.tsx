@@ -5,19 +5,18 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {BORDER, COLORS} from "../constants/ui.ts";
 
 interface DateFilterProps {
-    width?: string;
     type: ['day', 'month', 'year'] | ['month', 'year'] | ['year'] | ['day', 'month'] | ['day'];
-    label: string;
+    label: string
 }
 
-const DateFilter:React.FC<DateFilterProps> = ({ type, label, width}) => {
+const DateFilter:React.FC<DateFilterProps> = ({ type, label}) => {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DatePicker']} sx={{width: width || "100%",}}>
+            <DemoContainer components={['DatePicker']} sx={{width: "100%",height: "100%"}}>
                 <DatePicker label= {label}  views={type} sx={{
-                    height: '55px',
+                    height: '56px',
                     backgroundColor: COLORS.white,
-                    width: width || "100%",
+                    width: "100%",
                     '& fieldset': {
                         borderRadius: BORDER.radius,
                         borderStyle: 'solid',

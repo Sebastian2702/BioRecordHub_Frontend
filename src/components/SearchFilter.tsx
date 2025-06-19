@@ -5,15 +5,14 @@ import Box from "@mui/material/Box";
 
 interface SearchFilterProps {
     value: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    width?: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 
-const SearchFilter:React.FC<SearchFilterProps> = ({ value, onChange, width}) => {
+const SearchFilter:React.FC<SearchFilterProps> = ({ value, onChange}) => {
     return (
-        <Box sx={{ paddingTop: "8px", width: width || "100%"}}>
-            <InputTextField label={"Search for key, title and author"} value={value} onChange={onChange} password={false} width={ width || "100%" } startAdornment={<SearchIcon sx={{color: COLORS.primary}}/>}/>
+        <Box sx={{ paddingTop: "8px", width: "100%"}}>
+            <InputTextField label={"Search for key, title and author"} value={value} onChange={onChange} password={false} width={ "100%" } startAdornment={<SearchIcon sx={{color: COLORS.primary}}/>}/>
         </Box>
 
 

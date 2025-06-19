@@ -9,14 +9,13 @@ interface DropdownFilterProps {
     options: { display: string; value: string }[];
     value?: string;
     onChange?: (event: SelectChangeEvent<string>) => void;
-    label?: string;
-    width?: string;
+    label?: string
 }
 
-const DropdownFilter: React.FC<DropdownFilterProps> = ({ options, value, onChange, label, width }) => {
+const DropdownFilter: React.FC<DropdownFilterProps> = ({ options, value, onChange, label }) => {
     return (
         <Box sx={{ paddingTop: "8px" }}>
-            <FormControl variant="outlined" sx={{width: width || '100%'}}>
+            <FormControl variant="outlined" sx={{width:'100%'}}>
                 <InputLabel id="dropdown-filter" sx={{ color: COLORS.primary, fontSize: '16px', marginBottom: '8px' }}>
                     {label || 'Dropdown Filter'}
                 </InputLabel>

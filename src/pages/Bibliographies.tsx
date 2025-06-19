@@ -66,12 +66,22 @@ function Bibliographies(){
             margin: 'auto',
             paddingTop: "20px"
         }}>
-            <Box display="flex" padding={"0px 10px"} justifyContent={"space-between"}>
-                <SearchFilter value={searchValue} onChange={handleSearchChange} width={"30vw"}/>
-                <DropdownFilter value={dropdownValue} options={DropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} width={"10vw"}/>
-                <DateFilter label={"Year"} width={"14vw"} type={["year"]} />
-                <RefreshButton width={"5vw"} onClick={handleRefresh}/>
-                <NewEntryButton manualEntryLink={"/bibliography/new"} fileUploadLink={"/bibliography/new_file_upload"} width={"10vw"}/>
+            <Box display="flex" padding={"0px 10px"} gap={2} flexWrap="wrap">
+                <Box sx={{ flex: 2, minWidth: '200px' }}>
+                    <SearchFilter value={searchValue} onChange={handleSearchChange} />
+                </Box>
+                <Box sx={{ flex: 1, minWidth: '150px' }}>
+                    <DropdownFilter value={dropdownValue} options={DropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} />
+                </Box>
+                <Box sx={{ flex: 1, minWidth: '150px'}}>
+                    <DateFilter label={"Year"} type={["year"]} />
+                </Box>
+                <Box sx={{ flexShrink: 0 }}>
+                    <RefreshButton onClick={handleRefresh} />
+                </Box>
+                <Box sx={{ flexShrink: 0, minWidth: '150px' }}>
+                    <NewEntryButton manualEntryLink={"/bibliography/new"} fileUploadLink={"/bibliography/new_file_upload"} />
+                </Box>
             </Box>
             <Box sx={{padding: '0px 10px', overflowY: 'auto'}}>
                 {loading ? (
