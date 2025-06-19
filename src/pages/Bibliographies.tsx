@@ -73,7 +73,7 @@ function Bibliographies(){
                 <Box sx={{ flex: 1, minWidth: '150px' }}>
                     <DropdownFilter value={dropdownValue} options={DropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} />
                 </Box>
-                <Box sx={{ flex: 1, minWidth: '150px'}}>
+                <Box sx={{ flex: 1, minWidth: '160px'}}>
                     <DateFilter label={"Year"} type={["year"]} />
                 </Box>
                 <Box sx={{ flexShrink: 0 }}>
