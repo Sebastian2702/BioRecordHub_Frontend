@@ -1,7 +1,6 @@
 import Button from '@mui/material/Button';
 import { COLORS, BORDER } from '../constants/ui.ts';
 import { darken } from '@mui/system';
-import Typography from '@mui/material/Typography';
 import Box from "@mui/material/Box";
 import RefreshIcon from '@mui/icons-material/Refresh';
 
@@ -43,9 +42,6 @@ const RegisterInputCard: React.FC<RegisterInputCardProps> = ({ width, onClick}) 
             >
                 <RefreshIcon sx={{ fontSize: '38px' }} />
             </Button>
-            <Typography sx={{ fontSize: "18px", fontWeight: "bold", color: COLORS.primary }}>
-                Refresh
-            </Typography>
         </Box>
 
     );

@@ -66,11 +66,11 @@ function Bibliographies(){
             margin: 'auto',
             paddingTop: "20px"
         }}>
-            <Box display="flex" gap={"20px"} padding={"0px 10px"}>
-                <SearchFilter value={searchValue} onChange={handleSearchChange} width={"35vw"}/>
-                <DropdownFilter value={dropdownValue} options={DropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} width={"11vw"}/>
-                <DateFilter label={"Year"} width={"12vw"} type={["year"]} />
-                <RefreshButton width={"7vw"} onClick={handleRefresh}/>
+            <Box display="flex" padding={"0px 10px"} justifyContent={"space-between"}>
+                <SearchFilter value={searchValue} onChange={handleSearchChange} width={"30vw"}/>
+                <DropdownFilter value={dropdownValue} options={DropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} width={"10vw"}/>
+                <DateFilter label={"Year"} width={"14vw"} type={["year"]} />
+                <RefreshButton width={"5vw"} onClick={handleRefresh}/>
                 <NewEntryButton manualEntryLink={"/bibliography/new"} fileUploadLink={"/bibliography/new_file_upload"} width={"10vw"}/>
             </Box>
             <Box sx={{padding: '0px 10px', overflowY: 'auto'}}>

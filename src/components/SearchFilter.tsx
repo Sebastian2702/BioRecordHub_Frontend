@@ -12,7 +12,7 @@ interface SearchFilterProps {
 
 const SearchFilter:React.FC<SearchFilterProps> = ({ value, onChange, width}) => {
     return (
-        <Box sx={{ paddingTop: "8px" }}>
+        <Box sx={{ paddingTop: "8px", width: width || "100%"}}>
             <InputTextField label={"Search for key, title and author"} value={value} onChange={onChange} password={false} width={ width || "100%" } startAdornment={<SearchIcon sx={{color: COLORS.primary}}/>}/>
         </Box>
 

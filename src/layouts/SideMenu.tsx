@@ -19,7 +19,7 @@ const SideMenu = () => {
     return (
         <Box
             sx={{
-                width: "15vw",
+                width: "calc(100dvw - 82vw)",
                 height: "100dvh",
                 display: "flex",
                 flexDirection: "column",
