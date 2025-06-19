@@ -1,5 +1,5 @@
-import { COLORS, BORDER } from '../constants/ui';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import {BORDER, COLORS} from '../constants/ui';
+import Select, {SelectChangeEvent} from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
@@ -10,13 +10,14 @@ interface DropdownFilterProps {
     value?: string;
     onChange?: (event: SelectChangeEvent<string>) => void;
     label?: string
+    required?: boolean
 }
 
-const DropdownFilter: React.FC<DropdownFilterProps> = ({ options, value, onChange, label }) => {
+const DropdownInput: React.FC<DropdownFilterProps> = ({options, value, onChange, label, required}) => {
     return (
-        <Box sx={{ paddingTop: "8px" }}>
-            <FormControl variant="outlined" sx={{width:'100%'}}>
-                <InputLabel id="dropdown-filter" sx={{ color: COLORS.primary, fontSize: '16px', marginBottom: '8px' }}>
+        <Box sx={{paddingTop: "8px"}}>
+            <FormControl variant="outlined" sx={{width: '100%'}}>
+                <InputLabel id="dropdown-filter" sx={{color: COLORS.primary, fontSize: '16px', marginBottom: '8px'}}>
                     {label || 'Dropdown Filter'}
                 </InputLabel>
                 <Select
@@ -24,7 +25,8 @@ const DropdownFilter: React.FC<DropdownFilterProps> = ({ options, value, onChang
                     id="dropdown-filter"
                     onChange={onChange}
                     displayEmpty
-                    inputProps={{ 'aria-label': label || 'Dropdown Filter' }}
+                    inputProps={{'aria-label': label || 'Dropdown Filter'}}
+                    required={required || false}
                     sx={{
                         height: '55px',
                         backgroundColor: COLORS.white,
@@ -60,4 +62,4 @@ const DropdownFilter: React.FC<DropdownFilterProps> = ({ options, value, onChang
     );
 };
 
-export default DropdownFilter;
+export default DropdownInput;

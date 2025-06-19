@@ -8,6 +8,7 @@ import AppLayout from './layouts/AppLayout.tsx';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute.tsx';
 import Bibliography from './pages/Bibliography.tsx';
+import NewBibliography from './pages/NewBibliography.tsx';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
                         <Route path={ROUTES.nomenclature} element={<Dashboard />} />
                         <Route path={ROUTES.bibliography} element={<Bibliographies />} />
                         <Route path={ROUTES.bibliographyId} element={<Bibliography />} />
+                        <Route path={ROUTES.bibliographyCreate} element={<NewBibliography />} />
                         <Route path={ROUTES.occurrences} element={<Dashboard />} />
                         <Route path={ROUTES.projects} element={<Dashboard />} />
                         <Route path={ROUTES.reports} element={<Dashboard />} />

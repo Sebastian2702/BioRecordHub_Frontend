@@ -2,19 +2,21 @@ import {GetBibliography} from '../services/bibliography/bibliography.ts';
 import { Box } from "@mui/material";
 import { COLORS,BORDER } from '../constants/ui';
 import SearchFilter from "../components/SearchFilter.tsx";
-import DropdownFilter from "../components/DropdownFilter";
+import DropdownInput from "../components/DropdownInput.tsx";
 import {useEffect, useState} from "react";
 import { SelectChangeEvent } from '@mui/material/Select';
-import DateFilter from "../components/DateFilter.tsx";
+import DateInput from "../components/DateInput.tsx";
 import RefreshButton from "../components/RefreshButton.tsx";
 import NewEntryButton from "../components/NewEntryButton.tsx";
 import DataTable from "../components/DataTable";
 import CircularProgress from '@mui/material/CircularProgress';
+import { Dayjs } from 'dayjs';
 
 
 function Bibliographies(){
     const [searchValue, setSearchValue] = useState('');
     const [dropdownValue, setDropdownValue] = useState('');
+    const [dateInput, setDateInput] = useState<Dayjs | null>(null);
     const [data, setData] = useState<any[]>([]);
     const [refresh, setRefresh] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -71,10 +73,10 @@ function Bibliographies(){
                     <SearchFilter value={searchValue} onChange={handleSearchChange} />
                 </Box>
                 <Box sx={{ flex: 1, minWidth: '150px' }}>
-                    <DropdownFilter value={dropdownValue} options={DropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} />
+                    <DropdownInput value={dropdownValue} options={DropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} />
                 </Box>
                 <Box sx={{ flex: 1, minWidth: '160px'}}>
-                    <DateFilter label={"Year"} type={["year"]} />
+                    <DateInput label={"Year"} type={["year"]} value={dateInput} onChange={(e)=>setDateInput(e.target.value)} />
                 </Box>
                 <Box sx={{ flexShrink: 0 }}>
                     <RefreshButton onClick={handleRefresh} />

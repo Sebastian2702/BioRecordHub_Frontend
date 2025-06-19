@@ -3,17 +3,20 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {BORDER, COLORS} from "../constants/ui.ts";
+import dayjs from 'dayjs';
 
 interface DateFilterProps {
     type: ['day', 'month', 'year'] | ['month', 'year'] | ['year'] | ['day', 'month'] | ['day'];
-    label: string
+    label: string;
+    value: dayjs.Dayjs | null;
+    onChange?: (date: any) => void;
 }
 
-const DateFilter:React.FC<DateFilterProps> = ({ type, label}) => {
+const DateInput:React.FC<DateFilterProps> = ({ type, label, value, onChange}) => {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['DatePicker']} sx={{width: "100%",height: "100%"}}>
-                <DatePicker label= {label}  views={type} sx={{
+                <DatePicker label= {label}  views={type} value={value} onChange={onChange} sx={{
                     height: '56px',
                     backgroundColor: COLORS.white,
                     width: "100%",
@@ -53,4 +56,4 @@ const DateFilter:React.FC<DateFilterProps> = ({ type, label}) => {
     );
 };
 
-export default DateFilter;
+export default DateInput;

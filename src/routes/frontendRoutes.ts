@@ -11,4 +11,7 @@ export const ROUTES = {
     admin: '/administrator',
     profile: '/profile',
     bibliographyId: '/bibliography/:id',
+    bibliographyCreate: '/bibliography/new',
+    bibliographyFileUpload: '/bibliography/new_file_upload',
+    bibliographyUpdate: '/bibliography/edit/:id',
 }

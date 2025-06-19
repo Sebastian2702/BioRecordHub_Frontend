@@ -8,10 +8,13 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useParams } from "react-router-dom";
 import  DataDisplay  from "../components/DataDisplay.tsx";
 import { formatLabel } from "../utils/helperFunctions.ts";
-
+import StyledButton from "../components/StyledButton.tsx";
+import EditIcon from '@mui/icons-material/Edit';
+import { useAuth } from "../context/AuthContext.tsx";
 
 
 function Bibliography() {
+    const { isAdmin } = useAuth();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
     const { id } = useParams();
@@ -51,9 +54,35 @@ function Bibliography() {
                     </Box>
                 ) :
                 <Box sx={{padding: "0px 10px", overflow:"auto", height: 'calc(100vh - 150px)'}}>
-                    <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: "flex-start", alignItems: 'center', marginBottom: '20px', gap:'31vw'}}>
-                        <BackButton width={"55px"}/>
-                        <Typography sx={{fontWeight: "bold", fontSize: FONT_SIZES.xlarge, textShadow: "0px 4px 12px rgba(0,0,0,0.15)"}}>{data.key}</Typography>
+                    <Box sx={{ position: 'relative', height: '50px', marginBottom: '20px' }}>
+                        <Box sx={{ position: 'absolute', left: 0 }}>
+                            <BackButton width="55px" />
+                        </Box>
+
+                        <Typography
+                            sx={{
+                                position: 'absolute',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                fontWeight: 'bold',
+                                fontSize: FONT_SIZES.xlarge,
+                                textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
+                            }}
+                        >
+                            {data.key}
+                        </Typography>
+
+                        {isAdmin && (
+                            <Box sx={{ position: 'absolute', right: 0 }}>
+                                <StyledButton
+                                    label="Edit"
+                                    color="edit"
+                                    size="large"
+                                    onClick={() => (window.location.href = '/bibliography/edit/' + data.id)}
+                                    icon={<EditIcon />}
+                                />
+                            </Box>
+                        )}
                     </Box>
                     <Box
                         sx={{

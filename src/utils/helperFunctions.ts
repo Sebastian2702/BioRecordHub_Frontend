@@ -17,3 +17,7 @@ export const truncateString = (str: string, maxLength: number): string => {
 
 export const formatLabel = (key: string) =>
     key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+
+export const formatAuthors = (authors: string[]) => {
+    return authors.join(', ');
+}
