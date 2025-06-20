@@ -73,7 +73,7 @@ function Bibliographies(){
                     <SearchFilter value={searchValue} onChange={handleSearchChange} />
                 </Box>
                 <Box sx={{ flex: 1, minWidth: '150px' }}>
-                    <DropdownInput value={dropdownValue} options={DropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} />
+                    <DropdownInput value={dropdownValue} options={DropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} filter={true}/>
                 </Box>
                 <Box sx={{ flex: 1, minWidth: '160px'}}>
                     <DateInput label={"Year"} type={["year"]} value={dateInput} onChange={(e)=>setDateInput(e.target.value)} />

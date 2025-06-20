@@ -11,9 +11,10 @@ interface DropdownFilterProps {
     onChange?: (event: SelectChangeEvent<string>) => void;
     label?: string
     required?: boolean
+    filter?: boolean
 }
 
-const DropdownInput: React.FC<DropdownFilterProps> = ({options, value, onChange, label, required}) => {
+const DropdownInput: React.FC<DropdownFilterProps> = ({options, value, onChange, label, required, filter}) => {
     return (
         <Box sx={{paddingTop: "8px"}}>
             <FormControl variant="outlined" sx={{width: '100%'}}>
@@ -39,8 +40,7 @@ const DropdownInput: React.FC<DropdownFilterProps> = ({options, value, onChange,
                         '& .MuiSelect-select': {
                             padding: '10px 14px',
                             fontSize: '16px',
-                            color: COLORS.primary,
-
+                            color: filter ? COLORS.primary : COLORS.black,
                         },
                         '& .MuiOutlinedInput-notchedOutline': {
                             borderColor: COLORS.primary,

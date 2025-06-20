@@ -40,7 +40,7 @@ const FormField: React.FC<FormFieldProps> = ({ label, value, required, helperTex
                 )
             }
             { dropdown && !date&& (
-                <DropDownInput options={options || []} value={value} onChange={onChangeDropdown} label={helperText} required={true}/>
+                <DropDownInput options={options || []} value={value} onChange={onChangeDropdown} label={helperText} required={true} filter={false}/>
             )}
             { !date && !dropdown &&(
                 <InputTextField

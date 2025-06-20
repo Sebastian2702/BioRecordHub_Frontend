@@ -3,7 +3,7 @@ import { COLORS, BORDER, FONT_SIZES } from '../constants/ui';
 import Typography from '@mui/material/Typography';
 import BackButton from "../components/BackButton.tsx";
 import FormField from "../components/FormField";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { getHelperText } from "../utils/formFieldHelpers.ts";
 import { formatLabel } from "../utils/helperFunctions.ts";
 import { bibliographyFieldKeys } from "../utils/formFieldHelpers.ts";
@@ -14,6 +14,11 @@ import SaveIcon from '@mui/icons-material/Save';
 import { CreateBibliography } from "../services/bibliography/bibliography.ts";
 import dayjs from 'dayjs';
 import { formatAuthors } from "../utils/helperFunctions.ts";
+import {toast, ToastContainer} from "react-toastify";
+import {useNavigate} from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
+
+
 
 
 function NewBibliography () {
@@ -25,6 +30,9 @@ function NewBibliography () {
     const [publicationTitle, setPublicationTitle] = useState('');
     const [pages, setPages] = useState('');
     const [isExpanded, setIsExpanded] = useState(false);
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const [notRequiredFormData, setNotRequiredFormData] = useState({
         isbn: '',
         issn: '',
@@ -84,9 +92,23 @@ function NewBibliography () {
             access_date: dateFormatted,
             pages,
                 };
-        console.log("dataToSend: ", dataToSend);
-        CreateBibliography(dataToSend)
+        CreateBibliography(dataToSend, setError, navigate, setLoading);
     }
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            setError("");
+        }
+    }, [error]);
 
 
     return (
@@ -100,113 +122,124 @@ function NewBibliography () {
             paddingTop: "20px",
             overflow: 'auto',
         }}>
-            <Box sx={{ position: 'relative', height: '50px', marginBottom: '20px' }}>
-                <Box sx={{ position: 'absolute', left: 0 }}>
-                    <BackButton width="55px" />
+            <ToastContainer />
+            {loading ? (
+                <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
+                    <CircularProgress/>
                 </Box>
-
-                <Typography
-                    sx={{
-                        position: 'absolute',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        fontWeight: 'bold',
-                        fontSize: FONT_SIZES.xlarge,
-                        textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
-                    }}
-                >
-                    New Bibliography
-                </Typography>
-            </Box>
-            <Box padding={"10px"}>
+            ):
                 <Box>
-                    <FormField
-                        label={"Key"}
-                        value={key}
-                        onChange={(e) => setKey(e.target.value)}
-                        helperText={getHelperText('key') || ''}
-                        required={true}
-                    />
-                    <FormField
-                        label={"Title"}
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        helperText={getHelperText('title') || ''}
-                        required={true}
-                    />
-                    <ListInput label={"Author"} helperText={getHelperText('authors') || ''} values={authorsArray}/>
-                    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
-                        <FormField
-                            label={"Publication Year"}
-                            value={date}
-                            onChangeDate={(e) => setDate(e)}
-                            helperText={getHelperText('publication_year') || ''}
-                            required={true}
-                            date={true}
-                        />
-                        <FormField
-                            label={"Item Type"}
-                            value={itemType}
-                            onChangeDropdown={(e) => setItemType(e.target.value)}
-                            helperText={getHelperText('item_type') || ''}
-                            required={true}
-                            dropdown={true}
-                            options={DropdownFilterOptions}
-                        />
+                    <Box sx={{ position: 'relative', height: '50px', marginBottom: '20px' }}>
+                        <Box sx={{ position: 'absolute', left: 0 }}>
+                            <BackButton width="55px" />
+                        </Box>
 
-                        <FormField
-                            label={"Publication Title"}
-                            value={publicationTitle}
-                            onChange={(e) => setPublicationTitle(e.target.value)}
-                            helperText={getHelperText('publication_title') || ''}
-                            required={true}
-                        />
-                        <FormField
-                            label={"Pages"}
-                            value={pages}
-                            onChange={(e) => setPages(e.target.value)}
-                            helperText={getHelperText('pages') || ''}
-                            required={false}
-                        />
+                        <Typography
+                            sx={{
+                                position: 'absolute',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                fontWeight: 'bold',
+                                fontSize: FONT_SIZES.xlarge,
+                                textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
+                            }}
+                        >
+                            New Bibliography
+                        </Typography>
+                    </Box>
+                    <Box padding={"10px"}>
+                        <Box>
+                            <FormField
+                                label={"Key"}
+                                value={key}
+                                onChange={(e) => setKey(e.target.value)}
+                                helperText={getHelperText('key') || ''}
+                                required={true}
+                            />
+                            <FormField
+                                label={"Title"}
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                helperText={getHelperText('title') || ''}
+                                required={true}
+                            />
+                            <ListInput label={"Author"} helperText={getHelperText('authors') || ''} values={authorsArray}/>
+                            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
+                                <FormField
+                                    label={"Publication Year"}
+                                    value={date}
+                                    onChangeDate={(e) => setDate(e)}
+                                    helperText={getHelperText('publication_year') || ''}
+                                    required={true}
+                                    date={true}
+                                />
+                                <FormField
+                                    label={"Item Type"}
+                                    value={itemType}
+                                    onChangeDropdown={(e) => setItemType(e.target.value)}
+                                    helperText={getHelperText('item_type') || ''}
+                                    required={true}
+                                    dropdown={true}
+                                    options={DropdownFilterOptions}
+                                />
+
+                                <FormField
+                                    label={"Publication Title"}
+                                    value={publicationTitle}
+                                    onChange={(e) => setPublicationTitle(e.target.value)}
+                                    helperText={getHelperText('publication_title') || ''}
+                                    required={true}
+                                />
+                                <FormField
+                                    label={"Pages"}
+                                    value={pages}
+                                    onChange={(e) => setPages(e.target.value)}
+                                    helperText={getHelperText('pages') || ''}
+                                    required={false}
+                                />
+                            </Box>
+                        </Box>
+                        <Box padding={"0px 10px"}>
+                            <Typography
+                                align={"left"}
+                                sx={{
+                                    color: COLORS.primary,
+                                    fontSize: { xs: FONT_SIZES.xsmall, sm: FONT_SIZES.small, lg: FONT_SIZES.medium },
+                                    fontWeight: 'bold',
+                                    marginBottom: '8px',
+                                }}
+                            >
+                                Extra Fields:
+                            </Typography>
+
+                            <ExtraFieldAccordion
+                                title={"Extra fields like ISBN, Issue, Volume, DOI, etc..."}
+                                children={
+                                    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
+                                        {bibliographyFieldKeys.map((field) => (
+                                            <FormField
+                                                label={formatLabel(field)}
+                                                helperText={getHelperText(field) || ''}
+                                                value={notRequiredFormData[field as keyof typeof notRequiredFormData] || ''}
+                                                onChange={(e) => setNotRequiredFormData({ ...notRequiredFormData, [field]: e.target.value })}
+                                                multiline={field === 'notes' || field === 'extra'}
+                                                required={false}
+                                            />
+                                        ))}
+                                    </Box>
+                                }
+                                expanded={isExpanded}
+                                onToggle={() => setIsExpanded(prev => !prev)}
+                            />
+                        </Box>
+                        <Box marginTop={"20px"} display={"flex"} justifyContent={"flex-end"} height={"60px"}>
+                            <StyledButton label={"Save"} color={"primary"} size={"large"} onClick={handleSave} icon={<SaveIcon sx={{color: COLORS.white}} fontSize={"large"} />} />
+                        </Box>
                     </Box>
                 </Box>
-                <Box padding={"0px 10px"}>
-                    <Typography
-                        align={"left"}
-                        sx={{
-                            color: COLORS.primary,
-                            fontSize: { xs: FONT_SIZES.xsmall, sm: FONT_SIZES.small, lg: FONT_SIZES.medium },
-                            fontWeight: 'bold',
-                            marginBottom: '8px',
-                        }}
-                    >
-                        Extra Fields:
-                    </Typography>
+            }
 
-                    <ExtraFieldAccordion
-                        title={"Extra fields like ISBN, Issue, Volume, DOI, etc..."}
-                        children={
-                            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
-                                {bibliographyFieldKeys.map((field) => (
-                                    <FormField
-                                        label={formatLabel(field)}
-                                        helperText={getHelperText(field) || ''}
-                                        value={notRequiredFormData[field as keyof typeof notRequiredFormData] || ''}
-                                        onChange={(e) => setNotRequiredFormData({ ...notRequiredFormData, [field]: e.target.value })}
-                                        multiline={field === 'notes' || field === 'extra'}
-                                        required={false}
-                                    />
-                                ))}
-                            </Box>
-                        }
-                        expanded={isExpanded}
-                        onToggle={() => setIsExpanded(prev => !prev)}
-                    />
-                </Box>
-                <Box marginTop={"20px"} display={"flex"} justifyContent={"flex-end"} height={"60px"}>
-                    <StyledButton label={"Save"} color={"primary"} size={"large"} onClick={handleSave} icon={<SaveIcon sx={{color: COLORS.white}} fontSize={"large"} />} />
-                </Box>
-            </Box>
+
 
 
         </Box>
