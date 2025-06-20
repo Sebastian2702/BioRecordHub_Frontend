@@ -21,3 +21,17 @@ export const formatLabel = (key: string) =>
 export const formatAuthors = (authors: string[]) => {
     return authors.join(', ');
 }
+
+
+export const getNonRequiredFields = (data: any, requiredFields: string[]) => {
+    const requiredFields = [
+        'key',
+        'title',
+        'author',
+        'publication_year',
+        'item_type',
+        'publication_title',
+        'pages',
+    ];
+
+}

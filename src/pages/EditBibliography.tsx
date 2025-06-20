@@ -11,80 +11,40 @@ import ExtraFieldAccordion from "../components/ExtraFieldAccordion.tsx";
 import ListInput from "../components/ListInput.tsx";
 import StyledButton from "../components/StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
-import { CreateBibliography } from "../services/bibliography/bibliography.ts";
+import {CreateBibliography, GetBibliographyById} from "../services/bibliography/bibliography.ts";
 import dayjs from 'dayjs';
 import { formatAuthors } from "../utils/helperFunctions.ts";
 import {toast, ToastContainer} from "react-toastify";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
-import { dropdownFilterOptions } from "../constants/uiConstants.ts";
+import {dropdownFilterOptions} from "../constants/uiConstants.ts";
 
-
-function NewBibliography () {
-    const [key, setKey] = useState('');
-    const [itemType, setItemType] = useState('');
-    const [date, setDate] = useState(dayjs(new Date()));
-    const [authorsArray, setauthorsArray] = useState<string[]>([]);
-    const [title, setTitle] = useState('');
-    const [publicationTitle, setPublicationTitle] = useState('');
-    const [pages, setPages] = useState('');
+function EditBibliography (){
     const [isExpanded, setIsExpanded] = useState(false);
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const [notRequiredFormData, setNotRequiredFormData] = useState({
-        isbn: '',
-        issn: '',
-        doi: '',
-        url: '',
-        abstract_note: '',
-        date_added: '',
-        date_modified: '',
-        access_date: '',
-        num_pages: '',
-        issue: '',
-        volume: '',
-        number_of_volumes: '',
-        journal_abbreviation: '',
-        short_title: '',
-        series: '',
-        series_number: '',
-        series_text: '',
-        series_title: '',
-        publisher: '',
-        place: '',
-        language: '',
-        rights: '',
-        type: '',
-        archive: '',
-        archive_location: '',
-        library_catalog: '',
-        call_number: '',
-        extra: '',
-        notes: '',
-    });
+    const [data, setData] = useState<any>(null);
+    const { id } = useParams();
+    const [notRequiredFormData, setNotRequiredFormData] = useState<any>(null);
+    const [authorsArray, setAuthorsArray] = useState<string[]>([]);
 
-    const handleSave = () => {
-        const author = formatAuthors(authorsArray);
-        const dateFormatted = date ? dayjs(date).format('YYYY-MM-DD') : null;
-        const date_added = dayjs().format('YYYY-MM-DD HH:mm:ss');
+    const fetchData = async (id: number) => {
+        try {
+            const response = await GetBibliographyById(id);
+            setData(response);
 
-        const dataToSend = {
-            ...notRequiredFormData,
-            key,
-            item_type: itemType,
-            title,
-            publication_year: date ? date.year() : '',
-            author,
-            publication_title: publicationTitle,
-            date: dateFormatted,
-            date_modified: dateFormatted,
-            date_added,
-            access_date: dateFormatted,
-            pages,
-                };
-        CreateBibliography(dataToSend, setError, navigate, setLoading);
-    }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (!id) return;
+        fetchData(Number(id));
+    }, [id]);
 
     useEffect(() => {
         if (error) {
@@ -115,10 +75,10 @@ function NewBibliography () {
         }}>
             <ToastContainer />
             {loading ? (
-                <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
-                    <CircularProgress/>
-                </Box>
-            ):
+                    <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
+                        <CircularProgress/>
+                    </Box>
+                ):
                 <Box>
                     <Box sx={{ position: 'relative', height: '50px', marginBottom: '20px' }}>
                         <Box sx={{ position: 'absolute', left: 0 }}>
@@ -135,22 +95,22 @@ function NewBibliography () {
                                 textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
                             }}
                         >
-                            New Bibliography
+                            Edit {data?.key || 'Bibliography'}
                         </Typography>
                     </Box>
                     <Box padding={"10px"}>
                         <Box>
                             <FormField
                                 label={"Key"}
-                                value={key}
-                                onChange={(e) => setKey(e.target.value)}
+                                value={data?.key || ''}
+                                onChange={(e) => setData({ ...data, key: e.target.value })}
                                 helperText={getHelperText('key') || ''}
                                 required={true}
                             />
                             <FormField
                                 label={"Title"}
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
+                                value={data?.title || ''}
+                                onChange={(e) => setData({ ...data, title: e.target.value })}
                                 helperText={getHelperText('title') || ''}
                                 required={true}
                             />
@@ -158,16 +118,16 @@ function NewBibliography () {
                             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
                                 <FormField
                                     label={"Publication Year"}
-                                    value={date}
-                                    onChangeDate={(e) => setDate(e)}
+                                    value={data?.date ? dayjs(data.date).format('YYYY-MM-DD') : ''}
+                                    onChangeDate={(e) => setData({ ...data, date: e })}
                                     helperText={getHelperText('publication_year') || ''}
                                     required={true}
                                     date={true}
                                 />
                                 <FormField
                                     label={"Item Type"}
-                                    value={itemType}
-                                    onChangeDropdown={(e) => setItemType(e.target.value)}
+                                    value={data?.item_type || ''}
+                                    onChangeDropdown={(e) => setData({ ...data, item_type: e })}
                                     helperText={getHelperText('item_type') || ''}
                                     required={true}
                                     dropdown={true}
@@ -176,15 +136,15 @@ function NewBibliography () {
 
                                 <FormField
                                     label={"Publication Title"}
-                                    value={publicationTitle}
-                                    onChange={(e) => setPublicationTitle(e.target.value)}
+                                    value={data?.publication_title || ''}
+                                    onChange={(e) => setData({ ...data, publication_title: e.target.value })}
                                     helperText={getHelperText('publication_title') || ''}
                                     required={true}
                                 />
                                 <FormField
                                     label={"Pages"}
-                                    value={pages}
-                                    onChange={(e) => setPages(e.target.value)}
+                                    value={data?.pages || ''}
+                                    onChange={(e) => setData({ ...data, pages: e.target.value })}
                                     helperText={getHelperText('pages') || ''}
                                     required={false}
                                 />
@@ -235,7 +195,7 @@ function NewBibliography () {
 
         </Box>
     );
+
 }
 
-
-export default NewBibliography;
+export default EditBibliography;

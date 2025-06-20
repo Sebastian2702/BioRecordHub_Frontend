@@ -5,6 +5,7 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import Box from "@mui/material/Box";
 
+
 interface DropdownFilterProps {
     options: { display: string; value: string }[];
     value?: string;
@@ -41,6 +42,9 @@ const DropdownInput: React.FC<DropdownFilterProps> = ({options, value, onChange,
                             padding: '10px 14px',
                             fontSize: '16px',
                             color: filter ? COLORS.primary : COLORS.black,
+                        },
+                        '& .MuiInputBase-root': {
+                            textAlign: filter ? 'left' : 'center',
                         },
                         '& .MuiOutlinedInput-notchedOutline': {
                             borderColor: COLORS.primary,

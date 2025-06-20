@@ -11,6 +11,7 @@ import NewEntryButton from "../components/NewEntryButton.tsx";
 import DataTable from "../components/DataTable";
 import CircularProgress from '@mui/material/CircularProgress';
 import { Dayjs } from 'dayjs';
+import { dropdownFilterOptions } from "../constants/uiConstants.ts";
 
 
 function Bibliographies(){
@@ -27,14 +28,6 @@ function Bibliographies(){
     const handleDropdownChange = (event: SelectChangeEvent) => {
         setDropdownValue(event.target.value);
     };
-    const DropdownFilterOptions: { display: string; value: string }[] = [
-         { display: "Journal Article", value: "journal_article" },
-         { display: "Book", value: "book" },
-         { display: "Conference Paper", value: "conference_paper" },
-         { display: "Thesis", value: "thesis" },
-         { display: "Report", value: "report" },
-     ];
-
 
     const handleRefresh = () => {
         setRefresh(prev => !prev);
@@ -73,7 +66,7 @@ function Bibliographies(){
                     <SearchFilter value={searchValue} onChange={handleSearchChange} />
                 </Box>
                 <Box sx={{ flex: 1, minWidth: '150px' }}>
-                    <DropdownInput value={dropdownValue} options={DropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} filter={true}/>
+                    <DropdownInput value={dropdownValue} options={dropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} filter={true}/>
                 </Box>
                 <Box sx={{ flex: 1, minWidth: '160px'}}>
                     <DateInput label={"Year"} type={["year"]} value={dateInput} onChange={(e)=>setDateInput(e.target.value)} />

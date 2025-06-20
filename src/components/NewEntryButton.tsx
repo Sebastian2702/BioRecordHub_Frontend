@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import { COLORS, BORDER } from '../constants/ui';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import SaveIcon from '@mui/icons-material/Save';
-
+import AddIcon from '@mui/icons-material/Add';
 
 interface NewEntryButtonProps {
     manualEntryLink: string;
@@ -25,6 +25,7 @@ const NewEntryButton: React.FC<NewEntryButtonProps> = ({ manualEntryLink, fileUp
                     id="dropdown-filter"
                     displayEmpty
                     inputProps={{ 'aria-label': 'New Entry' }}
+                    IconComponent={(props) => <AddIcon {...props} sx={{ color: COLORS.white }} />}
                     MenuProps={{
                         PaperProps: {
                             sx: {
