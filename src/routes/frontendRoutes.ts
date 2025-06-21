@@ -13,5 +13,6 @@ export const ROUTES = {
     bibliographyId: '/bibliography/:id',
     bibliographyCreate: '/bibliography/new',
     bibliographyFileUpload: '/bibliography/new_file_upload',
-    bibliographyUpdate: '/bibliography/edit/:id',
+    bibliographyEdit: '/bibliography/edit/:id',
+
 }

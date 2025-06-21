@@ -154,7 +154,12 @@ function NewBibliography () {
                                 helperText={getHelperText('title') || ''}
                                 required={true}
                             />
-                            <ListInput label={"Author"} helperText={getHelperText('authors') || ''} values={authorsArray}/>
+                            <ListInput
+                                label="Author"
+                                helperText={getHelperText('authors') || ''}
+                                values={authorsArray}
+                                onChange={setauthorsArray}
+                            />
                             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
                                 <FormField
                                     label={"Publication Year"}

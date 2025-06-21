@@ -22,8 +22,26 @@ export const formatAuthors = (authors: string[]) => {
     return authors.join(', ');
 }
 
+export const getAuthors = (data: Record<string, any>): string[] => {
+    if (!data || !data.author) {
+        return [];
+    }
 
-export const getNonRequiredFields = (data: any, requiredFields: string[]) => {
+    if (Array.isArray(data.author)) {
+        return data.author.map((author: string) => author.trim());
+    }
+
+    if (typeof data.author === 'string') {
+        return data.author
+            .split(',')
+            .map((author: string) => author.trim())
+            .filter(Boolean);
+    }
+
+    return [];
+};
+
+export const getNonRequiredFields = (data: Record<string, any>, notRequiredFields: string[]) => {
     const requiredFields = [
         'key',
         'title',
@@ -34,4 +52,12 @@ export const getNonRequiredFields = (data: any, requiredFields: string[]) => {
         'pages',
     ];
 
-}
+    const result: Record<string, any> = {};
+
+    notRequiredFields.forEach((field) => {
+        if (!requiredFields.includes(field) && field in data) {
+            result[field] = data[field];
+        }
+    });
+    return result;
+};

@@ -5,35 +5,38 @@ import BackButton from "../components/BackButton.tsx";
 import FormField from "../components/FormField";
 import {useEffect, useState} from "react";
 import { getHelperText } from "../utils/formFieldHelpers.ts";
-import { formatLabel } from "../utils/helperFunctions.ts";
 import { bibliographyFieldKeys } from "../utils/formFieldHelpers.ts";
 import ExtraFieldAccordion from "../components/ExtraFieldAccordion.tsx";
 import ListInput from "../components/ListInput.tsx";
 import StyledButton from "../components/StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
-import {CreateBibliography, GetBibliographyById} from "../services/bibliography/bibliography.ts";
+import {UpdateBibliography, GetBibliographyById} from "../services/bibliography/bibliography.ts";
 import dayjs from 'dayjs';
-import { formatAuthors } from "../utils/helperFunctions.ts";
+import { formatLabel, formatAuthors, getAuthors } from "../utils/helperFunctions.ts";
 import {toast, ToastContainer} from "react-toastify";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import {dropdownFilterOptions} from "../constants/uiConstants.ts";
+import { getNonRequiredFields } from "../utils/helperFunctions.ts";
+import {useNavigate} from "react-router-dom";
+
 
 function EditBibliography (){
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(true);
     const [error, setError] = useState("");
-    const navigate = useNavigate();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
     const { id } = useParams();
     const [notRequiredFormData, setNotRequiredFormData] = useState<any>(null);
     const [authorsArray, setAuthorsArray] = useState<string[]>([]);
+    const navigate = useNavigate();
 
     const fetchData = async (id: number) => {
         try {
             const response = await GetBibliographyById(id);
             setData(response);
-
+            setNotRequiredFormData(getNonRequiredFields(response, bibliographyFieldKeys));
+            setAuthorsArray(getAuthors(response));
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -61,6 +64,23 @@ function EditBibliography (){
         }
     }, [error]);
 
+    const handleSave = () => {
+        const author = formatAuthors(authorsArray);
+        const dateFormatted = data?.date ? dayjs(data?.date).format('YYYY-MM-DD') : null;
+        const dateModified = dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss');
+
+        const dataToSend = {
+            ...data,
+            ...notRequiredFormData,
+            author,
+            date: dateFormatted,
+            date_modified: dateModified,
+
+        };
+        console.log(dataToSend);
+        UpdateBibliography(dataToSend, setError, setLoading, navigate);
+    }
+
 
     return (
         <Box sx={{
@@ -79,7 +99,7 @@ function EditBibliography (){
                         <CircularProgress/>
                     </Box>
                 ):
-                <Box>
+                <Box sx={{padding: "0px 10px", overflow:"auto", height: 'calc(100vh - 150px)'}}>
                     <Box sx={{ position: 'relative', height: '50px', marginBottom: '20px' }}>
                         <Box sx={{ position: 'absolute', left: 0 }}>
                             <BackButton width="55px" />
@@ -114,11 +134,16 @@ function EditBibliography (){
                                 helperText={getHelperText('title') || ''}
                                 required={true}
                             />
-                            <ListInput label={"Author"} helperText={getHelperText('authors') || ''} values={authorsArray}/>
+                            <ListInput
+                                label="Author"
+                                helperText={getHelperText('authors') || ''}
+                                values={authorsArray}
+                                onChange={setAuthorsArray}
+                            />
                             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
                                 <FormField
                                     label={"Publication Year"}
-                                    value={data?.date ? dayjs(data.date).format('YYYY-MM-DD') : ''}
+                                    value={data?.date ? dayjs(data.date) : null}
                                     onChangeDate={(e) => setData({ ...data, date: e })}
                                     helperText={getHelperText('publication_year') || ''}
                                     required={true}

@@ -11,31 +11,29 @@ interface ListInputProps {
     label: string;
     helperText: string;
     values: string[];
+    onChange: (newValues: string[]) => void;
 }
 
-const ListInput: React.FC<ListInputProps> = ({ label, helperText, values }) => {
+const ListInput: React.FC<ListInputProps> = ({ label, helperText, values, onChange }) => {
     const [value, setValue] = useState("");
 
     const handleAddItem = () => {
-            if (value.trim() !== "") {
-                values.push(value);
-                setValue("");
-            }
-    }
-
-    const handleRemoveItem = (value:string) => {
-        const index = values.indexOf(value);
-        if (index > -1) {
-            values.splice(index, 1);
+        if (value.trim() !== "") {
+            onChange([...values, value.trim()]);
+            setValue("");
         }
     }
 
-    const handleOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleRemoveItem = (itemToRemove: string) => {
+        onChange(values.filter(item => item !== itemToRemove));
+    }
+
+    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setValue(e.target.value);
     }
 
     return (
-        <Box sx={{ margin: '0 10px',}}>
+        <Box sx={{ margin: '0 10px' }}>
             <Typography
                 align="left"
                 sx={{
@@ -51,7 +49,7 @@ const ListInput: React.FC<ListInputProps> = ({ label, helperText, values }) => {
                 <InputTextField
                     label={helperText}
                     value={value}
-                    onChange={handleOnchange}
+                    onChange={handleOnChange}
                     fullWidth
                     required
                     fontSize={FONT_SIZES.medium}
@@ -60,13 +58,13 @@ const ListInput: React.FC<ListInputProps> = ({ label, helperText, values }) => {
                     label="Add"
                     color="primary"
                     size="small"
-                    icon={<AddIcon sx={{color:COLORS.white}} fontSize={"large"} />}
+                    icon={<AddIcon sx={{ color: COLORS.white }} fontSize={"large"} />}
                     onClick={handleAddItem}
                 />
             </Box>
             <Box>
-                {values.length > 0  && (
-                    <Box display="flex" gap="10px" sx={{ marginTop: '5px' }}>
+                {values.length > 0 && (
+                    <Box display="flex" gap="10px" sx={{ marginTop: '5px', flexWrap: 'wrap' }}>
                         {values.map((item, index) => (
                             <ListInputValue
                                 key={index}
@@ -77,7 +75,6 @@ const ListInput: React.FC<ListInputProps> = ({ label, helperText, values }) => {
                     </Box>
                 )}
             </Box>
-
         </Box>
     );
 };
