@@ -19,7 +19,7 @@ export const formatLabel = (key: string) =>
     key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
 
 export const formatAuthors = (authors: string[]) => {
-    return authors.join(', ');
+    return authors.join('; ');
 }
 
 export const getAuthors = (data: Record<string, any>): string[] => {
@@ -33,7 +33,7 @@ export const getAuthors = (data: Record<string, any>): string[] => {
 
     if (typeof data.author === 'string') {
         return data.author
-            .split(',')
+            .split('; ')
             .map((author: string) => author.trim())
             .filter(Boolean);
     }

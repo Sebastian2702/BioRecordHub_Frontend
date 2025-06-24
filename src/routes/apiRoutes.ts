@@ -13,3 +13,7 @@ export const BIBLIROGRAPHY_ROUTES = {
     bibliography: '/api/bibliographies',
     bibliographyById: (id: number) => `/api/bibliographies/${id}`,
 }
+
+export const EXCEL_ROUTES = {
+    bibliography: '/api/excel_import/bibliography',
+}
