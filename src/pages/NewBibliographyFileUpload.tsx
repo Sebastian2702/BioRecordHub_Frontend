@@ -10,6 +10,8 @@ import {toast, ToastContainer} from "react-toastify";
 import {allowedFileTypes} from "../constants/uiConstants.ts";
 import {ImportBibliographyExcel} from "../services/excel/excel.ts";
 import CircularProgress from "@mui/material/CircularProgress";
+import ImportedDataEditor from "../components/ImportedDataEditor.tsx";
+
 
 
 function NewBibliographyFileUpload() {
@@ -17,6 +19,8 @@ function NewBibliographyFileUpload() {
     const [disabled, setDisabled] = useState<boolean>(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showData, setShowData] = useState<boolean>(false);
+    const [data, setData] = useState<any>(null);
 
 
     useEffect(() => {
@@ -34,7 +38,7 @@ function NewBibliographyFileUpload() {
         }
     }, [error]);
 
-    const handleFileUpload = () => {
+    const handleFileUpload = async () => {
         if (!file) {
             setError("Please select a file.");
             return;
@@ -43,12 +47,19 @@ function NewBibliographyFileUpload() {
             setError("The selected file is not a valid Excel file.");
             return;
         }
+
         setDisabled(true);
 
-        ImportBibliographyExcel(file, setError, setLoading, setDisabled)
+        const result = await ImportBibliographyExcel(file, setError, setLoading, setDisabled);
+        setData(result);
+    };
 
-    }
-
+    useEffect(() => {
+        if (data && data.length > 0) {
+            setShowData(true);
+            setLoading(false);
+        }
+    }, [data]);
 
     return (
         <Box sx={{
@@ -85,18 +96,30 @@ function NewBibliographyFileUpload() {
                 onChange={setFile}
                 acceptedFileTypes={'.xlsx, .xlsm, .xls, .xlsb, .xltx, .xltm'}
             />
-            <Box sx={{display: 'flex', justifyContent: 'flex-end', padding: '0px 20px'}}>
-                <StyledButton label={"Upload"} color={'primary'} size={'large'} icon={<FileUploadIcon/>}
-                              onClick={handleFileUpload} disabled={disabled}/>
-            </Box>
-
             {loading ? (
-            <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
-                <CircularProgress/>
-            </Box>
-            ):
-                <Typography>Databack</Typography>
+                    <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
+                        <CircularProgress/>
+                    </Box>
+                ):
+                <Box sx={{display: 'flex', justifyContent: 'flex-end', padding: '0px 20px'}}>
+                    <StyledButton label={"Upload"} color={'primary'} size={'large'} icon={<FileUploadIcon/>}
+                              onClick={handleFileUpload} disabled={disabled}/>
+                </Box>
             }
+            {showData && (
+                <Box>
+                    <Typography variant={"h3"} color={COLORS.primary} fontWeight={'bold'}>{file?.name}</Typography>
+                    <Typography variant={"subtitle1"} color={COLORS.black}>
+                        Review and edit the imported entries below:
+                    </Typography>
+                    <ImportedDataEditor importedEntries={data} SetError={setError} setLoading={setLoading} dataType={'bibliography'}/>
+                </Box>
+
+            )}
+
+
+
+
         </Box>
     );
 }

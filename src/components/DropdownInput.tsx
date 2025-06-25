@@ -20,7 +20,7 @@ const DropdownInput: React.FC<DropdownFilterProps> = ({options, value, onChange,
         <Box sx={{paddingTop: "8px"}}>
             <FormControl variant="outlined" sx={{width: '100%'}}>
                 <InputLabel id="dropdown-filter" sx={{color: COLORS.primary, fontSize: '16px', marginBottom: '8px'}}>
-                    {label || 'Dropdown Filter'}
+                    {label || ''}
                 </InputLabel>
                 <Select
                     value={value || ''}

@@ -36,6 +36,27 @@ export const CreateBibliography = async (data: any,
     }
 }
 
+export const CreateBibliographyWithFile = async (data: any,
+                                                 setError: (msg: string) => void,
+                                                 navigate: (url: string) => void,
+                                                 setLoading: (loading: boolean) => void,
+) => {
+    await api.get(COOKIE_ROUTE.csrf);
+    try {
+        setLoading(true);
+        await api.post(BIBLIROGRAPHY_ROUTES.bibliographyCreateMultiple, {
+            bibliographies: data,
+        });
+        setLoading(false)
+        navigate(ROUTES.bibliography);
+    } catch (err: any) {
+        setLoading(false);
+        const msg = err.response.data.message;
+        const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
+        setError(cutmsg);
+    }
+}
+
 export const UpdateBibliography = async (data: any,
                                          setError: (msg: string) => void,
                                          setLoading: (loading: boolean) => void,
