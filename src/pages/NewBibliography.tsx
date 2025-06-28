@@ -168,6 +168,7 @@ function NewBibliography () {
                                     helperText={getHelperText('publication_year') || ''}
                                     required={true}
                                     date={true}
+                                    dateType={["year"]}
                                 />
                                 <FormField
                                     label={"Item Type"}

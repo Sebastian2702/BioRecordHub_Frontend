@@ -1,7 +1,7 @@
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import {DemoContainer} from '@mui/x-date-pickers/internals/demo';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import {BORDER, COLORS} from "../constants/ui.ts";
 import dayjs from 'dayjs';
 
@@ -12,11 +12,11 @@ interface DateFilterProps {
     onChange?: (date: any) => void;
 }
 
-const DateInput:React.FC<DateFilterProps> = ({ type, label, value, onChange}) => {
+const DateInput: React.FC<DateFilterProps> = ({type, label, value, onChange}) => {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DatePicker']} sx={{width: "100%",height: "100%"}}>
-                <DatePicker label= {label}  views={type} value={value} onChange={onChange} sx={{
+            <DemoContainer components={['DatePicker']} sx={{width: "100%", height: "100%"}}>
+                <DatePicker label={label} views={type} value={value} onChange={onChange} sx={{
                     height: '56px',
                     backgroundColor: COLORS.white,
                     width: "100%",
@@ -50,7 +50,7 @@ const DateInput:React.FC<DateFilterProps> = ({ type, label, value, onChange}) =>
                             borderColor: COLORS.white,
                         },
                     }
-                }} />
+                }}/>
             </DemoContainer>
         </LocalizationProvider>
     );

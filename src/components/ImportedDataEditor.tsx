@@ -1,14 +1,11 @@
 import React, {useState} from "react";
 import {Box} from "@mui/material";
 import StyledButton from "./StyledButton.tsx";
-import {formatLabel} from "../utils/helperFunctions.ts";
-import FormField from "./FormField";
-import {getHelperText} from "../utils/formFieldHelpers.ts";
-import {dropdownFilterOptions} from "../constants/uiConstants.ts";
 import SaveIcon from '@mui/icons-material/Save';
 import {CreateBibliographyWithFile} from "../services/bibliography/bibliography.ts";
 import {useNavigate} from "react-router-dom";
 import {COLORS} from "../constants/ui.ts";
+import ImportedDataFormField from "./ImportedDataFormField.tsx";
 
 
 interface ImportedDataEditorProps {
@@ -72,18 +69,14 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
         <Box>
         <Box sx={{maxWidth: '70%', margin: "auto", mt: 4}}>
             <Box sx={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2}}>
-                {Object.keys(currentEntry).map((key) => (
-                    <FormField
+                {Object.keys(currentEntry ?? {}).map((key) => (
+                    <ImportedDataFormField
                         key={key}
-                        label={formatLabel(key)}
-                        helperText={key === 'item_type' ? ' ' : getHelperText(key) || ''}
-                        value={currentEntry[key] ?? ""}
-                        onChangeDropdown={key === 'item_type' ? (e) => handleFieldChange(key, e.target.value) : undefined}
-                        onChange={(e) => handleFieldChange(key, e.target.value)}
-                        multiline={key === 'notes' || key === 'extra'}
-                        dropdown={key === 'item_type'}
-                        required={false}
-                        options={dropdownFilterOptions}
+                        fieldKey={key}
+                        value={currentEntry?.[key] ?? ""}
+                        onChange={(val) => {
+                            handleFieldChange(key, typeof val === 'string' ? val : val?.toString() ?? "");
+                        }}
                     />
                 ))}
 
