@@ -11,6 +11,8 @@ import {allowedFileTypes} from "../constants/uiConstants.ts";
 import {ImportBibliographyExcel} from "../services/excel/excel.ts";
 import CircularProgress from "@mui/material/CircularProgress";
 import ImportedDataEditor from "../components/ImportedDataEditor.tsx";
+import InfoIcon from '@mui/icons-material/Info';
+import CustomDialog from "../components/CustomDialog.tsx";
 
 
 
@@ -21,6 +23,15 @@ function NewBibliographyFileUpload() {
     const [loading, setLoading] = useState(false);
     const [showData, setShowData] = useState<boolean>(false);
     const [data, setData] = useState<any>(null);
+    const [infoDialogOpen, setInfoDialogOpen] = useState(false);
+
+    const handleInfoDialogClose = () => {
+        setInfoDialogOpen(false);
+    }
+
+    const handleInfoDialogOpen = () => {
+        setInfoDialogOpen(true);
+    }
 
 
     useEffect(() => {
@@ -61,6 +72,96 @@ function NewBibliographyFileUpload() {
         }
     }, [data]);
 
+    const infoDialogContent = (
+        <Box>
+            <Typography variant="body1" gutterBottom>
+                To successfully import your bibliography file, ensure the Excel sheet includes the following columns in <strong>this exact order</strong>:
+            </Typography>
+
+            <Box display="flex" justifyContent="space-between" gap={4}>
+                <Box component="ul" sx={{ m: 0, pl: 3, flex: 1 }}>
+                    <li><strong>key</strong></li>
+                    <li><strong>item_type</strong></li>
+                    <li><strong>publication_year</strong></li>
+                    <li><strong>author</strong></li>
+                    <li><strong>title</strong></li>
+                    <li><strong>publication_title</strong></li>
+                    <li><strong>isbn</strong></li>
+                    <li><strong>issn</strong></li>
+                    <li><strong>doi</strong></li>
+                    <li><strong>url</strong></li>
+                    <li><strong>abstract_note</strong></li>
+                    <li><strong>date</strong></li>
+                    <li><strong>date_added</strong></li>
+                    <li><strong>date_modified</strong></li>
+                    <li><strong>access_date</strong></li>
+                    <li><strong>pages</strong></li>
+                    <li><strong>num_pages</strong></li>
+                    <li><strong>issue</strong></li>
+                    <li><strong>volume</strong></li>
+                </Box>
+
+                <Box component="ul" sx={{ m: 0, pl: 3, flex: 1 }}>
+                    <li><strong>number_of_volumes</strong></li>
+                    <li><strong>journal_abbreviation</strong></li>
+                    <li><strong>short_title</strong></li>
+                    <li><strong>series</strong></li>
+                    <li><strong>series_number</strong></li>
+                    <li><strong>series_text</strong></li>
+                    <li><strong>series_title</strong></li>
+                    <li><strong>publisher</strong></li>
+                    <li><strong>place</strong></li>
+                    <li><strong>language</strong></li>
+                    <li><strong>rights</strong></li>
+                    <li><strong>type</strong></li>
+                    <li><strong>archive</strong></li>
+                    <li><strong>archive_location</strong></li>
+                    <li><strong>library_catalog</strong></li>
+                    <li><strong>call_number</strong></li>
+                    <li><strong>extra</strong></li>
+                    <li><strong>notes</strong></li>
+                </Box>
+            </Box>
+
+            <Typography variant="body2" sx={{ mt: 2 }}>
+                Make sure all columns are present and spelled exactly as shown or misnamed columns will cause the import to fail.
+            </Typography>
+
+            <Typography
+                variant="body2"
+                sx={{
+                    color: COLORS.primary,
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    mt: 2
+                }}
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                    const link = document.createElement('a');
+                    link.href = '/BibliographyImportFileExample.xlsx';
+                    link.download = 'BibliographyImportFileExample.xlsx';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const link = document.createElement('a');
+                        link.href = '/BibliographyImportFileExample.xlsx';
+                        link.download = 'BibliographyImportFileExample.xlsx';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }
+                }}
+            >
+                Download Example File
+            </Typography>
+        </Box>
+    );
+
     return (
         <Box sx={{
             width: '97%',
@@ -73,16 +174,13 @@ function NewBibliographyFileUpload() {
             overflow: 'auto',
         }}>
             <ToastContainer/>
-            <Box sx={{position: 'relative', height: '50px', marginBottom: '20px', padding: '0 10px'}}>
-                <Box sx={{position: 'absolute', left: 0}}>
+            <Box sx={{display: 'flex', justifyContent: "space-between", height: '50px', marginBottom: '20px', padding: '0 10px', alignItems: 'center'}}>
+                <Box>
                     <BackButton width="55px"/>
                 </Box>
 
                 <Typography
                     sx={{
-                        position: 'absolute',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
                         fontWeight: 'bold',
                         fontSize: FONT_SIZES.xlarge,
                         textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
@@ -90,7 +188,11 @@ function NewBibliographyFileUpload() {
                 >
                     New Bibliography
                 </Typography>
+                <InfoIcon sx={{color: COLORS.primary, cursor: "pointer", fontSize: "35px"}} onClick={() => handleInfoDialogOpen()}/>
             </Box>
+
+            <CustomDialog open={infoDialogOpen} onClose={handleInfoDialogClose} title={"File Structure"} content={"information"} contentText={infoDialogContent}/>
+
             <FileInput
                 label=".xlsx, .xlsm, .xls, .xlsb, .xltx, .xltm; files here, or browse your computer"
                 onChange={setFile}

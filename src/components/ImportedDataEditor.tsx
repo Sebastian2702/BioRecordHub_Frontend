@@ -6,6 +6,8 @@ import {CreateBibliographyWithFile} from "../services/bibliography/bibliography.
 import {useNavigate} from "react-router-dom";
 import {COLORS} from "../constants/ui.ts";
 import ImportedDataFormField from "./ImportedDataFormField.tsx";
+import CustomDialog from "./CustomDialog.tsx";
+import Typography from "@mui/material/Typography";
 
 
 interface ImportedDataEditorProps {
@@ -19,6 +21,15 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
     const [entries, setEntries] = useState(importedEntries);
     const [currentIndex, setCurrentIndex] = useState(0);
     const navigate = useNavigate();
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+    const handleDeleteDialogClose = () => {
+        setDeleteDialogOpen(false);
+    };
+
+    const handleDeleteDialogOpen = () => {
+        setDeleteDialogOpen(true);
+    };
 
     const currentEntry = entries[currentIndex];
 
@@ -39,6 +50,7 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
         const newIndex = Math.min(currentIndex, updated.length - 1);
         setEntries(updated);
         setCurrentIndex(newIndex);
+        handleDeleteDialogClose();
     };
 
     const next = () => {
@@ -65,8 +77,17 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
         }
     }
 
+    const deleteDialogContent = (
+        <Box>
+            <Typography variant="body1">
+                Are you sure you want to delete this entry?
+            </Typography>
+        </Box>
+    )
+
     return (
         <Box>
+            <CustomDialog open={deleteDialogOpen} onClose={handleDeleteDialogClose} title={"Confirm Deletion"} content={"delete"} contentText={deleteDialogContent} action={removeEntry}/>
         <Box sx={{maxWidth: '70%', margin: "auto", mt: 4}}>
             <Box sx={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2}}>
                 {Object.keys(currentEntry ?? {}).map((key) => (
@@ -85,7 +106,7 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
             <Box sx={{display: "flex", justifyContent: "space-between", mt: 2}}>
                 <StyledButton onClick={prev} disabled={currentIndex === 0} label={'Previous'} color={'secondary'}
                               size={'medium'}/>
-                <StyledButton onClick={removeEntry} color="delete" label={'Remove This Entry'} size={'medium'}/>
+                <StyledButton onClick={handleDeleteDialogOpen} color="delete" label={'Remove This Entry'} size={'medium'}/>
                 <StyledButton onClick={next} disabled={currentIndex === entries.length - 1} label={'Next'}
                               color={'primary'} size={'medium'}/>
             </Box>

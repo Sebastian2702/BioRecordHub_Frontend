@@ -14,6 +14,9 @@ import {truncateString} from "../utils/helperFunctions.ts";
 import { handleDeleteData } from '../services/deleteData.ts';
 import { useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
+import CustomDialog from "./CustomDialog.tsx";
+import Box from '@mui/material/Box';
+import Typography from "@mui/material/Typography";
 
 
 interface DataTableProps {
@@ -31,6 +34,19 @@ interface DataTableProps {
 const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewButton, viewLink, deleteButton, trashCanButton, dataType, handleRefresh }) => {
     const [loadingId, setLoadingId] = useState<number | null>(null);
     const { isAdmin } = useAuth();
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [deleteTitle, setDeleteTitle] = useState("");
+    const [deleteId, setDeleteId] = useState<number>(0);
+
+    const handleDialogClose = () => {
+        setDialogOpen(false);
+    };
+
+    const handleDialogOpen = (id:number, title:string) => {
+        setDeleteId(id);
+        setDeleteTitle(title);
+        setDialogOpen(true);
+    };
 
     const handleEdit = (id:number, type:string) => {
         console.log("Edit function called for ID: " +  id  + " Type: " + type);
@@ -47,90 +63,110 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
         }
     }
 
+    const deleteDialogContent = (
+        <Box>
+            <Typography variant="body1">
+                Are you sure you want to delete <strong>"{deleteTitle}"</strong>?
+            </Typography>
+        </Box>
+    )
 
     return (
-        <TableContainer component={Paper} sx={{ maxHeight: 'calc(100vh - 200px)' }}>
-            <Table stickyHeader>
-                <TableHead sx={{width:'100%'}}>
-                    <TableRow>
-                        {columns.map((column) => (
-                            <TableCell key={column.id} sx={{ fontWeight: 'bold', color: COLORS.primary, borderBottom: `2px solid ${COLORS.primary}`  }} align={'center'}>
-                                {column.label}
-                            </TableCell>
-                        ))}
-                        {editButton &&
-                            <TableCell sx={{ fontWeight: 'bold', color: COLORS.primary, borderBottom: `2px solid ${COLORS.primary}` }} align={'center'}>
-                            </TableCell>
-                        }
-                        {viewButton &&
-                            <TableCell sx={{ fontWeight: 'bold', color: COLORS.primary, borderBottom: `2px solid ${COLORS.primary}` }} align={'center'}>
-                            </TableCell>
-                        }
-                        { deleteButton || trashCanButton && isAdmin &&
-                            <TableCell sx={{ fontWeight: 'bold', color: COLORS.primary, borderBottom: `2px solid ${COLORS.primary}` }} align={'center'}>
-                            </TableCell>
-                        }
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {data.map((row, index) =>  (
-                        <TableRow key={index}>
+        <Box>
+            <CustomDialog
+                open={dialogOpen}
+                onClose={handleDialogClose}
+                title="Confirm Deletion"
+                contentText={deleteDialogContent}
+                content={"delete"}
+                action={() => {
+                    handleDelete(deleteId, dataType);
+                }}
+            />
+            <TableContainer component={Paper} sx={{ maxHeight: 'calc(100vh - 200px)' }}>
+                <Table stickyHeader>
+                    <TableHead sx={{width:'100%'}}>
+                        <TableRow>
                             {columns.map((column) => (
-                                <TableCell key={column.id} align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
-                                    {truncateString(row[column.id], 30)}
+                                <TableCell key={column.id} sx={{ fontWeight: 'bold', color: COLORS.primary, borderBottom: `2px solid ${COLORS.primary}`  }} align={'center'}>
+                                    {column.label}
                                 </TableCell>
                             ))}
                             {editButton &&
-                                <TableCell align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
-                                    <StyledButton
-                                        label={"Edit"}
-                                        color={"edit"}
-                                        size={"small"}
-                                        onClick= {() => handleEdit(row.id, dataType)}
-                                        icon={<ModeEditIcon/>}
-                                    />
+                                <TableCell sx={{ fontWeight: 'bold', color: COLORS.primary, borderBottom: `2px solid ${COLORS.primary}` }} align={'center'}>
                                 </TableCell>
                             }
                             {viewButton &&
-                                <TableCell align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
-                                    <StyledButton
-                                        label={"View"}
-                                        color={"primary"}
-                                        size={"small"}
-                                        onClick={() => window.location.href = viewLink + row.id}
-                                    />
+                                <TableCell sx={{ fontWeight: 'bold', color: COLORS.primary, borderBottom: `2px solid ${COLORS.primary}` }} align={'center'}>
                                 </TableCell>
                             }
-                            {trashCanButton && isAdmin &&
-                                <TableCell align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
-                                    {loadingId === row.id ? (
-                                        <CircularProgress size={24} />
-                                    ) : (
-                                        <DeleteIcon
-                                            sx={{ color: COLORS.delete, cursor: "pointer" }}
-                                            onClick={() => handleDelete(row.id, dataType)}
-                                            fontSize={"medium"}
-                                        />
-                                    )}
-                                </TableCell>
-                            }
-                            {deleteButton && isAdmin &&
-                                <TableCell align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
-                                    <StyledButton
-                                        label={"Delete"}
-                                        color={"delete"}
-                                        size={"small"}
-                                        onClick={() => handleDelete(row.id, dataType)}
-                                        icon={loadingId === row.id ? <CircularProgress size={16} /> : <DeleteIcon />}
-                                        disabled={loadingId === row.id}
-                                    />
+                            { deleteButton || trashCanButton && isAdmin &&
+                                <TableCell sx={{ fontWeight: 'bold', color: COLORS.primary, borderBottom: `2px solid ${COLORS.primary}` }} align={'center'}>
                                 </TableCell>
                             }
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                        {data.map((row, index) =>  (
+                            <TableRow key={index}>
+                                {columns.map((column) => (
+                                    <TableCell key={column.id} align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
+                                        {truncateString(row[column.id], 30)}
+                                    </TableCell>
+                                ))}
+                                {editButton &&
+                                    <TableCell align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
+                                        <StyledButton
+                                            label={"Edit"}
+                                            color={"edit"}
+                                            size={"small"}
+                                            onClick= {() => handleEdit(row.id, dataType)}
+                                            icon={<ModeEditIcon/>}
+                                        />
+                                    </TableCell>
+                                }
+                                {viewButton &&
+                                    <TableCell align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
+                                        <StyledButton
+                                            label={"View"}
+                                            color={"primary"}
+                                            size={"small"}
+                                            onClick={() => window.location.href = viewLink + row.id}
+                                        />
+                                    </TableCell>
+                                }
+                                {trashCanButton && isAdmin &&
+                                    <TableCell align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
+                                        {loadingId === row.id ? (
+                                            <CircularProgress size={24} />
+                                        ) : (
+                                            <DeleteIcon
+                                                sx={{ color: COLORS.delete, cursor: "pointer" }}
+                                                onClick={() => handleDialogOpen(row.id, row.title || "this entry")}
+                                                fontSize={"medium"}
+                                            />
+                                        )}
+                                    </TableCell>
+                                }
+                                {deleteButton && isAdmin &&
+                                    <TableCell align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
+                                        <StyledButton
+                                            label={"Delete"}
+                                            color={"delete"}
+                                            size={"small"}
+                                            onClick={() => handleDelete(row.id, dataType)}
+                                            icon={loadingId === row.id ? <CircularProgress size={16} /> : <DeleteIcon />}
+                                            disabled={loadingId === row.id}
+                                        />
+                                    </TableCell>
+                                }
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Box>
+
     );
 };
 
