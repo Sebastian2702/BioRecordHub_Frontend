@@ -4,6 +4,8 @@ import {getHelperText} from "../utils/formFieldHelpers.ts";
 import {dropdownFilterOptions} from "../constants/uiConstants.ts";
 import dayjs from "dayjs";
 import { SelectChangeEvent } from "@mui/material/Select";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat);
 
 
 interface ImportedDataEditorProps {
@@ -32,12 +34,12 @@ const ImportedDataFormField: React.FC<ImportedDataEditorProps> = ({value, onChan
             <FormField
                 key={fieldKey}
                 label={formatLabel(fieldKey)}
-                value={value ? dayjs(value) : null}
+                value={value ? dayjs(value?.toString() ?? '', 'YYYY') : null}
                 required={false}
                 helperText={getHelperText(fieldKey)}
                 onChangeDate={(date) => onChange(date?.toISOString() ?? "")}
                 date={true}
-                dateType={['day', 'month', 'year']}
+                dateType={['year']}
             />
         );
     } else if (fieldKey === "publication_year") {
@@ -45,7 +47,7 @@ const ImportedDataFormField: React.FC<ImportedDataEditorProps> = ({value, onChan
             <FormField
                 key={fieldKey}
                 label={formatLabel(fieldKey)}
-                value={value ? dayjs(value) : null}
+                value={value ? dayjs(value?.toString() ?? '', 'YYYY') : null}
                 required={false}
                 helperText={getHelperText(fieldKey)}
                 onChangeDate={(date) => onChange(date?.toISOString() ?? "")}
@@ -58,7 +60,7 @@ const ImportedDataFormField: React.FC<ImportedDataEditorProps> = ({value, onChan
             <FormField
                 key={fieldKey}
                 label={formatLabel(fieldKey)}
-                value={value ? dayjs(value) : null}
+                value={value ? dayjs(value, ['DD/MM/YYYY HH:mm', dayjs.ISO_8601], true) : null}
                 required={false}
                 helperText={getHelperText(fieldKey)}
                 onChangeDate={(date) => onChange(date?.toISOString() ?? "")}

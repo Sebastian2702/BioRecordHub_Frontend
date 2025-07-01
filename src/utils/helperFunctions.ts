@@ -1,3 +1,7 @@
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat);
+
 export const capitalize = (str: string | undefined): string => {
     if (typeof str !== 'string') {
         throw new TypeError('Expected a string');
@@ -7,7 +11,7 @@ export const capitalize = (str: string | undefined): string => {
 
 export const truncateString = (str: string, maxLength: number): string => {
     if (typeof str !== 'string') {
-        throw new TypeError('Expected a string');
+        str = String(str);
     }
     if (str.length <= maxLength) {
         return str;
@@ -63,3 +67,24 @@ export const getNonRequiredFields = (data: Record<string, any>, notRequiredField
     });
     return result;
 };
+
+export const normalizeEntryDates = (entries: any[]) =>{
+    return entries.map(entry => {
+        const updatedEntry = { ...entry };
+        if (entry.date_added) {
+            const added = dayjs(entry.date_added, ['DD/MM/YYYY HH:mm', dayjs.ISO_8601], true);
+            if (added.isValid()) {
+                updatedEntry.date_added = added.second(0).millisecond(0).format('YYYY-MM-DD HH:mm:ss');
+            }
+        }
+
+        if (entry.date_modified) {
+            const modified = dayjs(entry.date_modified, ['DD/MM/YYYY HH:mm', dayjs.ISO_8601], true);
+            if (modified.isValid()) {
+                updatedEntry.date_modified = modified.second(0).millisecond(0).format('YYYY-MM-DD HH:mm:ss');
+            }
+        }
+
+        return updatedEntry;
+    });
+}

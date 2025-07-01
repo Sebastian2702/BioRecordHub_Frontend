@@ -10,7 +10,7 @@ const bibliographyFieldHelpers = [
     { key: 'doi', helperText: 'Digital Object Identifier for the work.' },
     { key: 'url', helperText: 'Link to the online version of the item.' },
     { key: 'abstract_note', helperText: 'A brief summary or abstract of the work.' },
-    { key: 'date', helperText: 'Full publication date (e.g., 2023-04-01).' },
+    { key: 'date', helperText: 'Full publication year (e.g., 2023).' },
     { key: 'date_added', helperText: 'Date the entry was added to your system.' },
     { key: 'date_modified', helperText: 'Last modification date of this entry.' },
     { key: 'access_date', helperText: 'Date when the online item was last accessed.' },
@@ -44,7 +44,7 @@ export const getHelperText = (key: string): string | undefined => {
 };
 
 export const bibliographyFieldKeys =[
-    'isbn', 'issn', 'doi', 'url', 'abstract_note', 'num_pages',
+    'isbn', 'issn', 'doi', 'url', 'abstract_note', 'date', 'date_added', 'date_modified','num_pages',
     'issue', 'volume', 'number_of_volumes', 'journal_abbreviation', 'short_title', 'series', 'series_number',
     'series_text', 'series_title', 'publisher', 'place', 'language', 'rights', 'type', 'archive',
     'archive_location', 'library_catalog', 'call_number', 'extra', 'notes'

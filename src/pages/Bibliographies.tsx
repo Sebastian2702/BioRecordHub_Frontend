@@ -78,7 +78,7 @@ function Bibliographies(){
                     <NewEntryButton manualEntryLink={"/bibliography/new"} fileUploadLink={"/bibliography/new_file_upload"} />
                 </Box>
             </Box>
-            <Box sx={{padding: '0px 10px', overflowY: 'auto'}}>
+            <Box sx={{padding: '0px 10px', overflowY: 'hidden',}}>
                 {loading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
                         <CircularProgress />

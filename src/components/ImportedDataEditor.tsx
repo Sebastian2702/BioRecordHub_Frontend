@@ -8,6 +8,7 @@ import {COLORS} from "../constants/ui.ts";
 import ImportedDataFormField from "./ImportedDataFormField.tsx";
 import CustomDialog from "./CustomDialog.tsx";
 import Typography from "@mui/material/Typography";
+import {normalizeEntryDates} from "../utils/helperFunctions.ts"
 
 
 interface ImportedDataEditorProps {
@@ -71,9 +72,11 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
             SetError("No data to save. Please upload a valid file.");
             return;
         }
+
         if(dataType === "bibliography") {
-            console.log(entries)
-            CreateBibliographyWithFile(entries, SetError, navigate, setLoading);
+            const cleanedEntries = normalizeEntryDates(entries);
+            console.log(cleanedEntries)
+            CreateBibliographyWithFile(cleanedEntries, SetError, navigate, setLoading);
         }
     }
 

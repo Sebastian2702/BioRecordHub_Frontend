@@ -18,6 +18,7 @@ import {toast, ToastContainer} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import { dropdownFilterOptions } from "../constants/uiConstants.ts";
+import {normalizeEntryDates} from "../utils/helperFunctions.ts"
 
 
 function NewBibliography () {
@@ -66,8 +67,7 @@ function NewBibliography () {
 
     const handleSave = () => {
         const author = formatAuthors(authorsArray);
-        const dateFormatted = date ? dayjs(date).format('YYYY-MM-DD') : null;
-        const date_added = dayjs().format('YYYY-MM-DD HH:mm:ss');
+
 
         const dataToSend = {
             ...notRequiredFormData,
@@ -77,13 +77,12 @@ function NewBibliography () {
             publication_year: date ? date.year() : '',
             author,
             publication_title: publicationTitle,
-            date: dateFormatted,
-            date_modified: dateFormatted,
-            date_added,
-            access_date: dateFormatted,
             pages,
                 };
-        CreateBibliography(dataToSend, setError, navigate, setLoading);
+
+        const normalizedData = normalizeEntryDates([dataToSend])[0];
+
+        CreateBibliography(normalizedData, setError, navigate, setLoading);
     }
 
     useEffect(() => {
@@ -217,9 +216,28 @@ function NewBibliography () {
                                             <FormField
                                                 label={formatLabel(field)}
                                                 helperText={getHelperText(field) || ''}
-                                                value={notRequiredFormData[field as keyof typeof notRequiredFormData] || ''}
+                                                value={(field === 'date' || field === 'date_added' || field === 'date_modified')
+                                                    ? notRequiredFormData[field as keyof typeof notRequiredFormData]
+                                                        ? dayjs(notRequiredFormData[field as keyof typeof notRequiredFormData])
+                                                        : null
+                                                    : notRequiredFormData[field as keyof typeof notRequiredFormData] || ''
+                                                }
                                                 onChange={(e) => setNotRequiredFormData({ ...notRequiredFormData, [field]: e.target.value })}
                                                 multiline={field === 'notes' || field === 'extra'}
+                                                date = {field === 'date'}
+                                                dateType={field === 'date' ? ['year'] : undefined}
+                                                dateTime={field === 'date_added' || field === 'date_modified'}
+                                                onChangeDate={
+                                                    (date) =>
+                                                        setNotRequiredFormData({
+                                                            ...notRequiredFormData,
+                                                            [field]: date
+                                                                ? field === 'date'
+                                                                    ? dayjs(date).year().toString()
+                                                                    : dayjs(date).toISOString()
+                                                                : ''
+                                                        })
+                                                }
                                                 required={false}
                                             />
                                         ))}

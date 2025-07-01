@@ -83,7 +83,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                     handleDelete(deleteId, dataType);
                 }}
             />
-            <TableContainer component={Paper} sx={{ maxHeight: 'calc(100vh - 200px)' }}>
+            <TableContainer component={Paper} sx={{ maxHeight: 'calc(100vh - 250px)' }}>
                 <Table stickyHeader>
                     <TableHead sx={{width:'100%'}}>
                         <TableRow>
