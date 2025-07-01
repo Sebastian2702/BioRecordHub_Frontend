@@ -1,4 +1,4 @@
-import { ROUTES } from "../routes/frontendRoutes.ts";
+import { ROUTES } from "../../routes/frontendRoutes.ts";
 
 export const handleLogin = async ({
     email,

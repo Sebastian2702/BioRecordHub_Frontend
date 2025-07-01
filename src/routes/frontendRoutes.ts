@@ -9,4 +9,10 @@ export const ROUTES = {
     reports: '/reports',
     logout: '/logout',
     admin: '/administrator',
+    profile: '/profile',
+    bibliographyId: '/bibliography/:id',
+    bibliographyCreate: '/bibliography/new',
+    bibliographyFileUpload: '/bibliography/new_file_upload',
+    bibliographyEdit: '/bibliography/edit/:id',
+
 }

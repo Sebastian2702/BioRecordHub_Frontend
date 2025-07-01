@@ -1,5 +1,5 @@
-import api from '../utils/axios';
-import { AUTH_ROUTES, COOKIE_ROUTE } from "../routes/apiRoutes.ts";
+import api from '../../utils/axios.ts';
+import { AUTH_ROUTES, COOKIE_ROUTE } from "../../routes/apiRoutes.ts";
 
 export const register = async (data: {
     name: string;
