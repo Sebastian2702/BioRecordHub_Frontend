@@ -11,23 +11,31 @@ import { formatLabel } from "../utils/helperFunctions.ts";
 import StyledButton from "../components/StyledButton.tsx";
 import EditIcon from '@mui/icons-material/Edit';
 import { useAuth } from "../context/AuthContext.tsx";
+import DataTable from "../components/DataTable";
 
 
 function Bibliography() {
     const { isAdmin } = useAuth();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
+    const [nomenclature, setNomenclature] = useState<any>(null);
+    const [refresh, setRefresh] = useState(false);
     const { id } = useParams();
 
     const fetchData = async (id: number) => {
         try {
             const response = await GetBibliographyById(id);
-            setData(response);
+            setNomenclature(response.nomenclatures);
+            setData({ ...response, nomenclatures: undefined });
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleRefresh = () => {
+        setRefresh(prev => !prev);
     };
 
     useEffect(() => {
@@ -102,6 +110,35 @@ function Bibliography() {
                                 ))
                         }
                     </Box>
+                    {nomenclature && nomenclature.length > 0 ? (
+                        <Box sx={{ padding: 1 }}>
+                            <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
+                                Nomenclatures
+                            </Typography>
+                            <DataTable
+                                data={nomenclature}
+                                columns={[
+                                    { id: 'species', label: 'Species' },
+                                    { id: 'author', label: 'Author' },
+                                    { id: 'genus', label: 'Genus' },
+                                    { id: 'family', label: 'Family' },
+                                    { id: 'order', label: 'Order' }
+                                ]}
+                                editButton={false}
+                                viewButton={true}
+                                viewLink={"/nomenclature/"}
+                                deleteButton={false}
+                                trashCanButton={true}
+                                dataType={"bibliographyNomenclature"}
+                                handleRefresh={handleRefresh}
+                                referenceId={data.id}
+                            />
+                        </Box>
+                    ) : (
+                        <Typography variant='h6'>
+                            No nomenclatures available for this bibliography entry.
+                        </Typography>
+                    )}
                 </Box>
 
             }

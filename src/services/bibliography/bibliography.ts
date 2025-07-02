@@ -17,6 +17,11 @@ export const DeleteBibliography = async (id: number) => {
     return response.data;
 }
 
+export const DeleteNomenclatureFromBibliography = async (id: number, nomenclatureId: number) => {
+    const response = await api.delete(BIBLIROGRAPHY_ROUTES.deleteNomenclatureFromBibliography(id, nomenclatureId));
+    return response.data;
+}
+
 export const CreateBibliography = async (data: any,
                                          setError: (msg: string) => void,
                                          navigate: (url: string) => void,

@@ -11,6 +11,7 @@ import Bibliography from './pages/Bibliography.tsx';
 import NewBibliography from './pages/NewBibliography.tsx';
 import EditBibliography from './pages/EditBibliography.tsx';
 import NewBibliographyFileUpload from "./pages/NewBibliographyFileUpload.tsx";
+import Nomenclature from "./pages/Nomenclature.tsx";
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
                     <Route element={<AppLayout />}>
                         <Route path={ROUTES.dashboard} element={<Dashboard />} />
                         <Route path={ROUTES.nomenclature} element={<Dashboard />} />
+                        <Route path={ROUTES.nomenclatureId} element={<Nomenclature />}/>
                         <Route path={ROUTES.bibliography} element={<Bibliographies />} />
                         <Route path={ROUTES.bibliographyId} element={<Bibliography />} />
                         <Route path={ROUTES.bibliographyCreate} element={<NewBibliography />} />

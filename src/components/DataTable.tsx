@@ -28,10 +28,11 @@ interface DataTableProps {
     trashCanButton: boolean;
     viewLink?: string;
     dataType: string;
+    referenceId?: number;
     handleRefresh?: () => void;
 }
 
-const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewButton, viewLink, deleteButton, trashCanButton, dataType, handleRefresh }) => {
+const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewButton, viewLink, deleteButton, trashCanButton, dataType, referenceId,handleRefresh }) => {
     const [loadingId, setLoadingId] = useState<number | null>(null);
     const { isAdmin } = useAuth();
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -52,12 +53,31 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
         console.log("Edit function called for ID: " +  id  + " Type: " + type);
     }
 
+    const getDialogContent = (row:any) => {
+        if (dataType === "bibliography") {
+            return row.title
+        }
+        if (dataType === "bibliographyNomenclature") {
+            return row.species
+        }
+        else {
+            return "this entry";
+        }
+    }
+
     const handleDelete = async  (id:number, type:string) => {
         setLoadingId(id);
-        console.log("Delete function called for ID: " + id + " Type: " + type);
         try {
-            await handleDeleteData(id, type);
-            handleRefresh?.();
+            if(referenceId != null){
+                await handleDeleteData(id, type, referenceId);
+                window.location.reload();
+            }
+            else {
+                await handleDeleteData(id, type);
+                handleRefresh?.();
+            }
+
+
         } finally {
             setLoadingId(null);
         }
@@ -142,7 +162,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                                         ) : (
                                             <DeleteIcon
                                                 sx={{ color: COLORS.delete, cursor: "pointer" }}
-                                                onClick={() => handleDialogOpen(row.id, row.title || "this entry")}
+                                                onClick={() => handleDialogOpen(row.id, getDialogContent(row))}
                                                 fontSize={"medium"}
                                             />
                                         )}
