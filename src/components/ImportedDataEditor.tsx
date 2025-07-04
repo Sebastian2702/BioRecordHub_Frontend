@@ -98,6 +98,7 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
                         key={key}
                         fieldKey={key}
                         value={currentEntry?.[key] ?? ""}
+                        dataType={dataType}
                         onChange={(val) => {
                             handleFieldChange(key, typeof val === 'string' ? val : val?.toString() ?? "");
                         }}

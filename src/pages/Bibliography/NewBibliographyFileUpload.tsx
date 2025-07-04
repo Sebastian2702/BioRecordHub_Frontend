@@ -1,18 +1,18 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import {BORDER, COLORS, FONT_SIZES} from "../constants/ui.ts";
-import BackButton from "../components/BackButton.tsx";
+import {BORDER, COLORS, FONT_SIZES} from "../../constants/ui.ts";
+import BackButton from "../../components/BackButton.tsx";
 import {useEffect, useState} from "react";
-import FileInput from "../components/FileInput.tsx";
-import StyledButton from "../components/StyledButton.tsx";
+import FileInput from "../../components/FileInput.tsx";
+import StyledButton from "../../components/StyledButton.tsx";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import {toast, ToastContainer} from "react-toastify";
-import {allowedFileTypes} from "../constants/uiConstants.ts";
-import {ImportBibliographyExcel} from "../services/excel/excel.ts";
+import {allowedFileTypes} from "../../constants/uiConstants.ts";
+import {ImportBibliographyExcel} from "../../services/excel/excel.ts";
 import CircularProgress from "@mui/material/CircularProgress";
-import ImportedDataEditor from "../components/ImportedDataEditor.tsx";
+import ImportedDataEditor from "../../components/ImportedDataEditor.tsx";
 import InfoIcon from '@mui/icons-material/Info';
-import CustomDialog from "../components/CustomDialog.tsx";
+import CustomDialog from "../../components/CustomDialog.tsx";
 
 
 

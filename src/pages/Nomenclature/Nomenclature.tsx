@@ -1,32 +1,31 @@
 import {Box} from "@mui/material";
 import Typography from '@mui/material/Typography';
-import {BORDER, COLORS, FONT_SIZES} from '../constants/ui';
-import BackButton from "../components/BackButton.tsx";
-import {GetBibliographyById} from "../services/bibliography/bibliography.ts";
+import {BORDER, COLORS, FONT_SIZES} from '../../constants/ui.ts';
+import BackButton from "../../components/BackButton.tsx";
 import {useEffect, useState} from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useParams } from "react-router-dom";
-import  DataDisplay  from "../components/DataDisplay.tsx";
-import { formatLabel } from "../utils/helperFunctions.ts";
-import StyledButton from "../components/StyledButton.tsx";
+import  DataDisplay  from "../../components/DataDisplay.tsx";
+import { formatLabel } from "../../utils/helperFunctions.ts";
+import StyledButton from "../../components/StyledButton.tsx";
 import EditIcon from '@mui/icons-material/Edit';
-import { useAuth } from "../context/AuthContext.tsx";
-import DataTable from "../components/DataTable";
+import { useAuth } from "../../context/AuthContext.tsx";
+import DataTable from "../../components/DataTable.tsx";
+import {GetNomenclatureById} from "../../services/nomenclature/nomenclature.ts";
 
-
-function Bibliography() {
+function Nomenclature() {
     const { isAdmin } = useAuth();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
-    const [nomenclature, setNomenclature] = useState<any>(null);
+    const [bibliographies, setBiblipgraphies] = useState<any>(null);
     const [refresh, setRefresh] = useState(false);
     const { id } = useParams();
 
     const fetchData = async (id: number) => {
         try {
-            const response = await GetBibliographyById(id);
-            setNomenclature(response.nomenclatures);
-            setData({ ...response, nomenclatures: undefined });
+            const response = await GetNomenclatureById(id);
+            setBiblipgraphies(response.bibliographies);
+            setData({ ...response, bibliographies: undefined });
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -77,7 +76,7 @@ function Bibliography() {
                                 textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
                             }}
                         >
-                            {data.key}
+                            {data.species}
                         </Typography>
 
                         {isAdmin && (
@@ -86,7 +85,7 @@ function Bibliography() {
                                     label="Edit"
                                     color="edit"
                                     size="large"
-                                    onClick={() => (window.location.href = '/bibliography/edit/' + data.id)}
+                                    onClick={() => (window.location.href = '/nomenclature/edit/' + data.id)}
                                     icon={<EditIcon />}
                                 />
                             </Box>
@@ -110,42 +109,48 @@ function Bibliography() {
                                 ))
                         }
                     </Box>
-                    {nomenclature && nomenclature.length > 0 ? (
+                    {bibliographies && bibliographies.length > 0 ? (
                         <Box sx={{ padding: 1 }}>
                             <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
-                                Nomenclatures
+                                Bibliographies
                             </Typography>
                             <DataTable
-                                data={nomenclature}
+                                data={bibliographies}
                                 columns={[
-                                    { id: 'species', label: 'Species' },
+                                    { id: 'key', label: 'Key' },
+                                    { id: 'item_type', label: 'Item Type' },
+                                    { id: 'title', label: 'Title' },
                                     { id: 'author', label: 'Author' },
-                                    { id: 'genus', label: 'Genus' },
-                                    { id: 'family', label: 'Family' },
-                                    { id: 'order', label: 'Order' }
+                                    { id: 'publication_year', label: 'Publication Year' }
                                 ]}
                                 editButton={false}
                                 viewButton={true}
-                                viewLink={"/nomenclature/"}
+                                viewLink={"/bibliography/"}
                                 deleteButton={false}
                                 trashCanButton={true}
-                                dataType={"bibliographyNomenclature"}
+                                dataType={"nomenclatureBibliography"}
                                 handleRefresh={handleRefresh}
                                 referenceId={data.id}
                             />
                         </Box>
                     ) : (
-                        <Typography variant='h6'>
-                            No nomenclatures available for this bibliography entry.
-                        </Typography>
+                        <Box>
+                            <Typography variant='h6'>
+                                No bibliographies available for this nomenclature entry.
+                            </Typography>
+                            <Typography variant='h6' fontWeight={'bold'} color={COLORS.delete}>
+                                Bibliographies need to be added to the Nomenclature before they can be used in occurrences.
+                            </Typography>
+
+                        </Box>
+
                     )}
                 </Box>
 
             }
 
-
         </Box>
     );
 }
 
-export default Bibliography;
+export default Nomenclature;

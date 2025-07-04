@@ -1,4 +1,5 @@
 import {DeleteBibliography, DeleteNomenclatureFromBibliography} from './bibliography/bibliography.ts';
+import {DeleteBibliographyFromNomenclature} from './nomenclature/nomenclature.ts';
 
 export const handleDeleteData = async (id:number, dataType:string, referenceID?: number) => {
     switch(dataType) {
@@ -8,6 +9,10 @@ export const handleDeleteData = async (id:number, dataType:string, referenceID?:
         case "bibliographyNomenclature":
             await DeleteNomenclatureFromBibliography(referenceID!, id);
             break;
+        case "nomenclatureBibliography":
+            await DeleteBibliographyFromNomenclature(referenceID!, id);
+            break;
+
 
         // Add more cases for other data types as needed
         default:

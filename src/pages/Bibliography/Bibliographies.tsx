@@ -1,17 +1,17 @@
-import {GetBibliography} from '../services/bibliography/bibliography.ts';
+import {GetBibliography} from '../../services/bibliography/bibliography.ts';
 import { Box } from "@mui/material";
-import { COLORS,BORDER } from '../constants/ui';
-import SearchFilter from "../components/SearchFilter.tsx";
-import DropdownInput from "../components/DropdownInput.tsx";
+import { COLORS,BORDER } from '../../constants/ui.ts';
+import SearchFilter from "../../components/SearchFilter.tsx";
+import DropdownInput from "../../components/DropdownInput.tsx";
 import {useEffect, useState} from "react";
 import { SelectChangeEvent } from '@mui/material/Select';
-import DateInput from "../components/DateInput.tsx";
-import RefreshButton from "../components/RefreshButton.tsx";
-import NewEntryButton from "../components/NewEntryButton.tsx";
-import DataTable from "../components/DataTable";
+import DateInput from "../../components/DateInput.tsx";
+import RefreshButton from "../../components/RefreshButton.tsx";
+import NewEntryButton from "../../components/NewEntryButton.tsx";
+import DataTable from "../../components/DataTable.tsx";
 import CircularProgress from '@mui/material/CircularProgress';
 import { Dayjs } from 'dayjs';
-import { dropdownFilterOptions } from "../constants/uiConstants.ts";
+import { dropdownFilterOptions } from "../../constants/uiConstants.ts";
 
 
 function Bibliographies(){

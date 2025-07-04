@@ -54,7 +54,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
     }
 
     const getDialogContent = (row:any) => {
-        if (dataType === "bibliography") {
+        if (dataType === "bibliography" || dataType === "nomenclatureBibliography") {
             return row.title
         }
         if (dataType === "bibliographyNomenclature") {

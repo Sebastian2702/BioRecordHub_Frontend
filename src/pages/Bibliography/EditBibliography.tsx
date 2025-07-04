@@ -1,23 +1,23 @@
 import Box from "@mui/material/Box";
-import { COLORS, BORDER, FONT_SIZES } from '../constants/ui';
+import { COLORS, BORDER, FONT_SIZES } from '../../constants/ui.ts';
 import Typography from '@mui/material/Typography';
-import BackButton from "../components/BackButton.tsx";
-import FormField from "../components/FormField";
+import BackButton from "../../components/BackButton.tsx";
+import FormField from "../../components/FormField.tsx";
 import {useEffect, useState} from "react";
-import { getHelperText } from "../utils/formFieldHelpers.ts";
-import { bibliographyFieldKeys } from "../utils/formFieldHelpers.ts";
-import ExtraFieldAccordion from "../components/ExtraFieldAccordion.tsx";
-import ListInput from "../components/ListInput.tsx";
-import StyledButton from "../components/StyledButton.tsx";
+import { getHelperText } from "../../utils/formFieldHelpers.ts";
+import { bibliographyFieldKeys } from "../../utils/formFieldHelpers.ts";
+import ExtraFieldAccordion from "../../components/ExtraFieldAccordion.tsx";
+import ListInput from "../../components/ListInput.tsx";
+import StyledButton from "../../components/StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
-import {UpdateBibliography, GetBibliographyById} from "../services/bibliography/bibliography.ts";
+import {UpdateBibliography, GetBibliographyById} from "../../services/bibliography/bibliography.ts";
 import dayjs from 'dayjs';
-import { formatLabel, formatAuthors, getAuthors } from "../utils/helperFunctions.ts";
+import { formatLabel, formatAuthors, getAuthors } from "../../utils/helperFunctions.ts";
 import {toast, ToastContainer} from "react-toastify";
 import {useParams} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
-import {dropdownFilterOptions} from "../constants/uiConstants.ts";
-import { getNonRequiredFields } from "../utils/helperFunctions.ts";
+import {dropdownFilterOptions} from "../../constants/uiConstants.ts";
+import { getNonRequiredFields } from "../../utils/helperFunctions.ts";
 import {useNavigate} from "react-router-dom";
 
 
@@ -124,19 +124,19 @@ function EditBibliography (){
                                 label={"Key"}
                                 value={data?.key || ''}
                                 onChange={(e) => setData({ ...data, key: e.target.value })}
-                                helperText={getHelperText('key') || ''}
+                                helperText={getHelperText('key', "bibliography") || ''}
                                 required={true}
                             />
                             <FormField
                                 label={"Title"}
                                 value={data?.title || ''}
                                 onChange={(e) => setData({ ...data, title: e.target.value })}
-                                helperText={getHelperText('title') || ''}
+                                helperText={getHelperText('title', "bibliography") || ''}
                                 required={true}
                             />
                             <ListInput
                                 label="Author"
-                                helperText={getHelperText('authors') || ''}
+                                helperText={getHelperText('authors', "bibliography") || ''}
                                 values={authorsArray}
                                 onChange={setAuthorsArray}
                             />
@@ -145,7 +145,7 @@ function EditBibliography (){
                                     label={"Publication Year"}
                                     value={data?.date ? dayjs(data.date) : null}
                                     onChangeDate={(e) => setData({ ...data, date: e })}
-                                    helperText={getHelperText('publication_year') || ''}
+                                    helperText={getHelperText('publication_year', "bibliography") || ''}
                                     required={true}
                                     date={true}
                                 />
@@ -153,7 +153,7 @@ function EditBibliography (){
                                     label={"Item Type"}
                                     value={data?.item_type || ''}
                                     onChangeDropdown={(e) => setData({ ...data, item_type: e })}
-                                    helperText={getHelperText('item_type') || ''}
+                                    helperText={getHelperText('item_type', "bibliography") || ''}
                                     required={true}
                                     dropdown={true}
                                     options={dropdownFilterOptions}
@@ -163,14 +163,14 @@ function EditBibliography (){
                                     label={"Publication Title"}
                                     value={data?.publication_title || ''}
                                     onChange={(e) => setData({ ...data, publication_title: e.target.value })}
-                                    helperText={getHelperText('publication_title') || ''}
+                                    helperText={getHelperText('publication_title', "bibliography") || ''}
                                     required={true}
                                 />
                                 <FormField
                                     label={"Pages"}
                                     value={data?.pages || ''}
                                     onChange={(e) => setData({ ...data, pages: e.target.value })}
-                                    helperText={getHelperText('pages') || ''}
+                                    helperText={getHelperText('pages', "bibliography") || ''}
                                     required={false}
                                 />
                             </Box>
@@ -195,7 +195,7 @@ function EditBibliography (){
                                         {bibliographyFieldKeys.map((field) => (
                                             <FormField
                                                 label={formatLabel(field)}
-                                                helperText={getHelperText(field) || ''}
+                                                helperText={getHelperText(field, "bibliography") || ''}
                                                 value={notRequiredFormData[field as keyof typeof notRequiredFormData] || ''}
                                                 onChange={(e) => setNotRequiredFormData({ ...notRequiredFormData, [field]: e.target.value })}
                                                 multiline={field === 'notes' || field === 'extra'}
