@@ -38,7 +38,7 @@ function NewNomenclature(){
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const [requiredFields, setRequiredFields] = useState([
+    const requiredFields = [
         'kingdom',
         'phylum',
         'subphylum',
@@ -49,7 +49,7 @@ function NewNomenclature(){
         'superfamily',
         'family',
         'author',
-    ]);
+    ];
     const [bibliographies, setBibliographies] = useState<string[]>([]);
     const [selectedBibliographyIds, setSelectedBibliographyIds] = useState<string[]>([]);
 

@@ -17,5 +17,6 @@ export const ROUTES = {
     nomenclatureId: '/nomenclature/:id',
     nomenclatureCreate: '/nomenclature/new',
     nomenclatureEdit: '/nomenclature/edit/:id',
+    nomenclatureFileUpload: '/nomenclature/new_file_upload',
 
 }
