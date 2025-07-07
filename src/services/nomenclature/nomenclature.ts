@@ -29,6 +29,22 @@ export const CreateNomenclature = async (data: any, setLoading: (loading: boolea
     }
 }
 
+export const EditNomenclatureRequest = async (id: number, data: any, setLoading: (loading: boolean) => void, setError: (msg: string) => void, navigate: (url: string) => void,) => {
+    await api.get(COOKIE_ROUTE.csrf);
+    try{
+        setLoading(true);
+        await api.put(NOMENCLATURE_ROUTES.nomenclatureById(id), data);
+        setLoading(false);
+        navigate(ROUTES.nomenclature);
+    }
+    catch (err: any) {
+        setLoading(false);
+        const msg = err.response.data.message;
+        const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
+        setError(cutmsg);
+    }
+}
+
 export const DeleteBibliographyFromNomenclature = async (id: number, bibliographyId: number) => {
     const response = await api.delete(NOMENCLATURE_ROUTES.deleteBibliographyFromNomenclature(id, bibliographyId));
     return response.data;

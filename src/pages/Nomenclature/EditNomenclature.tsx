@@ -13,7 +13,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import {GetBibliography} from "../../services/bibliography/bibliography.ts";
 import DropdownSelector from "../../components/DropdownSelector.tsx";
-import {GetNomenclatureById} from "../../services/nomenclature/nomenclature.ts";
+import {GetNomenclatureById, EditNomenclatureRequest} from "../../services/nomenclature/nomenclature.ts";
 
 function EditNomenclature(){
     const [nomenclatureData, setNomenclatureData] = useState<any>(null);
@@ -67,9 +67,8 @@ function EditNomenclature(){
                 bibliographies: selectedBibliographyIds,
             }
 
-            console.log(data)
+            EditNomenclatureRequest(Number(id), data, setLoading, setError, navigate);
 
-           /* CreateNomenclature(data, setLoading, setError, navigate);*/
         }
     }
 
