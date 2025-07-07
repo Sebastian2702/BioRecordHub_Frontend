@@ -16,5 +16,6 @@ export const ROUTES = {
     bibliographyEdit: '/bibliography/edit/:id',
     nomenclatureId: '/nomenclature/:id',
     nomenclatureCreate: '/nomenclature/new',
+    nomenclatureEdit: '/nomenclature/edit/:id',
 
 }

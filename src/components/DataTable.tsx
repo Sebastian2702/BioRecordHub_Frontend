@@ -10,7 +10,7 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { useAuth } from "../context/AuthContext.tsx";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { COLORS } from '../constants/ui.ts';
-import {truncateString} from "../utils/helperFunctions.ts";
+import {formatLabel, truncateString} from "../utils/helperFunctions.ts";
 import { handleDeleteData } from '../services/deleteData.ts';
 import { useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -131,7 +131,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                             <TableRow key={index}>
                                 {columns.map((column) => (
                                     <TableCell key={column.id} align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
-                                        {truncateString(row[column.id], 30)}
+                                        {formatLabel(truncateString(row[column.id], 30))}
                                     </TableCell>
                                 ))}
                                 {editButton &&

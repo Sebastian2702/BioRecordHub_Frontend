@@ -64,7 +64,7 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
     };
 
     return (
-        <Box sx={{margin: '0 10px'}}>
+        <Box sx={{margin: '0 10px', padding: '0 10px'}}>
             <Typography
                 align="left"
                 sx={{
