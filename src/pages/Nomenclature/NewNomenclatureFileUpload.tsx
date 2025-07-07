@@ -169,7 +169,7 @@ function NewNomenclatureFileUpload() {
                         textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
                     }}
                 >
-                    New Nomenclature
+                    New Nomenclatures
                 </Typography>
                 <InfoIcon sx={{color: COLORS.primary, cursor: "pointer", fontSize: "35px"}} onClick={() => handleInfoDialogOpen()}/>
             </Box>
