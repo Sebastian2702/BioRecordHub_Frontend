@@ -8,11 +8,12 @@ import StyledButton from "../../components/StyledButton.tsx";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import {toast, ToastContainer} from "react-toastify";
 import {allowedFileTypes} from "../../constants/uiConstants.ts";
-import {ImportBibliographyExcel} from "../../services/excel/excel.ts";
+import {ImportNomenclatureExcel} from "../../services/excel/excel.ts";
 import CircularProgress from "@mui/material/CircularProgress";
 import ImportedDataEditor from "../../components/ImportedDataEditor.tsx";
 import InfoIcon from '@mui/icons-material/Info';
 import CustomDialog from "../../components/CustomDialog.tsx";
+import {GetBibliography} from "../../services/bibliography/bibliography.ts";
 
 
 
@@ -24,6 +25,7 @@ function NewNomenclatureFileUpload() {
     const [showData, setShowData] = useState<boolean>(false);
     const [data, setData] = useState<any>(null);
     const [infoDialogOpen, setInfoDialogOpen] = useState(false);
+    const [bibliographies, setBibliographies] = useState<string[]>([]);
 
     const handleInfoDialogClose = () => {
         setInfoDialogOpen(false);
@@ -61,9 +63,22 @@ function NewNomenclatureFileUpload() {
 
         setDisabled(true);
 
-        const result = await ImportBibliographyExcel(file, setError, setLoading, setDisabled);
+        const result = await ImportNomenclatureExcel(file, setError, setLoading, setDisabled);
         setData(result);
     };
+
+    const fetchData = async () => {
+        try {
+            const response = await GetBibliography();
+            setBibliographies(response);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     useEffect(() => {
         if (data && data.length > 0) {
@@ -98,12 +113,14 @@ function NewNomenclatureFileUpload() {
                 <li><strong>author</strong></li>
                 <li><strong>remarks</strong></li>
                 <li><strong>bibliography_key</strong></li>
-                <li><strong>bibliography_key</strong></li>
+                <li><strong>bibliography_key2</strong></li>
+                <li><strong>bibliography_key3</strong></li>
+                <li><strong>bibliography_key4</strong></li>
                 <li><strong>...</strong></li>
             </Box>
 
-            <Typography>
-                After remarks the <strong>bibliography_key colum can be repeated until 20 times</strong> for 20 bibliographies associated with that nomenclature!
+            <Typography variant="body2" sx={{ mt: 2 }}>
+                The bibliography_key column can support up to 20 entries, meaning a single nomenclature can be associated with up to 20 bibliographies. <strong>The number suffix in the bibliography_key is required for the system to function correctly.</strong>
             </Typography>
 
             <Typography variant="body2" sx={{ mt: 2 }}>
@@ -177,9 +194,9 @@ function NewNomenclatureFileUpload() {
             <CustomDialog open={infoDialogOpen} onClose={handleInfoDialogClose} title={"File Structure"} content={"information"} contentText={infoDialogContent}/>
 
             <FileInput
-                label=".xlsx, .xlsm, .xls, .xlsb, .xltx, .xltm; files here, or browse your computer"
+                label=".xlsx, .xls; files here, or browse your computer"
                 onChange={setFile}
-                acceptedFileTypes={'.xlsx, .xlsm, .xls, .xlsb, .xltx, .xltm'}
+                acceptedFileTypes={'.xlsx, .xls'}
             />
             {loading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
@@ -197,7 +214,7 @@ function NewNomenclatureFileUpload() {
                     <Typography variant={"subtitle1"} color={COLORS.black}>
                         Review and edit the imported entries below:
                     </Typography>
-                    <ImportedDataEditor importedEntries={data} SetError={setError} setLoading={setLoading} dataType={'nomenclature'}/>
+                    <ImportedDataEditor importedEntries={data} SetError={setError} setLoading={setLoading} dataType={'nomenclature'} bibliographies={bibliographies}/>
                 </Box>
 
             )}

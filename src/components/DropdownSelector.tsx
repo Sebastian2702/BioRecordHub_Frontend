@@ -11,7 +11,7 @@ import {COLORS, FONT_SIZES} from '../constants/ui';
 interface DropdownSelectorProps {
     data: { id: string; [key: string]: string }[];
     selectedIds: string[];
-    onChange: (newIds: string[]) => void;
+    onChange: (newIds: any[]) => void;
     dataType: 'bibliography' | 'nomenclature';
 }
 

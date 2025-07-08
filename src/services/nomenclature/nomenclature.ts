@@ -29,6 +29,23 @@ export const CreateNomenclature = async (data: any, setLoading: (loading: boolea
     }
 }
 
+export const CreateNomenclatureFromExcel = async (data: any, setError: (msg: string) => void, setLoading: (loading: boolean) => void, navigate: (url: string) => void,) => {
+    await api.get(COOKIE_ROUTE.csrf);
+    console.log(data)
+    try{
+        setLoading(true);
+        await api.post(NOMENCLATURE_ROUTES.nomenclatureFromExcel, data);
+        setLoading(false);
+        navigate(ROUTES.nomenclature);
+    }
+    catch (err: any) {
+        setLoading(false);
+        const msg = err.response.data.message;
+        const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
+        setError(cutmsg);
+    }
+}
+
 export const EditNomenclatureRequest = async (id: number, data: any, setLoading: (loading: boolean) => void, setError: (msg: string) => void, navigate: (url: string) => void,) => {
     await api.get(COOKIE_ROUTE.csrf);
     try{

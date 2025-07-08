@@ -194,9 +194,9 @@ function NewBibliographyFileUpload() {
             <CustomDialog open={infoDialogOpen} onClose={handleInfoDialogClose} title={"File Structure"} content={"information"} contentText={infoDialogContent}/>
 
             <FileInput
-                label=".xlsx, .xlsm, .xls, .xlsb, .xltx, .xltm; files here, or browse your computer"
+                label=".xlsx, .xls; files here, or browse your computer"
                 onChange={setFile}
-                acceptedFileTypes={'.xlsx, .xlsm, .xls, .xlsb, .xltx, .xltm'}
+                acceptedFileTypes={'.xlsx, .xls'}
             />
             {loading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>

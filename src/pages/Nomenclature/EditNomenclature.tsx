@@ -52,7 +52,6 @@ function EditNomenclature(){
 
     useEffect(() => {
         if (!id) return;
-        console.log("Fetching data for ID:", id);
         fetchData(Number(id));
     }, [id]);
 

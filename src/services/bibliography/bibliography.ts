@@ -41,15 +41,15 @@ export const CreateBibliography = async (data: any,
     }
 }
 
-export const CreateBibliographyWithFile = async (data: any,
-                                                 setError: (msg: string) => void,
-                                                 navigate: (url: string) => void,
-                                                 setLoading: (loading: boolean) => void,
+export const CreateBibliographyFromExcel = async (data: any,
+                                                  setError: (msg: string) => void,
+                                                  navigate: (url: string) => void,
+                                                  setLoading: (loading: boolean) => void,
 ) => {
     await api.get(COOKIE_ROUTE.csrf);
     try {
         setLoading(true);
-        await api.post(BIBLIROGRAPHY_ROUTES.bibliographyCreateMultiple, {
+        await api.post(BIBLIROGRAPHY_ROUTES.bibliographyFromExcel, {
             bibliographies: data,
         });
         setLoading(false)
