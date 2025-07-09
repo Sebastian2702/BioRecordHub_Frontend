@@ -15,6 +15,7 @@ import Nomenclature from "./pages/Nomenclature/Nomenclature.tsx";
 import NewNomenclature from "./pages/Nomenclature/NewNomenclature.tsx";
 import EditNomenclature from "./pages/Nomenclature/EditNomenclature.tsx";
 import NewNomenclatureFileUpload from "./pages/Nomenclature/NewNomenclatureFileUpload.tsx";
+import Nomenclatures from "./pages/Nomenclature/Nomenclatures.tsx";
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
@@ -32,7 +33,7 @@ function App() {
                 <Route element={<ProtectedRoute />}>
                     <Route element={<AppLayout />}>
                         <Route path={ROUTES.dashboard} element={<Dashboard />} />
-                        <Route path={ROUTES.nomenclature} element={<Dashboard />} />
+                        <Route path={ROUTES.nomenclature} element={<Nomenclatures />} />
                         <Route path={ROUTES.nomenclatureId} element={<Nomenclature />}/>
                         <Route path={ROUTES.nomenclatureCreate} element={<NewNomenclature />}/>
                         <Route path={ROUTES.nomenclatureEdit} element={<EditNomenclature />}/>
