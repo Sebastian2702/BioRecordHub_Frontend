@@ -30,14 +30,16 @@ interface DataTableProps {
     dataType: string;
     referenceId?: number;
     handleRefresh?: () => void;
+    setError: (msg: string) => void
 }
 
-const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewButton, viewLink, deleteButton, trashCanButton, dataType, referenceId,handleRefresh }) => {
+const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewButton, viewLink, deleteButton, trashCanButton, dataType, referenceId,handleRefresh, setError }) => {
     const [loadingId, setLoadingId] = useState<number | null>(null);
     const { isAdmin } = useAuth();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [deleteTitle, setDeleteTitle] = useState("");
     const [deleteId, setDeleteId] = useState<number>(0);
+    const [dialogLoading, setDialogLoading] = useState(false);
 
     const handleDialogClose = () => {
         setDialogOpen(false);
@@ -57,7 +59,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
         if (dataType === "bibliography" || dataType === "nomenclatureBibliography") {
             return row.title
         }
-        if (dataType === "bibliographyNomenclature") {
+        if (dataType === "bibliographyNomenclature" || dataType === "nomenclature") {
             return row.species
         }
         else {
@@ -69,12 +71,45 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
         setLoadingId(id);
         try {
             if(referenceId != null){
-                await handleDeleteData(id, type, referenceId);
-                window.location.reload();
+                try{
+                    setDialogLoading(true);
+                    setDialogOpen(true);
+                    await handleDeleteData(id, type, referenceId);
+                    window.location.reload();
+                }
+                catch (error) {
+                    const msg = error.response.data.message;
+                    const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
+                    setDialogLoading(false);
+                    setDialogOpen(false);
+                    setError(cutmsg)
+                    handleDialogClose();
+                    return;
+                }
+
             }
             else {
-                await handleDeleteData(id, type);
-                handleRefresh?.();
+                try{
+                    setDialogLoading(true);
+                    setDialogOpen(true);
+                    await handleDeleteData(id, type);
+                    if (type === "nomenclature"){
+                        window.location.href = "/nomenclature";
+                    }
+                    else {
+                        window.location.reload();
+                    }
+                }
+                catch (error) {
+                    const msg = error.response.data.message;
+                    const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
+                    setDialogLoading(false);
+                    setDialogOpen(false);
+                    setError(cutmsg)
+                    handleDialogClose();
+                    return;
+                }
+
             }
 
 
@@ -99,6 +134,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                 title="Confirm Deletion"
                 contentText={deleteDialogContent}
                 content={"delete"}
+                dialogLoading={dialogLoading}
                 action={() => {
                     handleDelete(deleteId, dataType);
                 }}

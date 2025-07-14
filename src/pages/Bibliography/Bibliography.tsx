@@ -12,6 +12,7 @@ import StyledButton from "../../components/StyledButton.tsx";
 import EditIcon from '@mui/icons-material/Edit';
 import { useAuth } from "../../context/AuthContext.tsx";
 import DataTable from "../../components/DataTable.tsx";
+import {toast, ToastContainer} from "react-toastify";
 
 
 function Bibliography() {
@@ -20,6 +21,7 @@ function Bibliography() {
     const [data, setData] = useState<any>(null);
     const [nomenclature, setNomenclature] = useState<any>(null);
     const [refresh, setRefresh] = useState(false);
+    const [error, setError] = useState("");
     const { id } = useParams();
 
     const fetchData = async (id: number) => {
@@ -43,6 +45,20 @@ function Bibliography() {
         fetchData(Number(id));
     }, [id]);
 
+    useEffect(() => {
+        if (error) {
+            toast.error(error, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            setError("");
+        }
+    }, [error]);
 
     return (
         <Box sx={{
@@ -56,6 +72,7 @@ function Bibliography() {
 
         }}
         >
+            <ToastContainer />
             {loading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
                         <CircularProgress/>
@@ -132,6 +149,7 @@ function Bibliography() {
                                 dataType={"bibliographyNomenclature"}
                                 handleRefresh={handleRefresh}
                                 referenceId={data.id}
+                                setError={setError}
                             />
                         </Box>
                     ) : (

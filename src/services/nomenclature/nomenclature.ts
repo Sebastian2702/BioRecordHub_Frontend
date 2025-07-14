@@ -29,6 +29,35 @@ export const CreateNomenclature = async (data: any, setLoading: (loading: boolea
     }
 }
 
+export const GetAutocompleteNomenclature = async () => {
+    const response = await api.get(NOMENCLATURE_ROUTES.autocompleteNomenclature);
+    return response.data;
+}
+
+export const SearchNomenclature = async (data: any, setError: (msg: string) => void, setLoading: (loading: boolean) => void, navigate: (url: string, options?: any) => void) => {
+    await api.get(COOKIE_ROUTE.csrf);
+    try{
+        setLoading(true);
+        const response = await api.post(NOMENCLATURE_ROUTES.searchNomenclature, data);
+        setLoading(false);
+        if (response.data.length === 1) {
+            navigate("/nomenclature/" + response.data[0].id);
+        }
+        else {
+            console.log("SearchNomenclature response:", response.data);
+            navigate("/nomenclature/search_results", {
+                state: { nomenclature: response.data }
+            });
+        }
+    }
+    catch (err: any) {
+        setLoading(false);
+        const msg = err?.response?.data?.message || "An unknown error occurred";
+        const cutmsg = msg.includes('.') ? msg.substring(0, msg.lastIndexOf('.')).trim() : msg;
+        setError(cutmsg);
+    }
+}
+
 export const CreateNomenclatureFromExcel = async (data: any, setError: (msg: string) => void, setLoading: (loading: boolean) => void, navigate: (url: string) => void,) => {
     await api.get(COOKIE_ROUTE.csrf);
     console.log(data)
@@ -60,6 +89,11 @@ export const EditNomenclatureRequest = async (id: number, data: any, setLoading:
         const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
         setError(cutmsg);
     }
+}
+
+export const DeleteNomenclature = async (id: number) => {
+    const response = await api.delete(NOMENCLATURE_ROUTES.nomenclatureById(id));
+    return response.data;
 }
 
 export const DeleteBibliographyFromNomenclature = async (id: number, bibliographyId: number) => {

@@ -12,14 +12,31 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useAuth } from "../../context/AuthContext.tsx";
 import DataTable from "../../components/DataTable.tsx";
 import {GetNomenclatureById} from "../../services/nomenclature/nomenclature.ts";
+import {toast, ToastContainer} from "react-toastify";
 
 function Nomenclature() {
     const { isAdmin } = useAuth();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
     const [bibliographies, setBiblipgraphies] = useState<any>(null);
+    const [error, setError] = useState("");
     const [refresh, setRefresh] = useState(false);
     const { id } = useParams();
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            setError("");
+        }
+    }, [error]);
 
     const fetchData = async (id: number) => {
         try {
@@ -55,6 +72,7 @@ function Nomenclature() {
 
         }}
         >
+            <ToastContainer />
             {loading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
                         <CircularProgress/>
@@ -131,6 +149,7 @@ function Nomenclature() {
                                 dataType={"nomenclatureBibliography"}
                                 handleRefresh={handleRefresh}
                                 referenceId={data.id}
+                                setError={setError}
                             />
                         </Box>
                     ) : (
