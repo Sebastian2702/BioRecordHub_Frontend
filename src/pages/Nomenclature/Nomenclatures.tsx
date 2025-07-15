@@ -9,10 +9,10 @@ import StyledAutoComplete from "../../components/StyledAutoComplete.tsx";
 import ExtraFieldAccordion from "../../components/ExtraFieldAccordion.tsx";
 import {toast, ToastContainer} from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
-import {GetAutocompleteNomenclature, SearchNomenclature} from "../../services/nomenclature/nomenclature.ts";
+import {GetAutocompleteNomenclature, SearchNomenclature, GetNomenclature} from "../../services/nomenclature/nomenclature.ts";
 import {nomenclatureFieldKeys, getHelperText} from "../../utils/formFieldHelpers.ts";
 import {capitalize} from "../../utils/helperFunctions.ts";
-import {useNavigate} from "react-router-dom";
+import NomenclatureList from '../../components/NomenclatureList.tsx';
 
 
 function Nomenclature() {
@@ -20,6 +20,9 @@ function Nomenclature() {
     const [autoCompleteOptions, setAutoCompleteOptions] = useState<string[]>([]);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [loadingNomenclatureList, setLoadingNomenclatureList] = useState(false);
+    const [nomenclatureList, setNomenclatureList] = useState<any[]>([]);
+    const [showNomenclatureList, setShowNomenclatureList] = useState(false);
     const [TaxonomicFields, setTaxonomicFields] = useState({
         kingdom: '',
         phylum: '',
@@ -41,7 +44,29 @@ function Nomenclature() {
     const filteredNomenclatureFieldKeys = nomenclatureFieldKeys.filter(
         (key) => key !== 'species' && key !== 'remarks'
     );
-    const navigate = useNavigate();
+
+    const resetTaxonomicFields = () => {
+        setTaxonomicFields(
+            {
+                kingdom: '',
+                phylum: '',
+                subphylum: '',
+                class: '',
+                order: '',
+                suborder: '',
+                infraorder: '',
+                superfamily: '',
+                family: '',
+                subfamily: '',
+                tribe: '',
+                genus: '',
+                subgenus: '',
+                species: '',
+                subspecies: '',
+                author: '',
+            }
+        )
+    }
 
 
     useEffect(() => {
@@ -72,8 +97,22 @@ function Nomenclature() {
         }
     }
 
-    const handleSearch = () => {
-        SearchNomenclature(TaxonomicFields, setError, setLoading, navigate)
+    const handleSearch = async () => {
+        setShowNomenclatureList(false)
+        setIsExpanded(false);
+        const response = await SearchNomenclature(TaxonomicFields, setError, setLoadingNomenclatureList)
+        setNomenclatureList(response);
+        setShowNomenclatureList(true);
+    }
+
+    const handleFullList = async () => {
+        resetTaxonomicFields();
+        setShowNomenclatureList(false)
+        setLoadingNomenclatureList(true);
+        const response = await GetNomenclature();
+        setLoadingNomenclatureList(false);
+        setNomenclatureList(response);
+        setShowNomenclatureList(true);
     }
 
     useEffect(() => {
@@ -162,9 +201,27 @@ function Nomenclature() {
                                 expanded={isExpanded}
                                 onToggle={() => setIsExpanded(prev => !prev)}
                             />
-
+                        </Box>
+                        <Box display={"flex"} justifyContent={"flex-end"} height={"60px"}>
+                            <StyledButton label={"Full List"} color={"primary"} size={"large"} onClick={handleFullList}/>
                         </Box>
                     </Box>
+                    {
+                        loadingNomenclatureList && (
+                            <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
+                                <CircularProgress />
+                            </Box>
+                        )
+                    }
+                    {showNomenclatureList && (
+                        nomenclatureList.length > 0 ? (
+                            <NomenclatureList nomenclature={nomenclatureList}/>
+                        ) : (
+                            <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
+                                <Typography variant="h6" color={COLORS.primary}>No Nomenclatures found</Typography>
+                            </Box>
+                        )
+                    )}
                 </Box>
 
             }

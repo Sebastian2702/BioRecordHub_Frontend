@@ -13,6 +13,7 @@ import { useAuth } from "../../context/AuthContext.tsx";
 import DataTable from "../../components/DataTable.tsx";
 import {GetNomenclatureById} from "../../services/nomenclature/nomenclature.ts";
 import {toast, ToastContainer} from "react-toastify";
+import StyledBreadcrumbs from "../../components/StyledBreadcrumbs.tsx";
 
 function Nomenclature() {
     const { isAdmin } = useAuth();
@@ -20,7 +21,6 @@ function Nomenclature() {
     const [data, setData] = useState<any>(null);
     const [bibliographies, setBiblipgraphies] = useState<any>(null);
     const [error, setError] = useState("");
-    const [refresh, setRefresh] = useState(false);
     const { id } = useParams();
 
     useEffect(() => {
@@ -50,9 +50,6 @@ function Nomenclature() {
         }
     };
 
-    const handleRefresh = () => {
-        setRefresh(prev => !prev);
-    };
 
     useEffect(() => {
         if (!id) return;
@@ -69,7 +66,6 @@ function Nomenclature() {
             borderRadius: BORDER.radius,
             margin: 'auto',
             paddingTop: "20px",
-
         }}
         >
             <ToastContainer />
@@ -109,6 +105,10 @@ function Nomenclature() {
                             </Box>
                         )}
                     </Box>
+                    <Box padding={2}>
+                        <StyledBreadcrumbs data={data}/>
+                    </Box>
+
                     <Box
                         sx={{
                             display: 'flex',
@@ -147,7 +147,6 @@ function Nomenclature() {
                                 deleteButton={false}
                                 trashCanButton={true}
                                 dataType={"nomenclatureBibliography"}
-                                handleRefresh={handleRefresh}
                                 referenceId={data.id}
                                 setError={setError}
                             />

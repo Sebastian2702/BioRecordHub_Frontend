@@ -5,8 +5,11 @@ import {useEffect, useState} from "react";
 import Typography from "@mui/material/Typography";
 import {toast, ToastContainer} from "react-toastify";
 
+interface NomenclatureListProps {
+    nomenclature: any[];
+}
 
-function NomenclatureList({ nomenclature }: { nomenclature: any[] }) {
+const NomenclatureList: React.FC<NomenclatureListProps> = ({nomenclature}) => {
     const [refresh, setRefresh] = useState(false);
     const [error, setError] = useState("");
     const handleRefresh = () => {
@@ -59,7 +62,6 @@ function NomenclatureList({ nomenclature }: { nomenclature: any[] }) {
               deleteButton={false}
               trashCanButton={true}
               dataType={"nomenclature"}
-              handleRefresh={handleRefresh}
               setError={setError}
           />
 

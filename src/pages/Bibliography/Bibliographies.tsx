@@ -117,7 +117,6 @@ function Bibliographies(){
                         deleteButton={false}
                         trashCanButton={true}
                         dataType={"bibliography"}
-                        handleRefresh={handleRefresh}
                         setError={setError}
                     />
                 }

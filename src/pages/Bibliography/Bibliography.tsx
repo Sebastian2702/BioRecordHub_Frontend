@@ -147,7 +147,6 @@ function Bibliography() {
                                 deleteButton={false}
                                 trashCanButton={true}
                                 dataType={"bibliographyNomenclature"}
-                                handleRefresh={handleRefresh}
                                 referenceId={data.id}
                                 setError={setError}
                             />

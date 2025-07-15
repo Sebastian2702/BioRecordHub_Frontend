@@ -7,7 +7,7 @@ interface StyledAutoCompleteProps {
     options: string[];
     label: string;
     value: string;
-    onChange: (event: React.ChangeEvent<{}>, value: string | null) => void;
+    onChange: (event: React.ChangeEvent<object>, value: string | null) => void;
 }
 
 const StyledAutoComplete: React.FC<StyledAutoCompleteProps> = ({ options, label, value, onChange }) => {

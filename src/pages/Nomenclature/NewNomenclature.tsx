@@ -128,7 +128,7 @@ function NewNomenclature(){
                     </Box>
                 ):
                 <Box>
-                    <Box sx={{ position: 'relative', height: '50px', marginBottom: '20px' }}>
+                    <Box sx={{ position: 'relative', height: '50px', marginBottom: '20px', padding: '0px 20px' }}>
                         <Box sx={{ position: 'absolute', left: 0 }}>
                             <BackButton width="55px" />
                         </Box>

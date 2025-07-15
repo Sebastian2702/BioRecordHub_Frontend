@@ -34,21 +34,13 @@ export const GetAutocompleteNomenclature = async () => {
     return response.data;
 }
 
-export const SearchNomenclature = async (data: any, setError: (msg: string) => void, setLoading: (loading: boolean) => void, navigate: (url: string, options?: any) => void) => {
+export const SearchNomenclature = async (data: any, setError: (msg: string) => void, setLoading: (loading: boolean) => void) => {
+    setLoading(true);
     await api.get(COOKIE_ROUTE.csrf);
     try{
-        setLoading(true);
         const response = await api.post(NOMENCLATURE_ROUTES.searchNomenclature, data);
         setLoading(false);
-        if (response.data.length === 1) {
-            navigate("/nomenclature/" + response.data[0].id);
-        }
-        else {
-            console.log("SearchNomenclature response:", response.data);
-            navigate("/nomenclature/search_results", {
-                state: { nomenclature: response.data }
-            });
-        }
+        return response.data;
     }
     catch (err: any) {
         setLoading(false);

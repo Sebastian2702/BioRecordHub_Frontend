@@ -29,11 +29,10 @@ interface DataTableProps {
     viewLink?: string;
     dataType: string;
     referenceId?: number;
-    handleRefresh?: () => void;
     setError: (msg: string) => void
 }
 
-const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewButton, viewLink, deleteButton, trashCanButton, dataType, referenceId,handleRefresh, setError }) => {
+const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewButton, viewLink, deleteButton, trashCanButton, dataType, referenceId, setError }) => {
     const [loadingId, setLoadingId] = useState<number | null>(null);
     const { isAdmin } = useAuth();
     const [dialogOpen, setDialogOpen] = useState(false);
