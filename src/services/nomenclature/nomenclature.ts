@@ -92,3 +92,33 @@ export const DeleteBibliographyFromNomenclature = async (id: number, bibliograph
     const response = await api.delete(NOMENCLATURE_ROUTES.deleteBibliographyFromNomenclature(id, bibliographyId));
     return response.data;
 }
+
+export const FetchGbifTaxonomy = async (speciesName: string, setLoading: (loading: boolean) => void, setError: (msg: string) => void) => {
+    setLoading(true)
+    try {
+        const response = await fetch(`https://api.gbif.org/v1/species/match?name=${encodeURIComponent(speciesName)}`);
+        const data = await response.json();
+
+        if (!data.usageKey) {
+            setLoading(false);
+            setError("Species not found in GBIF");
+            return null;
+        }
+
+        setLoading(false);
+        return {
+            kingdom: data.kingdom,
+            phylum: data.phylum,
+            class: data.class,
+            order: data.order,
+            family: data.family,
+            genus: data.genus,
+            species: speciesName,
+            status: data.status
+        };
+    } catch (error) {
+        setLoading(false);
+        setError("Error fetching taxonomy: " +  error);
+        return null;
+    }
+};

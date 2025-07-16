@@ -14,6 +14,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import {GetBibliography} from "../../services/bibliography/bibliography.ts";
 import DropdownSelector from "../../components/DropdownSelector.tsx";
 import {CreateNomenclature} from "../../services/nomenclature/nomenclature.ts";
+import GetNomenclatureDialog from "../../components/GetNomenclatureDialog.tsx";
+import GBIFLogoUrl from '../../assets/gbif-mark-white-logo.svg';
 
 function NewNomenclature(){
     const [nomenclatureData, setNomenclatureData] = useState({
@@ -52,6 +54,16 @@ function NewNomenclature(){
     ];
     const [bibliographies, setBibliographies] = useState<string[]>([]);
     const [selectedBibliographyIds, setSelectedBibliographyIds] = useState<string[]>([]);
+    const [getNomenclatureDialogOpen, setGetNomenclatureDialogOpen] = useState(false);
+
+
+    const handleNomenclatureDialogClose = () => {
+        setGetNomenclatureDialogOpen(false);
+    }
+
+    const handleNomenclatureDialogOpen = () => {
+        setGetNomenclatureDialogOpen(true);
+    }
 
     const fetchData = async () => {
         try {
@@ -128,16 +140,12 @@ function NewNomenclature(){
                     </Box>
                 ):
                 <Box>
-                    <Box sx={{ position: 'relative', height: '50px', marginBottom: '20px', padding: '0px 20px' }}>
-                        <Box sx={{ position: 'absolute', left: 0 }}>
-                            <BackButton width="55px" />
-                        </Box>
+                    <Box sx={{display: 'flex', justifyContent: "space-between", height: '50px', marginBottom: '20px', padding: '0 10px', alignItems: 'center'}}>
+                        <BackButton width="55px" />
 
                         <Typography
                             sx={{
-                                position: 'absolute',
-                                left: '50%',
-                                transform: 'translateX(-50%)',
+                                color: COLORS.primary,
                                 fontWeight: 'bold',
                                 fontSize: FONT_SIZES.xlarge,
                                 textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
@@ -145,7 +153,27 @@ function NewNomenclature(){
                         >
                             New Nomenclature
                         </Typography>
+
+                        <StyledButton
+                            label="GBIF"
+                            color="primary"
+                            size="large"
+                            onClick={handleNomenclatureDialogOpen}
+                            icon={
+                                <Box
+                                    component="img"
+                                    src={GBIFLogoUrl}
+                                    alt="GBIF"
+                                    sx={{ width: 38, height:38 }}
+                                />
+                            }
+                        />
+
+
                     </Box>
+
+                    <GetNomenclatureDialog open={getNomenclatureDialogOpen} onClose={handleNomenclatureDialogClose} setError={setError} nomenclatureData={nomenclatureData} setNomenclatureData={setNomenclatureData}/>
+
                     <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, padding: '0px 10px', }}>
                         {nomenclatureFieldKeys.map((field) => (
                             <FormField
