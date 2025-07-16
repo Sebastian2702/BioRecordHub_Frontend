@@ -1,17 +1,18 @@
-import {GetBibliography} from '../services/bibliography/bibliography.ts';
+import {GetBibliography} from '../../services/bibliography/bibliography.ts';
 import { Box } from "@mui/material";
-import { COLORS,BORDER } from '../constants/ui';
-import SearchFilter from "../components/SearchFilter.tsx";
-import DropdownInput from "../components/DropdownInput.tsx";
+import { COLORS,BORDER } from '../../constants/ui.ts';
+import SearchFilter from "../../components/SearchFilter.tsx";
+import DropdownInput from "../../components/DropdownInput.tsx";
 import {useEffect, useState} from "react";
 import { SelectChangeEvent } from '@mui/material/Select';
-import DateInput from "../components/DateInput.tsx";
-import RefreshButton from "../components/RefreshButton.tsx";
-import NewEntryButton from "../components/NewEntryButton.tsx";
-import DataTable from "../components/DataTable";
+import DateInput from "../../components/DateInput.tsx";
+import RefreshButton from "../../components/RefreshButton.tsx";
+import NewEntryButton from "../../components/NewEntryButton.tsx";
+import DataTable from "../../components/DataTable.tsx";
 import CircularProgress from '@mui/material/CircularProgress';
 import { Dayjs } from 'dayjs';
-import { dropdownFilterOptions } from "../constants/uiConstants.ts";
+import { dropdownFilterOptions } from "../../constants/uiConstants.ts";
+import {toast, ToastContainer} from "react-toastify";
 
 
 function Bibliographies(){
@@ -21,6 +22,7 @@ function Bibliographies(){
     const [data, setData] = useState<any[]>([]);
     const [refresh, setRefresh] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
@@ -49,6 +51,21 @@ function Bibliographies(){
         fetchData();
     }, [refresh]);
 
+    useEffect(() => {
+        if (error) {
+            toast.error(error, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            setError("");
+        }
+    }, [error]);
+
 
 
     return (
@@ -61,6 +78,7 @@ function Bibliographies(){
             margin: 'auto',
             paddingTop: "20px"
         }}>
+            <ToastContainer />
             <Box display="flex" padding={"0px 10px"} gap={2} flexWrap="wrap">
                 <Box sx={{ flex: 2, minWidth: '200px' }}>
                     <SearchFilter value={searchValue} onChange={handleSearchChange} />
@@ -99,7 +117,7 @@ function Bibliographies(){
                         deleteButton={false}
                         trashCanButton={true}
                         dataType={"bibliography"}
-                        handleRefresh={handleRefresh}
+                        setError={setError}
                     />
                 }
             </Box>

@@ -10,7 +10,7 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { useAuth } from "../context/AuthContext.tsx";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { COLORS } from '../constants/ui.ts';
-import {truncateString} from "../utils/helperFunctions.ts";
+import {formatLabel, truncateString} from "../utils/helperFunctions.ts";
 import { handleDeleteData } from '../services/deleteData.ts';
 import { useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -28,15 +28,17 @@ interface DataTableProps {
     trashCanButton: boolean;
     viewLink?: string;
     dataType: string;
-    handleRefresh?: () => void;
+    referenceId?: number;
+    setError: (msg: string) => void
 }
 
-const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewButton, viewLink, deleteButton, trashCanButton, dataType, handleRefresh }) => {
+const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewButton, viewLink, deleteButton, trashCanButton, dataType, referenceId, setError }) => {
     const [loadingId, setLoadingId] = useState<number | null>(null);
     const { isAdmin } = useAuth();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [deleteTitle, setDeleteTitle] = useState("");
     const [deleteId, setDeleteId] = useState<number>(0);
+    const [dialogLoading, setDialogLoading] = useState(false);
 
     const handleDialogClose = () => {
         setDialogOpen(false);
@@ -52,12 +54,64 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
         console.log("Edit function called for ID: " +  id  + " Type: " + type);
     }
 
+    const getDialogContent = (row:any) => {
+        if (dataType === "bibliography" || dataType === "nomenclatureBibliography") {
+            return row.title
+        }
+        if (dataType === "bibliographyNomenclature" || dataType === "nomenclature") {
+            return row.species
+        }
+        else {
+            return "this entry";
+        }
+    }
+
     const handleDelete = async  (id:number, type:string) => {
         setLoadingId(id);
-        console.log("Delete function called for ID: " + id + " Type: " + type);
         try {
-            await handleDeleteData(id, type);
-            handleRefresh?.();
+            if(referenceId != null){
+                try{
+                    setDialogLoading(true);
+                    setDialogOpen(true);
+                    await handleDeleteData(id, type, referenceId);
+                    window.location.reload();
+                }
+                catch (error) {
+                    const msg = error.response.data.message;
+                    const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
+                    setDialogLoading(false);
+                    setDialogOpen(false);
+                    setError(cutmsg)
+                    handleDialogClose();
+                    return;
+                }
+
+            }
+            else {
+                try{
+                    setDialogLoading(true);
+                    setDialogOpen(true);
+                    await handleDeleteData(id, type);
+                    if (type === "nomenclature"){
+                        window.location.href = "/nomenclature";
+                    }
+                    else {
+                        window.location.reload();
+                    }
+                }
+                catch (error) {
+                    const msg = error.response.data.message;
+                    const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
+                    setDialogLoading(false);
+                    setDialogOpen(false);
+                    setError(cutmsg)
+                    handleDialogClose();
+                    return;
+                }
+
+            }
+
+
         } finally {
             setLoadingId(null);
         }
@@ -79,6 +133,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                 title="Confirm Deletion"
                 contentText={deleteDialogContent}
                 content={"delete"}
+                dialogLoading={dialogLoading}
                 action={() => {
                     handleDelete(deleteId, dataType);
                 }}
@@ -111,7 +166,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                             <TableRow key={index}>
                                 {columns.map((column) => (
                                     <TableCell key={column.id} align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
-                                        {truncateString(row[column.id], 30)}
+                                        {formatLabel(truncateString(row[column.id], 30))}
                                     </TableCell>
                                 ))}
                                 {editButton &&
@@ -142,7 +197,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                                         ) : (
                                             <DeleteIcon
                                                 sx={{ color: COLORS.delete, cursor: "pointer" }}
-                                                onClick={() => handleDialogOpen(row.id, row.title || "this entry")}
+                                                onClick={() => handleDialogOpen(row.id, getDialogContent(row))}
                                                 fontSize={"medium"}
                                             />
                                         )}

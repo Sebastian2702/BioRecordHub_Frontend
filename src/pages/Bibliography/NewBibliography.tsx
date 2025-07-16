@@ -1,24 +1,24 @@
 import Box from "@mui/material/Box";
-import { COLORS, BORDER, FONT_SIZES } from '../constants/ui';
+import { COLORS, BORDER, FONT_SIZES } from '../../constants/ui.ts';
 import Typography from '@mui/material/Typography';
-import BackButton from "../components/BackButton.tsx";
-import FormField from "../components/FormField";
+import BackButton from "../../components/BackButton.tsx";
+import FormField from "../../components/FormField.tsx";
 import {useEffect, useState} from "react";
-import { getHelperText } from "../utils/formFieldHelpers.ts";
-import { formatLabel } from "../utils/helperFunctions.ts";
-import { bibliographyFieldKeys } from "../utils/formFieldHelpers.ts";
-import ExtraFieldAccordion from "../components/ExtraFieldAccordion.tsx";
-import ListInput from "../components/ListInput.tsx";
-import StyledButton from "../components/StyledButton.tsx";
+import { getHelperText } from "../../utils/formFieldHelpers.ts";
+import { formatLabel } from "../../utils/helperFunctions.ts";
+import { bibliographyFieldKeys } from "../../utils/formFieldHelpers.ts";
+import ExtraFieldAccordion from "../../components/ExtraFieldAccordion.tsx";
+import ListInput from "../../components/ListInput.tsx";
+import StyledButton from "../../components/StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
-import { CreateBibliography } from "../services/bibliography/bibliography.ts";
+import { CreateBibliography } from "../../services/bibliography/bibliography.ts";
 import dayjs from 'dayjs';
-import { formatAuthors } from "../utils/helperFunctions.ts";
+import { formatAuthors } from "../../utils/helperFunctions.ts";
 import {toast, ToastContainer} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
-import { dropdownFilterOptions } from "../constants/uiConstants.ts";
-import {normalizeEntryDates} from "../utils/helperFunctions.ts"
+import { dropdownFilterOptions } from "../../constants/uiConstants.ts";
+import {normalizeEntryDates} from "../../utils/helperFunctions.ts"
 
 
 function NewBibliography () {
@@ -143,19 +143,19 @@ function NewBibliography () {
                                 label={"Key"}
                                 value={key}
                                 onChange={(e) => setKey(e.target.value)}
-                                helperText={getHelperText('key') || ''}
+                                helperText={getHelperText('key', "bibliography") || ''}
                                 required={true}
                             />
                             <FormField
                                 label={"Title"}
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                helperText={getHelperText('title') || ''}
+                                helperText={getHelperText('title', "bibliography") || ''}
                                 required={true}
                             />
                             <ListInput
                                 label="Author"
-                                helperText={getHelperText('authors') || ''}
+                                helperText={getHelperText('authors', "bibliography") || ''}
                                 values={authorsArray}
                                 onChange={setauthorsArray}
                             />
@@ -164,7 +164,7 @@ function NewBibliography () {
                                     label={"Publication Year"}
                                     value={date}
                                     onChangeDate={(e) => setDate(e)}
-                                    helperText={getHelperText('publication_year') || ''}
+                                    helperText={getHelperText('publication_year', "bibliography") || ''}
                                     required={true}
                                     date={true}
                                     dateType={["year"]}
@@ -173,7 +173,7 @@ function NewBibliography () {
                                     label={"Item Type"}
                                     value={itemType}
                                     onChangeDropdown={(e) => setItemType(e.target.value)}
-                                    helperText={getHelperText('item_type') || ''}
+                                    helperText={getHelperText('item_type', "bibliography") || ''}
                                     required={true}
                                     dropdown={true}
                                     options={dropdownFilterOptions}
@@ -183,14 +183,14 @@ function NewBibliography () {
                                     label={"Publication Title"}
                                     value={publicationTitle}
                                     onChange={(e) => setPublicationTitle(e.target.value)}
-                                    helperText={getHelperText('publication_title') || ''}
+                                    helperText={getHelperText('publication_title', "bibliography") || ''}
                                     required={true}
                                 />
                                 <FormField
                                     label={"Pages"}
                                     value={pages}
                                     onChange={(e) => setPages(e.target.value)}
-                                    helperText={getHelperText('pages') || ''}
+                                    helperText={getHelperText('pages', "bibliography") || ''}
                                     required={false}
                                 />
                             </Box>
@@ -215,7 +215,7 @@ function NewBibliography () {
                                         {bibliographyFieldKeys.map((field) => (
                                             <FormField
                                                 label={formatLabel(field)}
-                                                helperText={getHelperText(field) || ''}
+                                                helperText={getHelperText(field, "bibliography") || ''}
                                                 value={(field === 'date' || field === 'date_added' || field === 'date_modified')
                                                     ? notRequiredFormData[field as keyof typeof notRequiredFormData]
                                                         ? dayjs(notRequiredFormData[field as keyof typeof notRequiredFormData])

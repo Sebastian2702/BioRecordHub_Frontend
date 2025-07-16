@@ -14,5 +14,11 @@ export const ROUTES = {
     bibliographyCreate: '/bibliography/new',
     bibliographyFileUpload: '/bibliography/new_file_upload',
     bibliographyEdit: '/bibliography/edit/:id',
+    nomenclatureId: '/nomenclature/:id',
+    nomenclatureCreate: '/nomenclature/new',
+    nomenclatureEdit: '/nomenclature/edit/:id',
+    nomenclature_search: '/nomenclature_search/:field/:value',
+    nomenclatureFileUpload: '/nomenclature/new_file_upload',
+    nomenclatureSearchResults: '/nomenclature/search_results',
 
 }

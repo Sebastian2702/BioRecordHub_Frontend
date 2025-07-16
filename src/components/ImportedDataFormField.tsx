@@ -12,9 +12,10 @@ interface ImportedDataEditorProps {
     value: string | Dayjs;
     onChange: (value: string) => void;
     fieldKey: string;
+    dataType: 'bibliography' | 'nomenclature' | 'occurrence' | 'project';
 }
 
-const ImportedDataFormField: React.FC<ImportedDataEditorProps> = ({value, onChange, fieldKey}) => {
+const ImportedDataFormField: React.FC<ImportedDataEditorProps> = ({value, onChange, fieldKey, dataType}) => {
 
     if (fieldKey === "item_type") {
         return (
@@ -36,7 +37,7 @@ const ImportedDataFormField: React.FC<ImportedDataEditorProps> = ({value, onChan
                 label={formatLabel(fieldKey)}
                 value={value ? dayjs(value?.toString() ?? '', 'YYYY') : null}
                 required={false}
-                helperText={getHelperText(fieldKey)}
+                helperText={getHelperText(fieldKey, dataType)}
                 onChangeDate={(date) => onChange(date?.toISOString() ?? "")}
                 date={true}
                 dateType={['year']}
@@ -49,7 +50,7 @@ const ImportedDataFormField: React.FC<ImportedDataEditorProps> = ({value, onChan
                 label={formatLabel(fieldKey)}
                 value={value ? dayjs(value?.toString() ?? '', 'YYYY') : null}
                 required={false}
-                helperText={getHelperText(fieldKey)}
+                helperText={getHelperText(fieldKey, dataType)}
                 onChangeDate={(date) => onChange(date?.toISOString() ?? "")}
                 date={true}
                 dateType={['year']}
@@ -62,7 +63,7 @@ const ImportedDataFormField: React.FC<ImportedDataEditorProps> = ({value, onChan
                 label={formatLabel(fieldKey)}
                 value={value ? dayjs(value, ['DD/MM/YYYY HH:mm', dayjs.ISO_8601], true) : null}
                 required={false}
-                helperText={getHelperText(fieldKey)}
+                helperText={getHelperText(fieldKey, dataType)}
                 onChangeDate={(date) => onChange(date?.toISOString() ?? "")}
                 dateTime={true}
             />
@@ -74,7 +75,7 @@ const ImportedDataFormField: React.FC<ImportedDataEditorProps> = ({value, onChan
                 label={formatLabel(fieldKey)}
                 value={value}
                 required={false}
-                helperText={getHelperText(fieldKey)}
+                helperText={getHelperText(fieldKey, dataType)}
                 onChange={(e) => onChange(e.target.value)}
                 multiline={true}
             />
@@ -86,7 +87,7 @@ const ImportedDataFormField: React.FC<ImportedDataEditorProps> = ({value, onChan
                 label={formatLabel(fieldKey)}
                 value={value}
                 required={false}
-                helperText={getHelperText(fieldKey)}
+                helperText={getHelperText(fieldKey, dataType)}
                 onChange={(e) => onChange(e.target.value)}
             />
         )

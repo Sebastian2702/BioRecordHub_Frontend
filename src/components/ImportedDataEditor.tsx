@@ -2,13 +2,17 @@ import React, {useState} from "react";
 import {Box} from "@mui/material";
 import StyledButton from "./StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
-import {CreateBibliographyWithFile} from "../services/bibliography/bibliography.ts";
+import {CreateBibliographyFromExcel} from "../services/bibliography/bibliography.ts";
+import {CreateNomenclatureFromExcel} from "../services/nomenclature/nomenclature.ts";
 import {useNavigate} from "react-router-dom";
 import {COLORS} from "../constants/ui.ts";
 import ImportedDataFormField from "./ImportedDataFormField.tsx";
 import CustomDialog from "./CustomDialog.tsx";
 import Typography from "@mui/material/Typography";
-import {normalizeEntryDates} from "../utils/helperFunctions.ts"
+import {formatLabel, normalizeEntryDates} from "../utils/helperFunctions.ts"
+import {getHelperText} from "../utils/formFieldHelpers.ts";
+import FormField from "./FormField.tsx";
+import DropdownSelector from "./DropdownSelector.tsx";
 
 
 interface ImportedDataEditorProps {
@@ -16,13 +20,35 @@ interface ImportedDataEditorProps {
     SetError: (error: string) => void,
     setLoading: (loading: boolean) => void,
     dataType: 'bibliography' | 'nomenclature' | 'occurence' | 'project';
+    bibliographies?: string[];
 }
 
-const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,SetError, setLoading,dataType}) => {
+const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,SetError, setLoading,dataType, bibliographies}) => {
     const [entries, setEntries] = useState(importedEntries);
     const [currentIndex, setCurrentIndex] = useState(0);
     const navigate = useNavigate();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const requiredFields = [
+        'kingdom',
+        'phylum',
+        'subphylum',
+        'class',
+        'order',
+        'suborder',
+        'infraorder',
+        'superfamily',
+        'family',
+        'author',
+    ];
+
+    const getRequiredFields = (field:string) => {
+        if(requiredFields.includes(field)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
     const handleDeleteDialogClose = () => {
         setDeleteDialogOpen(false);
@@ -33,6 +59,17 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
     };
 
     const currentEntry = entries[currentIndex];
+
+    const handleBiliographyChange = (newIds: number[]) => {
+        const updated = [...entries];
+        console.log(updated[currentIndex])
+        updated[currentIndex] = {
+            ...updated[currentIndex],
+            bibliography_ids: newIds,
+        };
+        console.log(updated[currentIndex])
+        setEntries(updated);
+    }
 
 
     const handleFieldChange = (field: keyof typeof currentEntry, value: string) => {
@@ -75,8 +112,23 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
 
         if(dataType === "bibliography") {
             const cleanedEntries = normalizeEntryDates(entries);
-            console.log(cleanedEntries)
-            CreateBibliographyWithFile(cleanedEntries, SetError, navigate, setLoading);
+            CreateBibliographyFromExcel(cleanedEntries, SetError, navigate, setLoading);
+        }
+        if(dataType === "nomenclature") {
+            const invalidEntries = entries.filter(entry => !entry.bibliography_ids || entry.bibliography_ids.length === 0);
+
+            if (invalidEntries.length > 0) {
+                SetError("Each nomenclature entry must have at least one associated bibliography.");
+                return;
+            }
+
+            const nomenclatures = {
+                nomenclatures: entries
+            };
+
+            console.log(nomenclatures);
+            CreateNomenclatureFromExcel(nomenclatures, SetError, setLoading, navigate);
+            return;
         }
     }
 
@@ -93,16 +145,57 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
             <CustomDialog open={deleteDialogOpen} onClose={handleDeleteDialogClose} title={"Confirm Deletion"} content={"delete"} contentText={deleteDialogContent} action={removeEntry}/>
         <Box sx={{maxWidth: '70%', margin: "auto", mt: 4}}>
             <Box sx={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2}}>
-                {Object.keys(currentEntry ?? {}).map((key) => (
-                    <ImportedDataFormField
-                        key={key}
-                        fieldKey={key}
-                        value={currentEntry?.[key] ?? ""}
-                        onChange={(val) => {
-                            handleFieldChange(key, typeof val === 'string' ? val : val?.toString() ?? "");
-                        }}
-                    />
-                ))}
+                {Object.keys(currentEntry ?? {}).map((key) => {
+                    if (dataType === 'bibliography') {
+                        return (
+                            <ImportedDataFormField
+                                key={key}
+                                fieldKey={key}
+                                value={currentEntry?.[key] ?? ""}
+                                dataType={dataType}
+                                onChange={(val) => {
+                                    handleFieldChange(
+                                        key,
+                                        typeof val === 'string' ? val : val?.toString() ?? ""
+                                    );
+                                }}
+                            />
+                        );
+                    }
+
+                    if (dataType === 'nomenclature') {
+                        const isDropdown = key === 'bibliography_ids';
+                        return (
+                            <Box key={key} sx={isDropdown ? { gridColumn: '1 / -1' } : {}}>
+                                {isDropdown ? (
+                                    <DropdownSelector
+                                        data={bibliographies}
+                                        selectedIds={currentEntry[key] ?? ""}
+                                        onChange={handleBiliographyChange}
+                                        dataType="bibliography"
+                                    />
+                                ) : (
+                                    <FormField
+                                        label={formatLabel(key)}
+                                        helperText={getHelperText(key, "nomenclature") || ''}
+                                        value={currentEntry[key as keyof typeof currentEntry] || ''}
+                                        onChange={(val) => {
+                                            handleFieldChange(
+                                                key,
+                                                typeof val === 'string' ? val : val?.toString() ?? ""
+                                            );
+                                        }}
+                                        required={getRequiredFields(key)}
+                                        multiline={key === 'remarks'}
+                                    />
+                                )}
+                            </Box>
+                        );
+                    }
+
+                    return null;
+                })}
+
 
             </Box>
 

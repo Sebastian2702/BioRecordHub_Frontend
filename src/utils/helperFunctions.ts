@@ -88,3 +88,7 @@ export const normalizeEntryDates = (entries: any[]) =>{
         return updatedEntry;
     });
 }
+
+export const extractBibliographyIds = (bibliographies: { id: number }[]): string[] => {
+    return bibliographies.map(b => b.id);
+}

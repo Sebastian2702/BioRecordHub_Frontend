@@ -1,28 +1,34 @@
 import {Box} from "@mui/material";
 import Typography from '@mui/material/Typography';
-import {BORDER, COLORS, FONT_SIZES} from '../constants/ui';
-import BackButton from "../components/BackButton.tsx";
-import {GetBibliographyById} from "../services/bibliography/bibliography.ts";
+import {BORDER, COLORS, FONT_SIZES} from '../../constants/ui.ts';
+import BackButton from "../../components/BackButton.tsx";
+import {GetBibliographyById} from "../../services/bibliography/bibliography.ts";
 import {useEffect, useState} from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useParams } from "react-router-dom";
-import  DataDisplay  from "../components/DataDisplay.tsx";
-import { formatLabel } from "../utils/helperFunctions.ts";
-import StyledButton from "../components/StyledButton.tsx";
+import  DataDisplay  from "../../components/DataDisplay.tsx";
+import { formatLabel } from "../../utils/helperFunctions.ts";
+import StyledButton from "../../components/StyledButton.tsx";
 import EditIcon from '@mui/icons-material/Edit';
-import { useAuth } from "../context/AuthContext.tsx";
+import { useAuth } from "../../context/AuthContext.tsx";
+import DataTable from "../../components/DataTable.tsx";
+import {toast, ToastContainer} from "react-toastify";
 
 
 function Bibliography() {
     const { isAdmin } = useAuth();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
+    const [nomenclature, setNomenclature] = useState<any>(null);
+    const [refresh, setRefresh] = useState(false);
+    const [error, setError] = useState("");
     const { id } = useParams();
 
     const fetchData = async (id: number) => {
         try {
             const response = await GetBibliographyById(id);
-            setData(response);
+            setNomenclature(response.nomenclatures);
+            setData({ ...response, nomenclatures: undefined });
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -30,11 +36,29 @@ function Bibliography() {
         }
     };
 
+    const handleRefresh = () => {
+        setRefresh(prev => !prev);
+    };
+
     useEffect(() => {
         if (!id) return;
         fetchData(Number(id));
     }, [id]);
 
+    useEffect(() => {
+        if (error) {
+            toast.error(error, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            setError("");
+        }
+    }, [error]);
 
     return (
         <Box sx={{
@@ -48,6 +72,7 @@ function Bibliography() {
 
         }}
         >
+            <ToastContainer />
             {loading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
                         <CircularProgress/>
@@ -102,6 +127,35 @@ function Bibliography() {
                                 ))
                         }
                     </Box>
+                    {nomenclature && nomenclature.length > 0 ? (
+                        <Box sx={{ padding: 1 }}>
+                            <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
+                                Nomenclatures
+                            </Typography>
+                            <DataTable
+                                data={nomenclature}
+                                columns={[
+                                    { id: 'species', label: 'Species' },
+                                    { id: 'author', label: 'Author' },
+                                    { id: 'genus', label: 'Genus' },
+                                    { id: 'family', label: 'Family' },
+                                    { id: 'order', label: 'Order' }
+                                ]}
+                                editButton={false}
+                                viewButton={true}
+                                viewLink={"/nomenclature/"}
+                                deleteButton={false}
+                                trashCanButton={true}
+                                dataType={"bibliographyNomenclature"}
+                                referenceId={data.id}
+                                setError={setError}
+                            />
+                        </Box>
+                    ) : (
+                        <Typography variant='h6'>
+                            No nomenclatures available for this bibliography entry.
+                        </Typography>
+                    )}
                 </Box>
 
             }
