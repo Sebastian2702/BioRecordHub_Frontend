@@ -115,9 +115,18 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
             CreateBibliographyFromExcel(cleanedEntries, SetError, navigate, setLoading);
         }
         if(dataType === "nomenclature") {
-            const  nomenclatures ={
-                nomenclatures: entries
+            const invalidEntries = entries.filter(entry => !entry.bibliography_ids || entry.bibliography_ids.length === 0);
+
+            if (invalidEntries.length > 0) {
+                SetError("Each nomenclature entry must have at least one associated bibliography.");
+                return;
             }
+
+            const nomenclatures = {
+                nomenclatures: entries
+            };
+
+            console.log(nomenclatures);
             CreateNomenclatureFromExcel(nomenclatures, SetError, setLoading, navigate);
             return;
         }

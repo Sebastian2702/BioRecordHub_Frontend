@@ -101,7 +101,7 @@ function NomenclatureSearch() {
                                     margin: 0,
                                 }}
                             >
-                                Species where the {formatLabel(field)} is {value}
+                                Species where the {formatLabel(field)} is "{value}"
                             </Typography>
                             <Box sx={{ marginLeft: 'auto', minWidth: '150px' }}>
                                 <NewEntryButton
