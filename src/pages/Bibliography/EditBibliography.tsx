@@ -16,7 +16,7 @@ import { formatLabel, formatAuthors, getAuthors } from "../../utils/helperFuncti
 import {toast, ToastContainer} from "react-toastify";
 import {useParams} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
-import {dropdownFilterOptions} from "../../constants/uiConstants.ts";
+import {dropdownFilterBibliographyOptions} from "../../constants/uiConstants.ts";
 import { getNonRequiredFields } from "../../utils/helperFunctions.ts";
 import {useNavigate} from "react-router-dom";
 
@@ -156,7 +156,7 @@ function EditBibliography (){
                                     helperText={getHelperText('item_type', "bibliography") || ''}
                                     required={true}
                                     dropdown={true}
-                                    options={dropdownFilterOptions}
+                                    options={dropdownFilterBibliographyOptions}
                                 />
 
                                 <FormField

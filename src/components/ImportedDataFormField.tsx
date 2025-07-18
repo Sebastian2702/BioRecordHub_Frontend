@@ -1,7 +1,7 @@
 import {formatLabel} from "../utils/helperFunctions.ts";
 import FormField from "./FormField";
 import {getHelperText} from "../utils/formFieldHelpers.ts";
-import {dropdownFilterOptions} from "../constants/uiConstants.ts";
+import {dropdownFilterBibliographyOptions} from "../constants/uiConstants.ts";
 import dayjs from "dayjs";
 import { SelectChangeEvent } from "@mui/material/Select";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -27,7 +27,7 @@ const ImportedDataFormField: React.FC<ImportedDataEditorProps> = ({value, onChan
                 helperText={''}
                 onChangeDropdown={(e: SelectChangeEvent<string>) => onChange(e.target.value)}
                 dropdown={true}
-                options={dropdownFilterOptions}
+                options={dropdownFilterBibliographyOptions}
             />
         );
     } else if (fieldKey === "date") {

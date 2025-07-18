@@ -1,10 +1,18 @@
-export const dropdownFilterOptions: { display: string; value: string }[] = [
+export const dropdownFilterBibliographyOptions: { display: string; value: string }[] = [
     { display: "Journal Article", value: "journal_article" },
     { display: "Book", value: "book" },
     { display: "Conference Paper", value: "conference_paper" },
     { display: "Thesis", value: "thesis" },
     { display: "Report", value: "report" },
 ];
+
+export const dropdownFilterAdminUserOptions: { display: string; value: string }[] = [
+    { display: "Admin", value: "admin" },
+    { display: "Manager", value: "Manager" },
+    { display: "Biologist", value: "user" },
+
+]
+
 
 export const itemTypeOptionsFormat: { key: string; display: string }[] = [
     { key: "journal_article", display: "Journal Article" },

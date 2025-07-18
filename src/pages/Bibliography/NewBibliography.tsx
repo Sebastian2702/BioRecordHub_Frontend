@@ -17,7 +17,7 @@ import { formatAuthors } from "../../utils/helperFunctions.ts";
 import {toast, ToastContainer} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
-import { dropdownFilterOptions } from "../../constants/uiConstants.ts";
+import { dropdownFilterBibliographyOptions } from "../../constants/uiConstants.ts";
 import {normalizeEntryDates} from "../../utils/helperFunctions.ts"
 
 
@@ -176,7 +176,7 @@ function NewBibliography () {
                                     helperText={getHelperText('item_type', "bibliography") || ''}
                                     required={true}
                                     dropdown={true}
-                                    options={dropdownFilterOptions}
+                                    options={dropdownFilterBibliographyOptions}
                                 />
 
                                 <FormField
