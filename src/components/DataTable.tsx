@@ -11,12 +11,14 @@ import { useAuth } from "../context/AuthContext.tsx";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { COLORS } from '../constants/ui.ts';
 import {formatLabel, truncateString} from "../utils/helperFunctions.ts";
-import { handleDeleteData } from '../services/deleteData.ts';
+import { handleDeleteData, handleEditData } from '../services/deleteData.ts';
 import { useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import CustomDialog from "./CustomDialog.tsx";
 import Box from '@mui/material/Box';
 import Typography from "@mui/material/Typography";
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
 
 
 interface DataTableProps {
@@ -34,25 +36,67 @@ interface DataTableProps {
 
 const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewButton, viewLink, deleteButton, trashCanButton, dataType, referenceId, setError }) => {
     const [loadingId, setLoadingId] = useState<number | null>(null);
-    const { isAdmin } = useAuth();
-    const [dialogOpen, setDialogOpen] = useState(false);
+    const { isAdmin, isManager } = useAuth();
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [editRoleDialogOpen, setEditRoleDialogOpen] = useState(false);
     const [deleteTitle, setDeleteTitle] = useState("");
+    const [editName, setEditName] = useState("");
     const [deleteId, setDeleteId] = useState<number>(0);
+    const [editId, setEditId] = useState<number>(0);
     const [dialogLoading, setDialogLoading] = useState(false);
+    const [editRoleField, setEditRoleField] = useState("");
+    const [occurrenceFields, setOccurrenceFields] = useState({
+        name: '',
+        label: '',
+        type: '',
+        group: '',
+        is_required: false,
+        is_active: false,
+    });
 
-    const handleDialogClose = () => {
-        setDialogOpen(false);
+    const handleDeleteDialogClose = () => {
+        setDeleteDialogOpen(false);
     };
 
-    const handleDialogOpen = (id:number, title:string) => {
+    const handleRoleEditDialogClose = () => {
+        setEditRoleDialogOpen(false);
+    }
+
+    const handleDeleteDialogOpen = (id:number, title:string) => {
         setDeleteId(id);
         setDeleteTitle(title);
-        setDialogOpen(true);
+        setDeleteDialogOpen(true);
     };
 
-    const handleEdit = (id:number, type:string) => {
-        console.log("Edit function called for ID: " +  id  + " Type: " + type);
+    const handleRoleEditDialogOpen = (id:number, title:string) => {
+        setEditId(id);
+        setEditName(title);
+        setEditRoleDialogOpen(true);
+    };
+
+    const handleEdit = async (id:number, type:string) => {
+       if (dataType === "users") {
+            try{
+                setDialogLoading(true);
+                const data = {
+                    role: editRoleField,
+                }
+                console.log(data);
+                await handleEditData(id, type, data);
+                window.location.reload();
+            }
+            catch(err){
+                const msg = err.response.data.message;
+                const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
+                setDialogLoading(false);
+                setEditRoleDialogOpen(false);
+                setError(cutmsg);
+                handleRoleEditDialogClose();
+                return;
+            }
+        }
     }
+
 
     const getDialogContent = (row:any) => {
         if (dataType === "bibliography" || dataType === "nomenclatureBibliography") {
@@ -60,6 +104,9 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
         }
         if (dataType === "bibliographyNomenclature" || dataType === "nomenclature") {
             return row.species
+        }
+        if (dataType === "users") {
+            return row.name;
         }
         else {
             return "this entry";
@@ -72,7 +119,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
             if(referenceId != null){
                 try{
                     setDialogLoading(true);
-                    setDialogOpen(true);
+                    setDeleteDialogOpen(true);
                     await handleDeleteData(id, type, referenceId);
                     window.location.reload();
                 }
@@ -80,9 +127,9 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                     const msg = error.response.data.message;
                     const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
                     setDialogLoading(false);
-                    setDialogOpen(false);
+                    setDeleteDialogOpen(false);
                     setError(cutmsg)
-                    handleDialogClose();
+                    handleDeleteDialogClose();
                     return;
                 }
 
@@ -90,7 +137,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
             else {
                 try{
                     setDialogLoading(true);
-                    setDialogOpen(true);
+                    setDeleteDialogOpen(true);
                     await handleDeleteData(id, type);
                     if (type === "nomenclature"){
                         window.location.href = "/nomenclature";
@@ -103,9 +150,9 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                     const msg = error.response.data.message;
                     const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
                     setDialogLoading(false);
-                    setDialogOpen(false);
+                    setDeleteDialogOpen(false);
                     setError(cutmsg)
-                    handleDialogClose();
+                    handleDeleteDialogClose();
                     return;
                 }
 
@@ -128,8 +175,8 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
     return (
         <Box>
             <CustomDialog
-                open={dialogOpen}
-                onClose={handleDialogClose}
+                open={deleteDialogOpen}
+                onClose={handleDeleteDialogClose}
                 title="Confirm Deletion"
                 contentText={deleteDialogContent}
                 content={"delete"}
@@ -138,6 +185,20 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                     handleDelete(deleteId, dataType);
                 }}
             />
+            <CustomDialog
+                open={editRoleDialogOpen}
+                onClose={handleRoleEditDialogClose}
+                title= {`Change the ${editName} role`}
+                contentText={<Typography variant="body1">The roles available:</Typography>}
+                editField={editRoleField}
+                setEditField={setEditRoleField}
+                content={"editUserRole"}
+                dialogLoading={dialogLoading}
+                action={() => {
+                    handleEdit(editId, dataType);
+                }}
+            />
+
             <TableContainer component={Paper} sx={{ maxHeight: 'calc(100vh - 250px)' }}>
                 <Table stickyHeader>
                     <TableHead sx={{width:'100%'}}>
@@ -147,26 +208,31 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                                     {column.label}
                                 </TableCell>
                             ))}
-                            {editButton &&
-                                <TableCell sx={{ fontWeight: 'bold', color: COLORS.primary, borderBottom: `2px solid ${COLORS.primary}` }} align={'center'}>
-                                </TableCell>
-                            }
-                            {viewButton &&
-                                <TableCell sx={{ fontWeight: 'bold', color: COLORS.primary, borderBottom: `2px solid ${COLORS.primary}` }} align={'center'}>
-                                </TableCell>
-                            }
-                            { deleteButton || trashCanButton && isAdmin &&
-                                <TableCell sx={{ fontWeight: 'bold', color: COLORS.primary, borderBottom: `2px solid ${COLORS.primary}` }} align={'center'}>
-                                </TableCell>
-                            }
+                            {editButton && (
+                                <TableCell sx={{ borderBottom: `2px solid ${COLORS.primary}` }} />
+                            )}
+                            {viewButton && (
+                                <TableCell sx={{ borderBottom: `2px solid ${COLORS.primary}` }} />
+                            )}
+                            {(deleteButton || (trashCanButton && (isAdmin || isManager))) && (
+                                <TableCell sx={{ borderBottom: `2px solid ${COLORS.primary}` }} />
+                            )}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {data.map((row, index) =>  (
                             <TableRow key={index}>
                                 {columns.map((column) => (
-                                    <TableCell key={column.id} align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
-                                        {formatLabel(truncateString(row[column.id], 30))}
+                                    <TableCell
+                                        key={column.id}
+                                        align="center"
+                                        sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}
+                                    >
+                                        {typeof row[column.id] === 'boolean' ? (
+                                            row[column.id] ? <CheckIcon sx={{ color: 'green', fontWeight:'bold' }} /> : <ClearIcon sx={{ color: 'red', fontWeight:'bold' }} />
+                                        ) : (
+                                            formatLabel(truncateString(row[column.id], 30))
+                                        )}
                                     </TableCell>
                                 ))}
                                 {editButton &&
@@ -175,7 +241,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                                             label={"Edit"}
                                             color={"edit"}
                                             size={"small"}
-                                            onClick= {() => handleEdit(row.id, dataType)}
+                                            onClick= {() => handleRoleEditDialogOpen(row.id, row.name)}
                                             icon={<ModeEditIcon/>}
                                         />
                                     </TableCell>
@@ -190,26 +256,26 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                                         />
                                     </TableCell>
                                 }
-                                {trashCanButton && isAdmin &&
+                                {trashCanButton && (isAdmin || isManager) &&
                                     <TableCell align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
                                         {loadingId === row.id ? (
                                             <CircularProgress size={24} />
                                         ) : (
                                             <DeleteIcon
                                                 sx={{ color: COLORS.delete, cursor: "pointer" }}
-                                                onClick={() => handleDialogOpen(row.id, getDialogContent(row))}
+                                                onClick={() => handleDeleteDialogOpen(row.id, getDialogContent(row))}
                                                 fontSize={"medium"}
                                             />
                                         )}
                                     </TableCell>
                                 }
-                                {deleteButton && isAdmin &&
+                                {deleteButton && (isAdmin || isManager) &&
                                     <TableCell align={'center'} sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}>
                                         <StyledButton
                                             label={"Delete"}
                                             color={"delete"}
                                             size={"small"}
-                                            onClick={() => handleDelete(row.id, dataType)}
+                                            onClick={() => handleDeleteDialogOpen(row.id, getDialogContent(row))}
                                             icon={loadingId === row.id ? <CircularProgress size={16} /> : <DeleteIcon />}
                                             disabled={loadingId === row.id}
                                         />

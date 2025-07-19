@@ -29,3 +29,11 @@ export const EXCEL_ROUTES = {
     bibliography: '/api/excel_import/bibliography',
     nomenclature: '/api/excel_import/nomenclature',
 }
+
+export const Admin_ROUTES = {
+    getUsers: '/api/admin/users',
+    deleteUser: (id: number) => `/api/admin/users/${id}`,
+    updateRole: (id: number) => `/api/admin/users/${id}`,
+    getOccurrenceFields: '/api/admin/occurrenceField',
+    getOccurrenceFieldById: (id: number) => `/api/admin/occurrenceField/${id}`,
+}

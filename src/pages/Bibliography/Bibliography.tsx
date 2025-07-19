@@ -16,7 +16,7 @@ import {toast, ToastContainer} from "react-toastify";
 
 
 function Bibliography() {
-    const { isAdmin } = useAuth();
+    const { isAdmin, isManager } = useAuth();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
     const [nomenclature, setNomenclature] = useState<any>(null);
@@ -97,7 +97,7 @@ function Bibliography() {
                             {data.key}
                         </Typography>
 
-                        {isAdmin && (
+                        {(isAdmin || isManager)  && (
                             <Box sx={{ position: 'absolute', right: 0 }}>
                                 <StyledButton
                                     label="Edit"

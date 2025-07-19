@@ -81,7 +81,7 @@ function Bibliographies(){
             <ToastContainer />
             <Box display="flex" padding={"0px 10px"} gap={2} flexWrap="wrap">
                 <Box sx={{ flex: 2, minWidth: '200px' }}>
-                    <SearchFilter value={searchValue} onChange={handleSearchChange} />
+                    <SearchFilter value={searchValue} onChange={handleSearchChange} label={"Search for key, title and author"}/>
                 </Box>
                 <Box sx={{ flex: 1, minWidth: '150px' }}>
                     <DropdownInput value={dropdownValue} options={dropdownFilterBibliographyOptions} onChange={handleDropdownChange} label={"Type"} filter={true}/>

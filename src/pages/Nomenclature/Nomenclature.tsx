@@ -16,7 +16,7 @@ import {toast, ToastContainer} from "react-toastify";
 import StyledBreadcrumbs from "../../components/StyledBreadcrumbs.tsx";
 
 function Nomenclature() {
-    const { isAdmin } = useAuth();
+    const { isAdmin, isManager } = useAuth();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
     const [bibliographies, setBiblipgraphies] = useState<any>(null);
@@ -93,7 +93,7 @@ function Nomenclature() {
                             {data.species}
                         </Typography>
 
-                        {isAdmin && (
+                        {(isAdmin || isManager) && (
                             <Box sx={{ position: 'absolute', right: 0 }}>
                                 <StyledButton
                                     label="Edit"

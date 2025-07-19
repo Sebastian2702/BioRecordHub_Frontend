@@ -13,6 +13,21 @@ export const dropdownFilterAdminUserOptions: { display: string; value: string }[
 
 ]
 
+export const dropdownFilterAdminMandatoryFieldsOptions: { display: string; value: string }[] = [
+    { display: "Mandatory", value: "true" },
+    { display: "Optional", value: "false" },
+]
+
+export const dropdownFilterAdminFiledStatusOptions: { display: string; value: string }[] = [
+    { display: "Active", value: "true" },
+    { display: "Inactive", value: "false" },
+]
+
+export const dropdownEditUserRoleOptions: { display: string; value: string }[] = [
+    { display: "Admin", value: "admin" },
+    { display: "Manager", value: "manager" },
+    { display: "User", value: "user" },
+]
 
 export const itemTypeOptionsFormat: { key: string; display: string }[] = [
     { key: "journal_article", display: "Journal Article" },

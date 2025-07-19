@@ -4,10 +4,16 @@ import {BORDER, COLORS, FONT_SIZES} from "../../constants/ui";
 import { useEffect, useState } from "react";
 import SearchFilter from "../../components/SearchFilter.tsx";
 import DropdownInput from "../../components/DropdownInput.tsx";
-import {dropdownFilterAdminUserOptions} from "../../constants/uiConstants.ts";
+import {dropdownFilterAdminUserOptions, dropdownFilterAdminMandatoryFieldsOptions, dropdownFilterAdminFiledStatusOptions} from "../../constants/uiConstants.ts";
 import {SelectChangeEvent} from "@mui/material/Select";
 import InfoIcon from '@mui/icons-material/Info';
 import CustomDialog from "../../components/CustomDialog.tsx";
+import DataTable from "../../components/DataTable.tsx";
+import {GetUsers, GetOccurrenceFields} from "../../services/admin/admin.ts";
+import {ToastContainer} from "react-toastify";
+import CircularProgress from "@mui/material/CircularProgress";
+import StyledButton from "../../components/StyledButton.tsx";
+import AddIcon from '@mui/icons-material/Add';
 
 function AdminControlPanel() {
     const [loading, setLoading] = useState(true);
@@ -18,6 +24,38 @@ function AdminControlPanel() {
     const [mandatoryFilter, setMandatoryFilter] = useState('');
     const [activeFilter, setActiveFilter] = useState('');
     const [infoUsersDialogOpen, setInfoUsersDialogOpen] = useState(false);
+    const [users, setUsers] = useState<any[]>([]);
+    const [fields, setFields] = useState<any[]>([]);
+
+    const getUsers = async () => {
+        try{
+            setLoading(true);
+            const response = await GetUsers();
+            setUsers(response);
+        }
+        catch(error){
+            console.error("Error fetching users:", error);
+            setError("Failed to fetch users. Please try again later.");
+        }
+        finally {
+            setLoading(false);
+        }
+    }
+
+    const getFields = async () => {
+        try{
+            setLoading(true);
+            const response = await GetOccurrenceFields();
+            setFields(response);
+        }
+        catch(error){
+            console.error("Error fetching fields:", error);
+            setError("Failed to fetch fields. Please try again later.");
+        }
+        finally {
+            setLoading(false);
+        }
+    }
 
     const handleUsersInfoDialogClose = () => {
         setInfoUsersDialogOpen(false);
@@ -30,19 +68,35 @@ function AdminControlPanel() {
     const infoUsersDialogContent = (
         <Box>
             <Typography variant="body1" gutterBottom>
-              <strong style={{ color: COLORS.primary }}>Biologist:</strong> Can create and edit nomenclatures, bibliographies, and projects.
+                <strong style={{ color: COLORS.primary }}>User:</strong> Can create and view nomenclatures, bibliographies, occurrences, and projects.
             </Typography>
 
             <Typography variant="body1" sx={{ mt: 2 }}>
-                <strong style={{ color: COLORS.primary }}>Manager:</strong> Has all the permissions of a Biologist, plus the ability to delete data in all sections.
+                <strong style={{ color: COLORS.primary }}>Manager:</strong> Inherits all User permissions, and additionally can edit and delete data in all sections of the system.
             </Typography>
 
             <Typography variant="body1" sx={{ mt: 2 }}>
-                <strong style={{ color: COLORS.primary }}>Administrator:</strong> Has all the permissions of an Manager, plus the ability to manage user roles and manage occurrence form fields.
+                <strong style={{ color: COLORS.primary }}>Administrator:</strong> Inherits all Manager permissions, and can also manage user roles and customize the occurrence form fields.
             </Typography>
 
+            <Typography variant="body2" sx={{ mt: 3, color: 'red', fontWeight: 'bold' }}>
+                ⚠️ Once a user is assigned the Administrator role, this action cannot be undone. Use caution when changing a user's role to Admin.
+            </Typography>
         </Box>
     );
+
+
+    useEffect(() => {
+        getUsers();
+        getFields();
+    }, []);
+
+    useEffect(() => {
+        if (error) {
+            console.error(error);
+            setError("");
+        }
+    }, [error]);
 
     return(
         <Box sx={{
@@ -50,10 +104,11 @@ function AdminControlPanel() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            overflowY: 'auto',
             justifyContent: 'flex-start',
             gap: '1rem',
-
         }}>
+            <ToastContainer />
             <Box
                 sx={{
                     width: '97%',
@@ -65,32 +120,58 @@ function AdminControlPanel() {
                     paddingTop: "20px",
                 }}
             >
-                <Box
-                    padding = '0px 20px'
-                    display="flex"
-                    justifyContent="space-between"
-                >
-                    <CustomDialog open={infoUsersDialogOpen} onClose={handleUsersInfoDialogClose} title={"Permissions"} content={"information"} contentText={infoUsersDialogContent}/>
-                    <Typography
-                        variant="h4"
-                        fontWeight="bold"
-                        color={COLORS.primary}
-                        align={'left'}
-                    >
-                        BioRecord Users:
-                    </Typography>
-                    <Box display="flex" padding={"0px 10px"} gap={2} flexWrap="wrap">
-                        <Box sx={{ flex: 3, minWidth: '500px' }}>
-                            <SearchFilter value={userSearch} onChange={(e) => setUserSearch(e.target.value)} />
+                {loading ? (
+                        <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
+                            <CircularProgress/>
                         </Box>
-                        <Box sx={{ flex:1, minWidth: '150px' }}>
-                            <DropdownInput value={roleFilter} options={dropdownFilterAdminUserOptions} onChange={(e:SelectChangeEvent) => setRoleFilter(e.target.value)} label={"Type"} filter={true}/>
+                    ) :
+                    <Box>
+                        <Box
+                            padding = '0px 20px'
+                            display="flex"
+                            justifyContent="space-between"
+                        >
+                            <CustomDialog open={infoUsersDialogOpen} onClose={handleUsersInfoDialogClose} title={"Roles"} content={"information"} contentText={infoUsersDialogContent}/>
+                            <Typography
+                                variant="h4"
+                                fontWeight="bold"
+                                color={COLORS.primary}
+                                align={'left'}
+                            >
+                                BioRecord Users:
+                            </Typography>
+                            <Box display="flex" padding={"0px 10px"} gap={2} flexWrap="wrap">
+                                <Box sx={{ flex: 3, minWidth: '500px' }}>
+                                    <SearchFilter value={userSearch} onChange={(e) => setUserSearch(e.target.value)} label={'Search for a user name'}/>
+                                </Box>
+                                <Box sx={{ flex:1, minWidth: '150px' }}>
+                                    <DropdownInput value={roleFilter} options={dropdownFilterAdminUserOptions} onChange={(e:SelectChangeEvent) => setRoleFilter(e.target.value)} label={"Role"} filter={true}/>
+                                </Box>
+                                <InfoIcon sx={{color: COLORS.primary, cursor: "pointer", fontSize: "35px", marginTop:'15px'}} onClick={() => handleUsersInfoDialogOpen()}/>
+
+                            </Box>
+
                         </Box>
-                        <InfoIcon sx={{color: COLORS.primary, cursor: "pointer", fontSize: "35px", marginTop:'15px'}} onClick={() => handleUsersInfoDialogOpen()}/>
+                        <Box sx={{overflowY: 'auto', padding: '20px'}}>
+                            <DataTable
+                                data={users}
+                                columns=
+                                    {[
+                                        { id: 'name', label: 'Name' },
+                                        { id: 'email', label: 'Email' },
+                                        { id: 'role', label: 'Role' },
+                                    ]}
+                                editButton={true}
+                                viewButton={false}
+                                deleteButton={true}
+                                trashCanButton={false}
+                                dataType={"users"}
+                                setError={setError}
+                            />
+                        </Box>
+
                     </Box>
-
-                </Box>
-
+                }
             </Box>
             <Box
                 sx={{
@@ -101,12 +182,74 @@ function AdminControlPanel() {
                     borderRadius: BORDER.radius,
                     margin: 'auto',
                     paddingTop: "20px",
+
                 }}
             >
+                {loading ? (
+                        <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
+                            <CircularProgress/>
+                        </Box>
+                    ) :
+                    <Box>
+                        <Box
+                            padding = '0px 20px'
+                            display="flex"
+                            justifyContent="space-between"
+                        >
+                            <Typography
+                                variant="h4"
+                                fontWeight="bold"
+                                color={COLORS.primary}
+                                align={'left'}
+                            >
+                               Occurrence Form Fields:
+                            </Typography>
+                            <Box display="flex" padding={"0px 10px"} gap={2} flexWrap="wrap" overflow="hidden">
+                                <Box sx={{ flex: 3, minWidth: '400px' }}>
+                                    <SearchFilter value={fildSearch} onChange={(e) => setFieldSearch(e.target.value)} label={'Search for a field'}/>
+                                </Box>
+                                <Box sx={{ flex:1, minWidth: '150px' }}>
+                                    <DropdownInput value={mandatoryFilter} options={dropdownFilterAdminMandatoryFieldsOptions} onChange={(e:SelectChangeEvent) => setMandatoryFilter(e.target.value)} label={"Rule"} filter={true}/>
+                                </Box>
+                                <Box sx={{ flex:1, minWidth: '150px' }}>
+                                    <DropdownInput value={activeFilter} options={dropdownFilterAdminFiledStatusOptions} onChange={(e:SelectChangeEvent) => setActiveFilter(e.target.value)} label={"Status"} filter={true}/>
+                                </Box>
+
+                                <Box maxHeight={"55px"}>
+                                    <StyledButton label={"New Field"} color={"primary"} size={'large'} icon={<AddIcon/>} onClick={() => console.log("New Field Clicked")} />
+                                </Box>
+                            </Box>
+                        </Box>
+                        <Box sx={{overflowY: 'auto', padding: '20px',}}>
+                            <DataTable
+                                data={fields}
+                                columns=
+                                    {[
+                                        { id: 'name', label: 'Name' },
+                                        { id: 'label', label: 'Label' },
+                                        { id: 'type', label: 'Type' },
+                                        { id: 'group', label: 'Group' },
+                                        { id: 'is_required', label: 'Required' },
+                                        { id: 'is_active', label: 'Active' },
+                                    ]}
+                                editButton={true}
+                                viewButton={false}
+                                deleteButton={true}
+                                trashCanButton={false}
+                                dataType={"fields"}
+                                setError={setError}
+                            />
+                        </Box>
+
+
+
+                    </Box>
+                }
 
             </Box>
         </Box>
     )
 }
+
 
 export default AdminControlPanel;

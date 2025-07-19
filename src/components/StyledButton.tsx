@@ -27,6 +27,7 @@ const StyledButton: React.FC<ButtonProps> = ({ label, color, size, onClick, disa
                 borderRadius: BORDER.radius,
                 backgroundColor: color === 'primary' ? COLORS.primary : color === 'secondary' ? COLORS.secondary : color === 'edit' ? COLORS.edit : COLORS.delete,
                 color: COLORS.white,
+                height: size === 'small' ? '32px' : size === 'medium' ? '50px' : '60px',
                 fontWeight: 'bold',
                 boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
                 borderColor: border ? COLORS.white : 'transparent',
