@@ -10,8 +10,8 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { useAuth } from "../context/AuthContext.tsx";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { COLORS } from '../constants/ui.ts';
-import {formatLabel, truncateString} from "../utils/helperFunctions.ts";
-import { handleDeleteData, handleEditData } from '../services/deleteData.ts';
+import {formatLabel, truncateString, unformatLabel} from "../utils/helperFunctions.ts";
+import { handleDeleteData, handleEditData } from '../services/handleDialogData.ts';
 import { useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import CustomDialog from "./CustomDialog.tsx";
@@ -63,6 +63,19 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
         setEditRoleDialogOpen(false);
     }
 
+    const handleEditOccurrenceFieldDialogClose = () => {
+        setEditOccurrenceFieldOpen(false);
+        setEditName("");
+        setOccurrenceFields({
+            name: '',
+            label: '',
+            type: '',
+            group: '',
+            is_required: false,
+            is_active: false,
+        });
+    }
+
     const handleDeleteDialogOpen = (id:number, title:string) => {
         setDeleteId(id);
         setDeleteTitle(title);
@@ -75,20 +88,27 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
         setEditRoleDialogOpen(true);
     };
 
-    const handleEditOccurrenceFieldDialogOpen = (title:string) => {
-
-        setEditName(title);
+    const handleEditOccurrenceFieldDialogOpen = (id:number,title:string, label:string, type:string, group:string, is_required:boolean, is_active:boolean) => {
+        setEditName(formatLabel(title));
+        setEditId(id);
+        setOccurrenceFields({
+            name: title,
+            label: label,
+            type: type,
+            group: group,
+            is_required: is_required,
+            is_active: is_active
+        });
         setEditOccurrenceFieldOpen(true);
     }
 
-    const handleEdit = async (id:number, type:string) => {
+    const handleEdit = async (id:number, type:string, data?:any) => {
        if (dataType === "users") {
             try{
                 setDialogLoading(true);
                 const data = {
                     role: editRoleField,
                 }
-                console.log(data);
                 await handleEditData(id, type, data);
                 window.location.reload();
             }
@@ -102,14 +122,36 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                 return;
             }
         }
+       else{
+           if(data){
+               try{
+                   setDialogLoading(true);
+                   const formatedData = {
+                       ...data,
+                       name: unformatLabel(data.name),
+                   };
+                   await handleEditData(id, type, formatedData);
+                   window.location.reload();
+               }
+               catch(err){
+                   const msg = err.response.data.message;
+                   const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
+                   setDialogLoading(false);
+                   setEditRoleDialogOpen(false);
+                   setError(cutmsg);
+                   handleRoleEditDialogClose();
+                   return;
+               }
+           }
+       }
     }
 
-    const handleEditDialoggOpen = (id:number, title:string, label:string, type:string, group:string, is_required:boolean, is_active:boolean) => {
+    const handleEditDialogOpen = (id:number, title:string, label:string, type:string, group:string, is_required:boolean, is_active:boolean) => {
         if (dataType === "users") {
             handleRoleEditDialogOpen(id, title)
         }
         else{
-
+            handleEditOccurrenceFieldDialogOpen(id,title, label, type, group, is_required, is_active);
         }
     }
 
@@ -214,7 +256,19 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                     handleEdit(editId, dataType);
                 }}
             />
-
+            <CustomDialog
+                open={editOccurrenceFieldOpen}
+                onClose={handleEditOccurrenceFieldDialogClose}
+                title={`Edit ${editName} occurrence field`}
+                content={'editField'}
+                contentText={<Typography variant="body1">The occurrence field:</Typography>}
+                occurrenceFields={occurrenceFields}
+                setOccurrenceFields={setOccurrenceFields}
+                dialogLoading={dialogLoading}
+                action={() => {
+                    handleEdit(editId, dataType, occurrenceFields);
+                }}
+            />
             <TableContainer component={Paper} sx={{ maxHeight: 'calc(100vh - 250px)' }}>
                 <Table stickyHeader>
                     <TableHead sx={{width:'100%'}}>
@@ -264,7 +318,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                                             label={"Edit"}
                                             color={"edit"}
                                             size={"small"}
-                                            onClick= {() => handleEditDialoggOpen(row.id, row.name, row.label ? row.label : "", row.type ? row.type : "", row.group ? row.group : "", row.is_required ? row.is_required : false, row.is_active ? row.is_active : false )}
+                                            onClick= {() => handleEditDialogOpen(row.id, row.name, row.label ? row.label : "", row.type ? row.type : "", row.group ? row.group : "", row.is_required ? row.is_required : false, row.is_active ? row.is_active : false )}
                                             icon={<ModeEditIcon/>}
                                         />
                                     </TableCell>

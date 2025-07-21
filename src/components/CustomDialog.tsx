@@ -15,6 +15,8 @@ import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import {COLORS} from "../constants/ui.ts";
+import {formatLabel} from "../utils/helperFunctions.ts";
+import Typography from "@mui/material/Typography";
 
 interface CustomDialogProps {
     open: boolean;
@@ -164,16 +166,19 @@ const CustomDialog: React.FC<CustomDialogProps> = ({ open, onClose, action,title
                     </Box>
                 ) : (
                     <Box>
-                        <InputTextField label={'Field Name'} value={occurrenceFields.name}
+                        <Typography  variant={'body1'} align={'left'} color={COLORS.primary} fontWeight={'bold'} marginBottom={1}>Field Name:</Typography>
+                        <InputTextField label={'The name of the field'} value={formatLabel(occurrenceFields.name)}
                                         onChange={(e) => setOccurrenceFields?.({
                                             ...occurrenceFields,
                                             name: e.target.value,
                                         })}/>
+                        <Typography  variant={'body1'} align={'left'} color={COLORS.primary} fontWeight={'bold'} marginBottom={1}>Description:</Typography>
                         <InputTextField label={'Description of the field'} value={occurrenceFields.label}
                                         onChange={(e) => setOccurrenceFields?.({
                                             ...occurrenceFields,
                                             label: e.target.value,
                                         })}/>
+                        <Typography  variant={'body1'} align={'left'} color={COLORS.primary} fontWeight={'bold'} marginBottom={1}>Field Type:</Typography>
                         <DropdownInput
                             options={dropDownOccurrenceFieldTypeOptions}
                             label={"Type of the field"}
@@ -184,6 +189,7 @@ const CustomDialog: React.FC<CustomDialogProps> = ({ open, onClose, action,title
                             })}
                             filter={false}
                         />
+                        <Typography  variant={'body1'} align={'left'} color={COLORS.primary} fontWeight={'bold'} marginBottom={1} marginTop={1}>Field Group:</Typography>
                         <DropdownInput
                             options={dropdownOccurrenceFieldGroupOptions}
                             label={'Group of the field'}
@@ -199,29 +205,39 @@ const CustomDialog: React.FC<CustomDialogProps> = ({ open, onClose, action,title
                                     control={
                                         <Switch
                                             checked={occurrenceFields.is_active}
-                                            onChange={(e) => setOccurrenceFields?.({
-                                                ...occurrenceFields,
-                                                is_active: e.target.checked,
-                                            })}
+                                            onChange={(e) =>
+                                                setOccurrenceFields?.({
+                                                    ...occurrenceFields,
+                                                    is_active: e.target.checked,
+                                                })
+                                            }
                                             color="primary"
                                         />
                                     }
                                     label="Active"
-                                    color={COLORS.primary}
+                                    sx={{
+                                        color: COLORS.primary,
+                                        fontWeight: 'bold',
+                                    }}
                                 />
                                 <FormControlLabel
                                     control={
                                         <Switch
                                             checked={occurrenceFields.is_required}
-                                            onChange={(e) => setOccurrenceFields?.({
-                                                ...occurrenceFields,
-                                                is_required: e.target.checked,
-                                            })}
-                                            color={"primary"}
+                                            onChange={(e) =>
+                                                setOccurrenceFields?.({
+                                                    ...occurrenceFields,
+                                                    is_required: e.target.checked,
+                                                })
+                                            }
+                                            color="primary"
                                         />
                                     }
                                     label="Required"
-                                    color={COLORS.primary}
+                                    sx={{
+                                        color: COLORS.primary,
+                                        fontWeight: 'bold',
+                                    }}
                                 />
                             </FormGroup>
                         </FormControl>
@@ -237,13 +253,20 @@ const CustomDialog: React.FC<CustomDialogProps> = ({ open, onClose, action,title
                 {!dialogLoading && (
                     <StyledButton onClick={action} color={
                         content === 'editField' ? 'edit' : 'primary'
-                    } size="medium" label='Save' />
+                    } size="medium" label={
+                        content === 'editField' ? 'Edit' : 'Save'
+                    } />
                 )}
             </DialogActions>
         );
 
         return (
-            <Dialog open={open} onClose={onClose}>
+            <Dialog
+                open={open}
+                onClose={onClose}
+                fullWidth
+                maxWidth="sm"
+            >
                 {dialogTitle}
                 {dialogContent}
                 {dialogActions}

@@ -9,11 +9,12 @@ import {SelectChangeEvent} from "@mui/material/Select";
 import InfoIcon from '@mui/icons-material/Info';
 import CustomDialog from "../../components/CustomDialog.tsx";
 import DataTable from "../../components/DataTable.tsx";
-import {GetUsers, GetOccurrenceFields} from "../../services/admin/admin.ts";
+import {GetUsers, GetOccurrenceFields, newOccurrenceField} from "../../services/Admin/admin.ts";
 import {ToastContainer} from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
 import StyledButton from "../../components/StyledButton.tsx";
 import AddIcon from '@mui/icons-material/Add';
+import {unformatLabel} from "../../utils/helperFunctions.ts";
 
 function AdminControlPanel() {
     const [loading, setLoading] = useState(true);
@@ -24,8 +25,29 @@ function AdminControlPanel() {
     const [mandatoryFilter, setMandatoryFilter] = useState('');
     const [activeFilter, setActiveFilter] = useState('');
     const [infoUsersDialogOpen, setInfoUsersDialogOpen] = useState(false);
+    const [newOccurrenceFieldOpen, setNewOccurrenceFieldOpen] = useState(false);
     const [users, setUsers] = useState<any[]>([]);
     const [fields, setFields] = useState<any[]>([]);
+    const [dialogLoading, setDialogLoading] = useState(false);
+    const [occurrenceFields, setOccurrenceFields] = useState({
+        name: '',
+        label: '',
+        type: '',
+        group: '',
+        is_required: false,
+        is_active: false,
+    });
+    const handleEditOccurrenceFieldDialogClose = () => {
+        setNewOccurrenceFieldOpen(false);
+        setOccurrenceFields({
+            name: '',
+            label: '',
+            type: '',
+            group: '',
+            is_required: false,
+            is_active: false,
+        });
+    }
 
     const getUsers = async () => {
         try{
@@ -63,6 +85,24 @@ function AdminControlPanel() {
 
     const handleUsersInfoDialogOpen = () => {
         setInfoUsersDialogOpen(true);
+    }
+
+    const handleNewField = async () => {
+        setDialogLoading(true);
+        const formatedData = {
+            ...occurrenceFields,
+            name: unformatLabel(occurrenceFields.name),
+        };
+        try{
+            await newOccurrenceField(formatedData);
+            window.location.reload();
+        }
+        catch (error) {
+            console.error("Error creating new field:", error);
+            setError("Failed to create new field. Please try again later.");
+        }
+
+
     }
 
     const infoUsersDialogContent = (
@@ -241,6 +281,19 @@ function AdminControlPanel() {
                             display="flex"
                             justifyContent="space-between"
                         >
+                            <CustomDialog
+                                open={newOccurrenceFieldOpen}
+                                onClose={handleEditOccurrenceFieldDialogClose}
+                                title={"Edit Occurrence Field"}
+                                content={'newField'}
+                                contentText={<Typography variant="body1" marginBottom={'20px'}>The occurrence field:</Typography>}
+                                occurrenceFields={occurrenceFields}
+                                setOccurrenceFields={setOccurrenceFields}
+                                dialogLoading={dialogLoading}
+                                action={() => {
+                                    handleNewField();
+                                }}
+                            />
                             <Typography
                                 fontWeight="bold"
                                 color={COLORS.primary}
@@ -333,7 +386,7 @@ function AdminControlPanel() {
                                         color="primary"
                                         size="medium"
                                         icon={<AddIcon />}
-                                        onClick={() => console.log('New Field Clicked')}
+                                        onClick={() => setNewOccurrenceFieldOpen(true)}
                                     />
                                 </Box>
                             </Box>
@@ -355,7 +408,7 @@ function AdminControlPanel() {
                                 viewButton={false}
                                 deleteButton={true}
                                 trashCanButton={false}
-                                dataType={"fields"}
+                                dataType={"occurrenceFields"}
                                 setError={setError}
                             />
                         </Box>

@@ -37,14 +37,16 @@ export const dropDownOccurrenceFieldTypeOptions: { display: string; value: strin
 ]
 
 export const dropdownOccurrenceFieldGroupOptions: { display: string; value: string }[] = [
-    { display: "General", value: "general" },
+    { display: "Geographic", value: "geographic" },
+    { display: "Event", value: "event" },
+    { display: "Occurrence", value: "occurrence" },
+    { display: "Organism", value: "organism" },
+    { display: "Identification", value: "identification" },
+    { display: "Collection", value: "collection" },
+    { display: "Dataset", value: "dataset" },
+    { display: "Record-level", value: "record" },
     { display: "Location", value: "location" },
-    { display: "Time", value: "time" },
-    { display: "Reporter", value: "reporter" },
-    { display: "Status", value: "status" },
-    { display: "Classification", value: "classification" },
-    { display: "Action", value: "action" },
-    { display: "Custom", value: "custom" },
+    { display: "Other", value: "other" },
 ]
 
 
