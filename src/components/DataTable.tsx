@@ -39,6 +39,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
     const { isAdmin, isManager } = useAuth();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [editRoleDialogOpen, setEditRoleDialogOpen] = useState(false);
+    const [editOccurrenceFieldOpen, setEditOccurrenceFieldOpen] = useState(false);
     const [deleteTitle, setDeleteTitle] = useState("");
     const [editName, setEditName] = useState("");
     const [deleteId, setDeleteId] = useState<number>(0);
@@ -74,6 +75,12 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
         setEditRoleDialogOpen(true);
     };
 
+    const handleEditOccurrenceFieldDialogOpen = (title:string) => {
+
+        setEditName(title);
+        setEditOccurrenceFieldOpen(true);
+    }
+
     const handleEdit = async (id:number, type:string) => {
        if (dataType === "users") {
             try{
@@ -94,6 +101,15 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                 handleRoleEditDialogClose();
                 return;
             }
+        }
+    }
+
+    const handleEditDialoggOpen = (id:number, title:string, label:string, type:string, group:string, is_required:boolean, is_active:boolean) => {
+        if (dataType === "users") {
+            handleRoleEditDialogOpen(id, title)
+        }
+        else{
+
         }
     }
 
@@ -248,7 +264,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                                             label={"Edit"}
                                             color={"edit"}
                                             size={"small"}
-                                            onClick= {() => handleRoleEditDialogOpen(row.id, row.name)}
+                                            onClick= {() => handleEditDialoggOpen(row.id, row.name, row.label ? row.label : "", row.type ? row.type : "", row.group ? row.group : "", row.is_required ? row.is_required : false, row.is_active ? row.is_active : false )}
                                             icon={<ModeEditIcon/>}
                                         />
                                     </TableCell>

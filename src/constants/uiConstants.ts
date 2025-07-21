@@ -29,6 +29,25 @@ export const dropdownEditUserRoleOptions: { display: string; value: string }[] =
     { display: "User", value: "user" },
 ]
 
+export const dropDownOccurrenceFieldTypeOptions: { display: string; value: string }[] = [
+    { display: "Text", value: "text" },
+    { display: "Number", value: "number" },
+    { display: "Checkbox", value: "checkbox" },
+    { display: "Date", value: "date" },
+]
+
+export const dropdownOccurrenceFieldGroupOptions: { display: string; value: string }[] = [
+    { display: "General", value: "general" },
+    { display: "Location", value: "location" },
+    { display: "Time", value: "time" },
+    { display: "Reporter", value: "reporter" },
+    { display: "Status", value: "status" },
+    { display: "Classification", value: "classification" },
+    { display: "Action", value: "action" },
+    { display: "Custom", value: "custom" },
+]
+
+
 export const itemTypeOptionsFormat: { key: string; display: string }[] = [
     { key: "journal_article", display: "Journal Article" },
     { key: "book", display: "Book" },
