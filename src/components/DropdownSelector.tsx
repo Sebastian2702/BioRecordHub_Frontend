@@ -91,7 +91,7 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
                 <StyledButton
                     label="Add"
                     color="primary"
-                    size="small"
+                    size="medium"
                     icon={<AddIcon sx={{color: COLORS.white}} fontSize={"large"}/>}
                     onClick={handleAdd}
                 />

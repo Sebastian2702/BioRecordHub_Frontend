@@ -11,7 +11,7 @@ import NewEntryButton from "../../components/NewEntryButton.tsx";
 import DataTable from "../../components/DataTable.tsx";
 import CircularProgress from '@mui/material/CircularProgress';
 import { Dayjs } from 'dayjs';
-import { dropdownFilterOptions } from "../../constants/uiConstants.ts";
+import { dropdownFilterBibliographyOptions } from "../../constants/uiConstants.ts";
 import {toast, ToastContainer} from "react-toastify";
 
 
@@ -81,10 +81,10 @@ function Bibliographies(){
             <ToastContainer />
             <Box display="flex" padding={"0px 10px"} gap={2} flexWrap="wrap">
                 <Box sx={{ flex: 2, minWidth: '200px' }}>
-                    <SearchFilter value={searchValue} onChange={handleSearchChange} />
+                    <SearchFilter value={searchValue} onChange={handleSearchChange} label={"Search for key, title and author"}/>
                 </Box>
                 <Box sx={{ flex: 1, minWidth: '150px' }}>
-                    <DropdownInput value={dropdownValue} options={dropdownFilterOptions} onChange={handleDropdownChange} label={"Type"} filter={true}/>
+                    <DropdownInput value={dropdownValue} options={dropdownFilterBibliographyOptions} onChange={handleDropdownChange} label={"Type"} filter={true}/>
                 </Box>
                 <Box sx={{ flex: 1, minWidth: '160px'}}>
                     <DateInput label={"Year"} type={["year"]} value={dateInput} onChange={(e)=>setDateInput(e.target.value)} />

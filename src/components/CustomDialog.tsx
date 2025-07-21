@@ -6,6 +6,17 @@ import DialogTitle from '@mui/material/DialogTitle';
 import StyledButton from "./StyledButton.tsx";
 import {CircularProgress} from "@mui/material";
 import Box from '@mui/material/Box';
+import DropdownInput from "./DropdownInput.tsx";
+import {dropdownEditUserRoleOptions, dropDownOccurrenceFieldTypeOptions, dropdownOccurrenceFieldGroupOptions} from "../constants/uiConstants.ts";
+import {SelectChangeEvent} from "@mui/material/Select";
+import InputTextField from "./InputTextField.tsx";
+import Switch from '@mui/material/Switch';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import {COLORS} from "../constants/ui.ts";
+import {formatLabel} from "../utils/helperFunctions.ts";
+import Typography from "@mui/material/Typography";
 
 interface CustomDialogProps {
     open: boolean;
@@ -13,55 +24,256 @@ interface CustomDialogProps {
     action?: () => void;
     title: string;
     dialogLoading?: boolean;
-    content: "delete" | "information";
+    editField?: string;
+    setEditField?: (field:string) => void;
+    occurrenceFields?: {
+        name: string;
+        label: string;
+        type: string;
+        group: string;
+        is_required: boolean;
+        is_active: boolean;
+    };
+    setOccurrenceFields?: (fields: {
+        name: string;
+        label: string;
+        type: string;
+        group: string;
+        is_required: boolean;
+        is_active: boolean;
+    }) => void;
+    content: "delete" | "information" | "editUserRole" | "editField" | "newField";
     contentText: React.ReactNode
 }
 
-const CustomDialog: React.FC<CustomDialogProps> = ({ open, onClose, action,title, content, contentText, dialogLoading }) => {
+const CustomDialog: React.FC<CustomDialogProps> = ({ open, onClose, action,title, content, contentText, dialogLoading, setEditField, editField, occurrenceFields, setOccurrenceFields}) => {
+    const dialogTitle = (
+        <DialogTitle sx={{ color: "red", alignSelf: "center" }}>
+            {title}
+        </DialogTitle>
+    );
     if (content === "delete") {
-        if (dialogLoading){
-            return (
-                <Dialog open={open} onClose={onClose}>
-                    <DialogTitle sx={{ color: "red", alignSelf: "center" }}>{title}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            {contentText}
-                        </DialogContentText>
+        const dialogContent = (
+            <DialogContent>
+                <DialogContentText>{contentText}</DialogContentText>
+                {dialogLoading && (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            mt: 2,
+                        }}
+                    >
+                        <CircularProgress />
+                    </Box>
+                )}
+            </DialogContent>
+        );
 
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                mt: 2,
-                            }}
-                        >
-                            <CircularProgress />
-                        </Box>
-                    </DialogContent>
-                    <DialogActions>
-                        <StyledButton onClick={onClose} color={"primary"} size={"medium"} label={"Cancel"} />
-                    </DialogActions>
-                </Dialog>
+        const dialogActions = (
+            <DialogActions>
+                <StyledButton
+                    onClick={onClose}
+                    color="primary"
+                    size="medium"
+                    label="Cancel"
+                />
+                {!dialogLoading && (
+                    <StyledButton
+                        onClick={action}
+                        color="delete"
+                        size="medium"
+                        label="Delete"
+                    />
+                )}
+            </DialogActions>
+        );
 
-            )
-        }
-        else{
-            return (
-                <Dialog open={open} onClose={onClose}>
-                    <DialogTitle sx={{color:"red", alignSelf:"center"}}>{title}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            {contentText}
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <StyledButton onClick={onClose} color={"primary"} size={"medium"} label={"Cancel"}/>
-                        <StyledButton onClick={action} color={"delete"} size={"medium"} label={"Delete"}/>
-                    </DialogActions>
-                </Dialog>
-            )
-        }
+        return (
+            <Dialog open={open} onClose={onClose}>
+                {dialogTitle}
+                {dialogContent}
+                {dialogActions}
+            </Dialog>
+        );
+    }
+
+    else if (content === "editUserRole") {
+        const dialogContent = (
+            <DialogContent>
+                <DialogContentText>
+                    {contentText}
+                </DialogContentText>
+
+                {dialogLoading ? (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            mt: 2,
+                        }}
+                    >
+                        <CircularProgress />
+                    </Box>
+                ) : (
+                    <DropdownInput
+                        options={dropdownEditUserRoleOptions}
+                        label={title}
+                        value={editField}
+                        onChange={(e: SelectChangeEvent) => setEditField?.(e.target.value)}
+                        filter={false}
+                    />
+                )}
+            </DialogContent>
+        );
+
+        const dialogActions = (
+            <DialogActions>
+                <StyledButton onClick={onClose} color="primary" size="medium" label="Cancel" />
+                {!dialogLoading && (
+                    <StyledButton onClick={action} color="edit" size="medium" label="Edit" />
+                )}
+            </DialogActions>
+        );
+
+        return (
+            <Dialog open={open} onClose={onClose}>
+                {dialogTitle}
+                {dialogContent}
+                {dialogActions}
+            </Dialog>
+        );
+    }
+    else if ((content === "editField" || content === 'newField') && occurrenceFields) {
+        const dialogContent = (
+            <DialogContent>
+                <DialogContentText>
+                    {contentText}
+                </DialogContentText>
+
+                {dialogLoading ? (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            mt: 2,
+                        }}
+                    >
+                        <CircularProgress/>
+                    </Box>
+                ) : (
+                    <Box>
+                        <Typography  variant={'body1'} align={'left'} color={COLORS.primary} fontWeight={'bold'} marginBottom={1}>Field Name:</Typography>
+                        <InputTextField label={'The name of the field'} value={formatLabel(occurrenceFields.name)}
+                                        onChange={(e) => setOccurrenceFields?.({
+                                            ...occurrenceFields,
+                                            name: e.target.value,
+                                        })}/>
+                        <Typography  variant={'body1'} align={'left'} color={COLORS.primary} fontWeight={'bold'} marginBottom={1}>Description:</Typography>
+                        <InputTextField label={'Description of the field'} value={occurrenceFields.label}
+                                        onChange={(e) => setOccurrenceFields?.({
+                                            ...occurrenceFields,
+                                            label: e.target.value,
+                                        })}/>
+                        <Typography  variant={'body1'} align={'left'} color={COLORS.primary} fontWeight={'bold'} marginBottom={1}>Field Type:</Typography>
+                        <DropdownInput
+                            options={dropDownOccurrenceFieldTypeOptions}
+                            label={"Type of the field"}
+                            value={occurrenceFields.type}
+                            onChange={(e: SelectChangeEvent) => setOccurrenceFields?.({
+                                ...occurrenceFields,
+                                type: e.target.value,
+                            })}
+                            filter={false}
+                        />
+                        <Typography  variant={'body1'} align={'left'} color={COLORS.primary} fontWeight={'bold'} marginBottom={1} marginTop={1}>Field Group:</Typography>
+                        <DropdownInput
+                            options={dropdownOccurrenceFieldGroupOptions}
+                            label={'Group of the field'}
+                            value={occurrenceFields.group}
+                            onChange={(e: SelectChangeEvent) => setOccurrenceFields?.({
+                                ...occurrenceFields,
+                                group: e.target.value,
+                            })}
+                        />
+                        <FormControl component="fieldset" variant="standard">
+                            <FormGroup>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={occurrenceFields.is_active}
+                                            onChange={(e) =>
+                                                setOccurrenceFields?.({
+                                                    ...occurrenceFields,
+                                                    is_active: e.target.checked,
+                                                })
+                                            }
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Active"
+                                    sx={{
+                                        color: COLORS.primary,
+                                        fontWeight: 'bold',
+                                    }}
+                                />
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={occurrenceFields.is_required}
+                                            onChange={(e) =>
+                                                setOccurrenceFields?.({
+                                                    ...occurrenceFields,
+                                                    is_required: e.target.checked,
+                                                })
+                                            }
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Required"
+                                    sx={{
+                                        color: COLORS.primary,
+                                        fontWeight: 'bold',
+                                    }}
+                                />
+                            </FormGroup>
+                        </FormControl>
+
+                    </Box>
+
+                )}
+            </DialogContent>
+        );
+        const dialogActions = (
+            <DialogActions>
+                <StyledButton onClick={onClose} color="secondary" size="medium" label="Cancel" />
+                {!dialogLoading && (
+                    <StyledButton onClick={action} color={
+                        content === 'editField' ? 'edit' : 'primary'
+                    } size="medium" label={
+                        content === 'editField' ? 'Edit' : 'Save'
+                    } />
+                )}
+            </DialogActions>
+        );
+
+        return (
+            <Dialog
+                open={open}
+                onClose={onClose}
+                fullWidth
+                maxWidth="sm"
+            >
+                {dialogTitle}
+                {dialogContent}
+                {dialogActions}
+            </Dialog>
+        );
+
+
 
     }
     else{

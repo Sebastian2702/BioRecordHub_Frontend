@@ -1,10 +1,54 @@
-export const dropdownFilterOptions: { display: string; value: string }[] = [
+export const dropdownFilterBibliographyOptions: { display: string; value: string }[] = [
     { display: "Journal Article", value: "journal_article" },
     { display: "Book", value: "book" },
     { display: "Conference Paper", value: "conference_paper" },
     { display: "Thesis", value: "thesis" },
     { display: "Report", value: "report" },
 ];
+
+export const dropdownFilterAdminUserOptions: { display: string; value: string }[] = [
+    { display: "Admin", value: "admin" },
+    { display: "Manager", value: "Manager" },
+    { display: "Biologist", value: "user" },
+
+]
+
+export const dropdownFilterAdminMandatoryFieldsOptions: { display: string; value: string }[] = [
+    { display: "Mandatory", value: "true" },
+    { display: "Optional", value: "false" },
+]
+
+export const dropdownFilterAdminFiledStatusOptions: { display: string; value: string }[] = [
+    { display: "Active", value: "true" },
+    { display: "Inactive", value: "false" },
+]
+
+export const dropdownEditUserRoleOptions: { display: string; value: string }[] = [
+    { display: "Admin", value: "admin" },
+    { display: "Manager", value: "manager" },
+    { display: "User", value: "user" },
+]
+
+export const dropDownOccurrenceFieldTypeOptions: { display: string; value: string }[] = [
+    { display: "Text", value: "text" },
+    { display: "Number", value: "number" },
+    { display: "Checkbox", value: "checkbox" },
+    { display: "Date", value: "date" },
+]
+
+export const dropdownOccurrenceFieldGroupOptions: { display: string; value: string }[] = [
+    { display: "Geographic", value: "geographic" },
+    { display: "Event", value: "event" },
+    { display: "Occurrence", value: "occurrence" },
+    { display: "Organism", value: "organism" },
+    { display: "Identification", value: "identification" },
+    { display: "Collection", value: "collection" },
+    { display: "Dataset", value: "dataset" },
+    { display: "Record-level", value: "record" },
+    { display: "Location", value: "location" },
+    { display: "Other", value: "other" },
+]
+
 
 export const itemTypeOptionsFormat: { key: string; display: string }[] = [
     { key: "journal_article", display: "Journal Article" },

@@ -1,4 +1,4 @@
-import {BORDER, COLORS} from "../../constants/ui.ts";
+import {BORDER, COLORS, FONT_SIZES} from "../../constants/ui.ts";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import NewEntryButton from "../../components/NewEntryButton.tsx";
@@ -147,13 +147,18 @@ function Nomenclature() {
                         marginBottom="20px"
                     >
                         <Typography
-                            variant="h3"
                             fontWeight="bold"
                             color={COLORS.primary}
                             sx={{
                                 position: 'absolute',
                                 left: '50%',
                                 transform: 'translateX(-50%)',
+                                fontSize: {
+                                    xs: FONT_SIZES.xsmall,
+                                    sm: FONT_SIZES.small,
+                                    md: FONT_SIZES.medium,
+                                    lg: FONT_SIZES.large,
+                                },
                                 margin: 0,
                             }}
                         >
@@ -169,11 +174,14 @@ function Nomenclature() {
 
                     <Box sx={{padding:"0px 20px"}}>
                         <Typography  align={"left"} variant={'h5'} fontWeight={'bold'} marginBottom={'10px'}>Species:</Typography>
-                        <Box sx={{display: 'flex', gap: 2, height:'55px', marginBottom: '20px'}}>
+                        <Box sx={{display: 'flex', gap: 1, height:'55px', marginBottom: '20px'}}>
                             <StyledAutoComplete label={'Species Name'} options={autoCompleteOptions['species']} value={TaxonomicFields['species']} onChange={(event: any, newValue: string | null) => {
                                 setTaxonomicFields(prev => ({ ...prev, ['species']: newValue || '' }));
                             }} />
-                            <StyledButton label={'Search'} color={'primary'} size={'large'} onClick={handleSearch} icon={<SearchIcon fontWeight={'bold'}/>}/>
+                            <Box minWidth={'270px'} display="flex" alignItems="center" justifyContent="space-between" gap={1}>
+                                <StyledButton label={'Search'} color={'primary'} size={'large'} onClick={handleSearch} icon={<SearchIcon fontWeight={'bold'}/>}/>
+                                <StyledButton label={"Full List"} color={"primary"} size={'large'} onClick={handleFullList}/>
+                            </Box>
                         </Box>
                         <Box sx={{marginBottom: '20px'}}>
                             <ExtraFieldAccordion
@@ -201,9 +209,6 @@ function Nomenclature() {
                                 expanded={isExpanded}
                                 onToggle={() => setIsExpanded(prev => !prev)}
                             />
-                        </Box>
-                        <Box display={"flex"} justifyContent={"flex-end"} height={"60px"}>
-                            <StyledButton label={"Full List"} color={"primary"} size={"large"} onClick={handleFullList}/>
                         </Box>
                     </Box>
                     {

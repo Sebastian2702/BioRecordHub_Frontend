@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import LoginRegistration from './pages/LoginRegistration.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import Bibliographies from "./pages/Bibliography/Bibliographies.tsx";
-import { ROUTES } from './routes/frontendRoutes.ts';
+import { ROUTES, ADMIN_ROUTES } from './routes/frontendRoutes.ts';
 import AppLayout from './layouts/AppLayout.tsx';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute.tsx';
@@ -17,6 +17,7 @@ import EditNomenclature from "./pages/Nomenclature/EditNomenclature.tsx";
 import NewNomenclatureFileUpload from "./pages/Nomenclature/NewNomenclatureFileUpload.tsx";
 import Nomenclatures from "./pages/Nomenclature/Nomenclatures.tsx";
 import NomenclatureSearch from "./pages/Nomenclature/NomenclatureSearch.tsx";
+import AdminControlPanel from "./pages/Admin/AdminControlPanel.tsx";
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
@@ -54,9 +55,9 @@ function App() {
                 // Admin only
                 <Route element={<AdminRoute />}>
                     <Route element={<AppLayout />}>
-                        <Route path={ROUTES.admin} element={<Dashboard />} />
-                        <Route path={ROUTES.bibliographyEdit} element={<EditBibliography />} />
-                        <Route path={ROUTES.nomenclatureEdit} element={<EditNomenclature />} />
+                        <Route path={ADMIN_ROUTES.admin} element={<AdminControlPanel />} />
+                        <Route path={ADMIN_ROUTES.bibliographyEdit} element={<EditBibliography />} />
+                        <Route path={ADMIN_ROUTES.nomenclatureEdit} element={<EditNomenclature />} />
 
                     </Route>
                 </Route>

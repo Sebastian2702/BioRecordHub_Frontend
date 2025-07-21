@@ -24,6 +24,11 @@ export const formatLabel = (key?: string) =>
         ? key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())
         : "";
 
+export const unformatLabel = (label?: string) =>
+    typeof label === "string"
+        ? label.toLowerCase().replace(/ /g, "__")
+        : "";
+
 export const formatAuthors = (authors: string[]) => {
     return authors.join('; ');
 }

@@ -57,7 +57,7 @@ const ListInput: React.FC<ListInputProps> = ({ label, helperText, values, onChan
                 <StyledButton
                     label="Add"
                     color="primary"
-                    size="small"
+                    size="medium"
                     icon={<AddIcon sx={{ color: COLORS.white }} fontSize={"large"} />}
                     onClick={handleAddItem}
                 />
