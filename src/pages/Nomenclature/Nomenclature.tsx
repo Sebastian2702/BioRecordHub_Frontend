@@ -86,7 +86,12 @@ function Nomenclature() {
                                 left: '50%',
                                 transform: 'translateX(-50%)',
                                 fontWeight: 'bold',
-                                fontSize: FONT_SIZES.xlarge,
+                                fontSize: {
+                                    xs: FONT_SIZES.xsmall,
+                                    sm: FONT_SIZES.small,
+                                    md: FONT_SIZES.medium,
+                                    lg: FONT_SIZES.large,
+                                },
                                 textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
                             }}
                         >

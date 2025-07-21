@@ -133,23 +133,68 @@ function AdminControlPanel() {
                         >
                             <CustomDialog open={infoUsersDialogOpen} onClose={handleUsersInfoDialogClose} title={"Roles"} content={"information"} contentText={infoUsersDialogContent}/>
                             <Typography
-                                variant="h4"
                                 fontWeight="bold"
                                 color={COLORS.primary}
                                 align={'left'}
+                                sx={{
+                                    fontSize: {
+                                        xs: FONT_SIZES.xsmall,
+                                        sm: FONT_SIZES.xsmall,
+                                        md: FONT_SIZES.small,
+                                        lg: FONT_SIZES.medium,
+                                    },
+                                }}
                             >
                                 BioRecord Users:
                             </Typography>
-                            <Box display="flex" padding={"0px 10px"} gap={2} flexWrap="wrap">
-                                <Box sx={{ flex: 3, minWidth: '500px' }}>
-                                    <SearchFilter value={userSearch} onChange={(e) => setUserSearch(e.target.value)} label={'Search for a user name'}/>
+                            <Box display="flex" padding="0px 10px" gap={2} flexWrap="wrap">
+                                <Box
+                                    sx={{
+                                        flex: 3,
+                                        minWidth: {
+                                            xs: '100%',
+                                            sm: '300px',
+                                            md: '400px',
+                                        },
+                                    }}
+                                >
+                                    <SearchFilter
+                                        value={userSearch}
+                                        onChange={(e) => setUserSearch(e.target.value)}
+                                        label="Search for a user name"
+                                    />
                                 </Box>
-                                <Box sx={{ flex:1, minWidth: '150px' }}>
-                                    <DropdownInput value={roleFilter} options={dropdownFilterAdminUserOptions} onChange={(e:SelectChangeEvent) => setRoleFilter(e.target.value)} label={"Role"} filter={true}/>
-                                </Box>
-                                <InfoIcon sx={{color: COLORS.primary, cursor: "pointer", fontSize: "35px", marginTop:'15px'}} onClick={() => handleUsersInfoDialogOpen()}/>
 
+                                <Box
+                                    sx={{
+                                        flex: 1,
+                                        minWidth: {
+                                            xs: '100%',
+                                            sm: '200px',
+                                            md: '250px',
+                                        },
+                                    }}
+                                >
+                                    <DropdownInput
+                                        value={roleFilter}
+                                        options={dropdownFilterAdminUserOptions}
+                                        onChange={(e: SelectChangeEvent) => setRoleFilter(e.target.value)}
+                                        label="Role"
+                                        filter={true}
+                                    />
+                                </Box>
+
+                                <InfoIcon
+                                    sx={{
+                                        color: COLORS.primary,
+                                        cursor: 'pointer',
+                                        fontSize: '35px',
+                                        marginTop: '15px',
+                                    }}
+                                    onClick={() => handleUsersInfoDialogOpen()}
+                                />
                             </Box>
+
 
                         </Box>
                         <Box sx={{overflowY: 'auto', padding: '20px'}}>
@@ -197,28 +242,102 @@ function AdminControlPanel() {
                             justifyContent="space-between"
                         >
                             <Typography
-                                variant="h4"
                                 fontWeight="bold"
                                 color={COLORS.primary}
                                 align={'left'}
+                                sx={{
+                                    fontSize: {
+                                        xs: FONT_SIZES.xsmall,
+                                        sm: FONT_SIZES.xsmall,
+                                        md: FONT_SIZES.small,
+                                        lg: FONT_SIZES.medium,
+                                    },
+                                }}
                             >
                                Occurrence Form Fields:
                             </Typography>
-                            <Box display="flex" padding={"0px 10px"} gap={2} flexWrap="wrap" overflow="hidden">
-                                <Box sx={{ flex: 3, minWidth: '400px' }}>
-                                    <SearchFilter value={fildSearch} onChange={(e) => setFieldSearch(e.target.value)} label={'Search for a field'}/>
-                                </Box>
-                                <Box sx={{ flex:1, minWidth: '150px' }}>
-                                    <DropdownInput value={mandatoryFilter} options={dropdownFilterAdminMandatoryFieldsOptions} onChange={(e:SelectChangeEvent) => setMandatoryFilter(e.target.value)} label={"Rule"} filter={true}/>
-                                </Box>
-                                <Box sx={{ flex:1, minWidth: '150px' }}>
-                                    <DropdownInput value={activeFilter} options={dropdownFilterAdminFiledStatusOptions} onChange={(e:SelectChangeEvent) => setActiveFilter(e.target.value)} label={"Status"} filter={true}/>
+                            <Box
+                                display="flex"
+                                padding="0px 10px"
+                                gap={2}
+                                flexWrap="wrap"
+                                overflow="hidden"
+                            >
+                                <Box
+                                    sx={{
+                                        flex: 3,
+                                        minWidth: {
+                                            xs: '100%',
+                                            sm: '200px',
+                                            md: '300px',
+                                        },
+                                    }}
+                                >
+                                    <SearchFilter
+                                        value={fildSearch}
+                                        onChange={(e) => setFieldSearch(e.target.value)}
+                                        label="Search for a field"
+                                    />
                                 </Box>
 
-                                <Box maxHeight={"55px"}>
-                                    <StyledButton label={"New Field"} color={"primary"} size={'large'} icon={<AddIcon/>} onClick={() => console.log("New Field Clicked")} />
+                                <Box
+                                    sx={{
+                                        flex: 1,
+                                        minWidth: {
+                                            xs: '100%',
+                                            sm: '100px',
+                                            md: '150px',
+                                        },
+                                    }}
+                                >
+                                    <DropdownInput
+                                        value={mandatoryFilter}
+                                        options={dropdownFilterAdminMandatoryFieldsOptions}
+                                        onChange={(e: SelectChangeEvent) => setMandatoryFilter(e.target.value)}
+                                        label="Rule"
+                                        filter={true}
+                                    />
+                                </Box>
+
+                                <Box
+                                    sx={{
+                                        flex: 1,
+                                        minWidth: {
+                                            xs: '100%',
+                                            sm: '100px',
+                                            md: '150px',
+                                        },
+                                    }}
+                                >
+                                    <DropdownInput
+                                        value={activeFilter}
+                                        options={dropdownFilterAdminFiledStatusOptions}
+                                        onChange={(e: SelectChangeEvent) => setActiveFilter(e.target.value)}
+                                        label="Status"
+                                        filter={true}
+                                    />
+                                </Box>
+
+                                <Box
+                                    sx={{
+                                        maxHeight: '55px',
+                                        minWidth: {
+                                            xs: '100%',
+                                            sm: '100px',
+                                        },
+                                       marginTop:'10px',
+                                    }}
+                                >
+                                    <StyledButton
+                                        label="New Field"
+                                        color="primary"
+                                        size="medium"
+                                        icon={<AddIcon />}
+                                        onClick={() => console.log('New Field Clicked')}
+                                    />
                                 </Box>
                             </Box>
+
                         </Box>
                         <Box sx={{overflowY: 'auto', padding: '20px',}}>
                             <DataTable

@@ -229,7 +229,14 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                                         sx={{ fontWeight: 'bold', borderBottom: `2px solid ${COLORS.primary}` }}
                                     >
                                         {typeof row[column.id] === 'boolean' ? (
-                                            row[column.id] ? <CheckIcon sx={{ color: 'green', fontWeight:'bold' }} /> : <ClearIcon sx={{ color: 'red', fontWeight:'bold' }} />
+                                            row[column.id] ? (
+                                                <CheckIcon sx={{ color: 'green', fontWeight: 'bold' }} />
+                                            ) : (
+                                                <ClearIcon sx={{ color: 'red', fontWeight: 'bold' }} />
+                                            )
+                                        ) : typeof row[column.id] === 'string' &&
+                                        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(row[column.id]) ? (  // using regex to check if the string is an email
+                                            row[column.id]
                                         ) : (
                                             formatLabel(truncateString(row[column.id], 30))
                                         )}
