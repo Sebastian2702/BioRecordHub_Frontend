@@ -36,6 +36,7 @@ const bibliographyFieldHelpers = [
     {key: 'call_number', helperText: 'Library call number for the item.'},
     {key: 'extra', helperText: 'Any additional information or metadata.'},
     {key: 'notes', helperText: 'Personal notes or observations about the item.'},
+    {key: 'verified', helperText: 'Verified status of the entry, indicating if it has been checked for accuracy and its usable.'},
 ];
 
 export const getHelperText = (key: string, type:string): string | undefined => {
@@ -51,7 +52,7 @@ export const getHelperText = (key: string, type:string): string | undefined => {
 };
 
 export const bibliographyFieldKeys = [
-    'isbn', 'issn', 'doi', 'url', 'abstract_note', 'date', 'date_added', 'date_modified', 'num_pages',
+    'isbn', 'issn', 'doi', 'url', 'abstract_note', 'date', 'num_pages',
     'issue', 'volume', 'number_of_volumes', 'journal_abbreviation', 'short_title', 'series', 'series_number',
     'series_text', 'series_title', 'publisher', 'place', 'language', 'rights', 'type', 'archive',
     'archive_location', 'library_catalog', 'call_number', 'extra', 'notes'

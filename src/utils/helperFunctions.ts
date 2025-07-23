@@ -33,6 +33,17 @@ export const formatAuthors = (authors: string[]) => {
     return authors.join('; ');
 }
 
+export const formatContributors = (contributors: string, newContributer: string) => {
+    if( contributors === "" ) {
+        return newContributer;
+
+    }
+    else if (!contributors.includes(newContributer)) {
+        return contributors + "; " + newContributer;
+    }
+    return contributors;
+}
+
 export const getAuthors = (data: Record<string, any>): string[] => {
     if (!data || !data.author) {
         return [];
@@ -73,24 +84,19 @@ export const getNonRequiredFields = (data: Record<string, any>, notRequiredField
     return result;
 };
 
-export const normalizeEntryDates = (entries: any[]) =>{
+export const normalizeEntryDates = (entries: any[], userName: string) =>{
     return entries.map(entry => {
-        const updatedEntry = { ...entry };
-        if (entry.date_added) {
-            const added = dayjs(entry.date_added, ['DD/MM/YYYY HH:mm', dayjs.ISO_8601], true);
-            if (added.isValid()) {
-                updatedEntry.date_added = added.second(0).millisecond(0).format('YYYY-MM-DD HH:mm:ss');
-            }
-        }
+        const date = dayjs(new Date(), ['DD/MM/YYYY HH:mm', dayjs.ISO_8601], true);
+        return {
+            ...entry,
+            key: null,
+            date_added: date.second(0).millisecond(0).format('YYYY-MM-DD HH:mm:ss'),
+            date_modified: date.second(0).millisecond(0).format('YYYY-MM-DD HH:mm:ss'),
+            volume: entry.volume === null ? '' : String(entry.volume),
+            issue: entry.issue === null ? '' : String(entry.issue),
+            contributors: formatContributors("", userName),
+        };
 
-        if (entry.date_modified) {
-            const modified = dayjs(entry.date_modified, ['DD/MM/YYYY HH:mm', dayjs.ISO_8601], true);
-            if (modified.isValid()) {
-                updatedEntry.date_modified = modified.second(0).millisecond(0).format('YYYY-MM-DD HH:mm:ss');
-            }
-        }
-
-        return updatedEntry;
     });
 }
 

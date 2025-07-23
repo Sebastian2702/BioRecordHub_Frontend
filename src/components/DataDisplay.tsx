@@ -2,6 +2,8 @@ import {Typography} from "@mui/material";
 import Box from "@mui/material/Box";
 import {COLORS, FONT_SIZES} from "../constants/ui.ts";
 import { itemTypeOptionsFormat } from "../constants/uiConstants.ts";
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
 
 interface DataDisplayProps {
     label: string;
@@ -14,16 +16,38 @@ const DataDisplay: React.FC<DataDisplayProps> = ({ label, value }) => {
             ? itemTypeOptionsFormat.find(item => item.key === value)?.display || value
             : value;
 
-    return (
-        <Box display="flex" gap={1}>
-            <Typography sx={{ fontSize: FONT_SIZES.medium, color: COLORS.black,textShadow: '0px 4px 12px rgba(0,0,0,0.15)', }}>
-                {label}:
-            </Typography>
-            <Typography sx={{ fontSize: FONT_SIZES.medium, color: COLORS.primary, fontWeight: 'bold',textShadow: '0px 4px 12px rgba(0,0,0,0.15)', }}>
-                {displayValue}
-            </Typography>
-        </Box>
-    );
+    if (label === "Verified") {
+        return(
+            <Box display="flex" gap={1}>
+                <Typography sx={{ fontSize: FONT_SIZES.medium, color: COLORS.black,textShadow: '0px 4px 12px rgba(0,0,0,0.15)', }}>
+                    {label}:
+                </Typography>
+                <Typography sx={{ fontSize: FONT_SIZES.medium, color: COLORS.primary, fontWeight: 'bold',textShadow: '0px 4px 12px rgba(0,0,0,0.15)', }}>
+                    {displayValue ? (
+                        <CheckIcon fontSize={'large'}/>
+                    ): (
+                        <ClearIcon color="error" fontSize={'large'}/>
+                    )
+                    }
+
+                </Typography>
+            </Box>
+        )
+
+    }
+    else{
+        return (
+            <Box display="flex" gap={1}>
+                <Typography sx={{ fontSize: FONT_SIZES.medium, color: COLORS.black,textShadow: '0px 4px 12px rgba(0,0,0,0.15)', }}>
+                    {label}:
+                </Typography>
+                <Typography sx={{ fontSize: FONT_SIZES.medium, color: COLORS.primary, fontWeight: 'bold',textShadow: '0px 4px 12px rgba(0,0,0,0.15)', }}>
+                    {displayValue}
+                </Typography>
+            </Box>
+        );
+    }
+
 };
 
 export default DataDisplay;

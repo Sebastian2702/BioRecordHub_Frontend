@@ -58,6 +58,7 @@ export const CreateBibliographyFromExcel = async (data: any,
         setLoading(false);
         const msg = err.response.data.message;
         const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
+        console.log(cutmsg)
         setError(cutmsg);
     }
 }

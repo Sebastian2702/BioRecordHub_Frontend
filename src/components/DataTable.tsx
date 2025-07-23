@@ -308,7 +308,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                                         /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(row[column.id]) ? (  // using regex to check if the string is an email
                                             row[column.id]
                                         ) : (
-                                            formatLabel(truncateString(row[column.id], 30))
+                                            formatLabel(truncateString(row[column.id], 40))
                                         )}
                                     </TableCell>
                                 ))}

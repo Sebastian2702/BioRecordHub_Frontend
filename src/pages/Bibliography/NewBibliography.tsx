@@ -13,27 +13,30 @@ import StyledButton from "../../components/StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
 import { CreateBibliography } from "../../services/bibliography/bibliography.ts";
 import dayjs from 'dayjs';
-import { formatAuthors } from "../../utils/helperFunctions.ts";
+import { formatAuthors, formatContributors } from "../../utils/helperFunctions.ts";
 import {toast, ToastContainer} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import { dropdownFilterBibliographyOptions } from "../../constants/uiConstants.ts";
 import {normalizeEntryDates} from "../../utils/helperFunctions.ts"
+import {useAuth} from "../../context/AuthContext.tsx";
 
 
 function NewBibliography () {
-    const [key, setKey] = useState('');
+    const { user } = useAuth();
     const [itemType, setItemType] = useState('');
     const [date, setDate] = useState(dayjs(new Date()));
-    const [authorsArray, setauthorsArray] = useState<string[]>([]);
+    const [authorsArray, setAuthorsArray] = useState<string[]>([]);
     const [title, setTitle] = useState('');
     const [publicationTitle, setPublicationTitle] = useState('');
     const [pages, setPages] = useState('');
+    const [verified, setVerified] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [notRequiredFormData, setNotRequiredFormData] = useState({
+        key: '',
         isbn: '',
         issn: '',
         doi: '',
@@ -67,18 +70,22 @@ function NewBibliography () {
 
     const handleSave = () => {
         const author = formatAuthors(authorsArray);
+        const contributors = formatContributors("", user?.name ? user.name : "");
 
 
         const dataToSend = {
             ...notRequiredFormData,
-            key,
+            date_added: dayjs(new Date()).toISOString(),
+            date_modified: dayjs(new Date()).toISOString(),
             item_type: itemType,
             title,
             publication_year: date ? date.year() : '',
             author,
             publication_title: publicationTitle,
             pages,
-                };
+            verified,
+            contributors
+        };
 
         const normalizedData = normalizeEntryDates([dataToSend])[0];
 
@@ -140,13 +147,6 @@ function NewBibliography () {
                     <Box padding={"10px"}>
                         <Box>
                             <FormField
-                                label={"Key"}
-                                value={key}
-                                onChange={(e) => setKey(e.target.value)}
-                                helperText={getHelperText('key', "bibliography") || ''}
-                                required={true}
-                            />
-                            <FormField
                                 label={"Title"}
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
@@ -157,7 +157,7 @@ function NewBibliography () {
                                 label="Author"
                                 helperText={getHelperText('authors', "bibliography") || ''}
                                 values={authorsArray}
-                                onChange={setauthorsArray}
+                                onChange={setAuthorsArray}
                             />
                             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
                                 <FormField
@@ -193,9 +193,10 @@ function NewBibliography () {
                                     helperText={getHelperText('pages', "bibliography") || ''}
                                     required={false}
                                 />
+                                <FormField label={"Verified"} value={verified} onChange={(e) => setVerified(e.target.checked) } helperText={getHelperText('verified', "bibliography") || ''} required={false} switchInput={true} />
                             </Box>
                         </Box>
-                        <Box padding={"0px 10px"}>
+                        <Box padding={"0px 10px"} marginTop={'10px'}>
                             <Typography
                                 align={"left"}
                                 sx={{

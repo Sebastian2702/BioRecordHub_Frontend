@@ -105,11 +105,10 @@ function Bibliographies(){
                     <DataTable
                         data={data}
                         columns={[
-                            { id: 'key', label: 'Key' },
-                            { id: 'item_type', label: 'Item Type' },
-                            { id: 'title', label: 'Title' },
                             { id: 'author', label: 'Author' },
-                            { id: 'publication_year', label: 'Publication Year' }
+                            { id: 'publication_year', label: 'Publication Year' },
+                            { id: 'title', label: 'Title' },
+                            { id: 'publication_title', label: 'Publication' },
                         ]}
                         editButton={false}
                         viewButton={true}

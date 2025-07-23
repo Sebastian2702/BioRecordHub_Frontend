@@ -12,16 +12,18 @@ import StyledButton from "../../components/StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
 import {UpdateBibliography, GetBibliographyById} from "../../services/bibliography/bibliography.ts";
 import dayjs from 'dayjs';
-import { formatLabel, formatAuthors, getAuthors } from "../../utils/helperFunctions.ts";
+import {formatLabel, formatAuthors, getAuthors, formatContributors} from "../../utils/helperFunctions.ts";
 import {toast, ToastContainer} from "react-toastify";
 import {useParams} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import {dropdownFilterBibliographyOptions} from "../../constants/uiConstants.ts";
 import { getNonRequiredFields } from "../../utils/helperFunctions.ts";
 import {useNavigate} from "react-router-dom";
+import {useAuth} from "../../context/AuthContext.tsx";
 
 
 function EditBibliography (){
+    const { user } = useAuth();
     const [isExpanded, setIsExpanded] = useState(true);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
@@ -68,6 +70,7 @@ function EditBibliography (){
         const author = formatAuthors(authorsArray);
         const dateFormatted = data?.date ? dayjs(data?.date).format('YYYY-MM-DD') : null;
         const dateModified = dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss');
+        const contributors = formatContributors(data.contributors, user?.name ? user.name : "");
 
         const dataToSend = {
             ...data,
@@ -75,6 +78,7 @@ function EditBibliography (){
             author,
             date: dateFormatted,
             date_modified: dateModified,
+            contributors,
 
         };
         console.log(dataToSend);
@@ -120,13 +124,6 @@ function EditBibliography (){
                     </Box>
                     <Box padding={"10px"}>
                         <Box>
-                            <FormField
-                                label={"Key"}
-                                value={data?.key || ''}
-                                onChange={(e) => setData({ ...data, key: e.target.value })}
-                                helperText={getHelperText('key', "bibliography") || ''}
-                                required={true}
-                            />
                             <FormField
                                 label={"Title"}
                                 value={data?.title || ''}
