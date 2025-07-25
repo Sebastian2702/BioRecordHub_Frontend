@@ -20,7 +20,6 @@ function Bibliography() {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
     const [nomenclature, setNomenclature] = useState<any>(null);
-    const [refresh, setRefresh] = useState(false);
     const [error, setError] = useState("");
     const { id } = useParams();
 
@@ -34,10 +33,6 @@ function Bibliography() {
         } finally {
             setLoading(false);
         }
-    };
-
-    const handleRefresh = () => {
-        setRefresh(prev => !prev);
     };
 
     useEffect(() => {
@@ -122,7 +117,7 @@ function Bibliography() {
                                 .filter(([key, value]) => key !== "id" && key !== "created_at"  && value != null)
                                 .map(([key, value]) => (
                                     <Box key={key}  sx={{ flex: '1 1 48%', minWidth: '300px', mb: 2 }}>
-                                        <DataDisplay label={formatLabel(key)} value={value} />
+                                        <DataDisplay label={formatLabel(key)} value={value} id={data.id} />
                                     </Box>
                                 ))
                         }

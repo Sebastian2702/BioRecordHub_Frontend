@@ -100,6 +100,22 @@ export const normalizeEntryDates = (entries: any[], userName: string) =>{
     });
 }
 
+export const appendFileToFormData = (data: Record<string, any>, file:any, verified:boolean) => {
+    const formData = new FormData();
+    Object.keys(data).forEach(key => {
+        if (data[key] !== undefined && data[key] !== null) {
+            formData.append(key, data[key]);
+        }
+    });
+    if (file) {
+        formData.append('file', file);
+    }
+    if(verified) {
+        formData.append('verified', JSON.stringify(verified));
+    }
+    return formData;
+}
+
 export const extractBibliographyIds = (bibliographies: { id: number }[]): string[] => {
     return bibliographies.map(b => b.id);
 }

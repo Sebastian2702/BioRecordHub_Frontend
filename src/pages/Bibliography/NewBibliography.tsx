@@ -13,14 +13,13 @@ import StyledButton from "../../components/StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
 import { CreateBibliography } from "../../services/bibliography/bibliography.ts";
 import dayjs from 'dayjs';
-import { formatAuthors, formatContributors } from "../../utils/helperFunctions.ts";
+import { formatAuthors, appendFileToFormData } from "../../utils/helperFunctions.ts";
 import {toast, ToastContainer} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import { dropdownFilterBibliographyOptions } from "../../constants/uiConstants.ts";
 import {normalizeEntryDates} from "../../utils/helperFunctions.ts"
 import {useAuth} from "../../context/AuthContext.tsx";
-
 
 function NewBibliography () {
     const { user } = useAuth();
@@ -32,6 +31,7 @@ function NewBibliography () {
     const [pages, setPages] = useState('');
     const [verified, setVerified] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [file, setFile] = useState<File | null>(null);
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -70,8 +70,6 @@ function NewBibliography () {
 
     const handleSave = () => {
         const author = formatAuthors(authorsArray);
-        const contributors = formatContributors("", user?.name ? user.name : "");
-
 
         const dataToSend = {
             ...notRequiredFormData,
@@ -83,13 +81,13 @@ function NewBibliography () {
             author,
             publication_title: publicationTitle,
             pages,
-            verified,
-            contributors
         };
 
-        const normalizedData = normalizeEntryDates([dataToSend])[0];
+        const normalizedData = normalizeEntryDates([dataToSend], user?.name ? user.name : "")[0];
 
-        CreateBibliography(normalizedData, setError, navigate, setLoading);
+        const formData = appendFileToFormData(normalizedData, file, verified);
+
+        CreateBibliography(formData, setError, navigate, setLoading);
     }
 
     useEffect(() => {
@@ -159,7 +157,7 @@ function NewBibliography () {
                                 values={authorsArray}
                                 onChange={setAuthorsArray}
                             />
-                            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
+                            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, marginBottom:'20px' }}>
                                 <FormField
                                     label={"Publication Year"}
                                     value={date}
@@ -195,7 +193,9 @@ function NewBibliography () {
                                 />
                                 <FormField label={"Verified"} value={verified} onChange={(e) => setVerified(e.target.checked) } helperText={getHelperText('verified', "bibliography") || ''} required={false} switchInput={true} />
                             </Box>
+                            <FormField label={"File"} value={file} onChangeFile={(file) => setFile(file)} helperText={getHelperText('file', "bibliography") || ''} required={false} fileUpload={true} />
                         </Box>
+
                         <Box padding={"0px 10px"} marginTop={'10px'}>
                             <Typography
                                 align={"left"}

@@ -28,6 +28,7 @@ function EditBibliography (){
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
+
     const { id } = useParams();
     const [notRequiredFormData, setNotRequiredFormData] = useState<any>(null);
     const [authorsArray, setAuthorsArray] = useState<string[]>([]);
@@ -140,7 +141,7 @@ function EditBibliography (){
                             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
                                 <FormField
                                     label={"Publication Year"}
-                                    value={data?.date ? dayjs(data.date) : null}
+                                    value={data?.publication_year ? dayjs().year(Number(data.publication_year)) : null}
                                     onChangeDate={(e) => setData({ ...data, date: e })}
                                     helperText={getHelperText('publication_year', "bibliography") || ''}
                                     required={true}
@@ -170,6 +171,9 @@ function EditBibliography (){
                                     helperText={getHelperText('pages', "bibliography") || ''}
                                     required={false}
                                 />
+                            </Box>
+                            <Box>
+                                {data}
                             </Box>
                         </Box>
                         <Box padding={"0px 10px"}>

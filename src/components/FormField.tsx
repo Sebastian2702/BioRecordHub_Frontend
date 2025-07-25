@@ -1,13 +1,18 @@
+import React from 'react';
 import Box from '@mui/material/Box';
-import { COLORS, FONT_SIZES } from '../constants/ui';
 import Typography from '@mui/material/Typography';
-import InputTextField from './InputTextField.tsx';
-import DateInput from './DateInput.tsx';
-import { SelectChangeEvent } from '@mui/material/Select';
-import DropDownInput from './DropdownInput.tsx';
-import DateTimeInput from './DateTimeInput.tsx';
 import Switch from '@mui/material/Switch';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { SelectChangeEvent } from '@mui/material/Select';
+import Tooltip from '@mui/material/Tooltip';
+
+import InputTextField from './InputTextField.tsx';
+import DateInput from './DateInput.tsx';
+import DropDownInput from './DropdownInput.tsx';
+import DateTimeInput from './DateTimeInput.tsx';
+import FileInput from './FileInput.tsx';
+
+import { COLORS, FONT_SIZES } from '../constants/ui';
 
 interface FormFieldProps {
     label: string;
@@ -20,10 +25,12 @@ interface FormFieldProps {
     dropdown?: boolean;
     dateTime?: boolean;
     switchInput?: boolean;
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    fileUpload?: boolean;
     options?: { display: string; value: string }[];
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onChangeDropdown?: (event: SelectChangeEvent<string>) => void;
     onChangeDate?: (date: Date | null) => void;
+    onChangeFile?: (file: File | null) => void;
 }
 
 const FormField: React.FC<FormFieldProps> = ({
@@ -31,44 +38,58 @@ const FormField: React.FC<FormFieldProps> = ({
                                                  value,
                                                  required,
                                                  helperText,
-                                                 multiline,
-                                                 date,
-                                                 dateType,
-                                                 dateTime,
-                                                 switchInput,
+                                                 multiline = false,
+                                                 date = false,
+                                                 dateType = ['year'],
+                                                 dropdown = false,
+                                                 dateTime = false,
+                                                 switchInput = false,
+                                                 fileUpload = false,
+                                                 options = [],
                                                  onChange,
-                                                 dropdown,
-                                                 options,
                                                  onChangeDropdown,
                                                  onChangeDate,
+                                                 onChangeFile,
                                              }) => {
-    const showDate = date && !dropdown && !dateTime && !switchInput;
-    const showDropdown = dropdown && !date && !dateTime && !switchInput;
-    const showDateTime = dateTime && !dropdown && !date && !switchInput;
-    const showText = !date && !dropdown && !dateTime && !switchInput;
-    const showSwitch = !date && !dropdown && !dateTime && switchInput;
+    const labelStyles = {
+        color: COLORS.primary,
+        fontSize: {
+            xs: FONT_SIZES.xsmall,
+            sm: FONT_SIZES.small,
+            lg: FONT_SIZES.medium,
+        },
+        fontWeight: 'bold',
+        marginBottom: '8px',
+    };
+
+    const isOnly = (type: 'date' | 'dropdown' | 'dateTime' | 'switchInput' | 'fileUpload') => {
+        const types = { date, dropdown, dateTime, switchInput, fileUpload };
+        return types[type] && Object.values(types).filter(Boolean).length === 1;
+    };
+
+    const labelContent = (
+        <Typography align="left" sx={labelStyles}>
+            {label}:
+        </Typography>
+    );
 
     return (
         <Box sx={{ margin: '0 10px' }}>
-            <Typography
-                align="left"
-                sx={{
-                    color: COLORS.primary,
-                    fontSize: { xs: FONT_SIZES.xsmall, sm: FONT_SIZES.small, lg: FONT_SIZES.medium },
-                    fontWeight: 'bold',
-                    marginBottom: '8px',
-                }}
-            >
-                {label}:
-            </Typography>
-
-            {showDate && (
-                <DateInput type={dateType || ['year']} label={helperText} value={value} onChange={onChangeDate} />
+            {(switchInput || fileUpload) ? (
+                <Tooltip title={helperText} placement="top-start" arrow>
+                    {labelContent}
+                </Tooltip>
+            ) : (
+                labelContent
             )}
 
-            {showDropdown && (
+            {isOnly('date') && (
+                <DateInput label={helperText} value={value} onChange={onChangeDate} type={dateType} />
+            )}
+
+            {isOnly('dropdown') && (
                 <DropDownInput
-                    options={options || []}
+                    options={options}
                     value={value}
                     onChange={onChangeDropdown}
                     label={helperText}
@@ -77,28 +98,16 @@ const FormField: React.FC<FormFieldProps> = ({
                 />
             )}
 
-            {showDateTime && (
+            {isOnly('dateTime') && (
                 <DateTimeInput
                     label={helperText}
                     value={value}
                     onChange={onChangeDate}
-                    type={dateType || ['day', 'month', 'year']}
+                    type={dateType}
                 />
             )}
 
-            {showText && (
-                <InputTextField
-                    label={helperText}
-                    value={value}
-                    onChange={onChange}
-                    fullWidth
-                    required={required}
-                    fontSize={FONT_SIZES.medium}
-                    multiline={multiline}
-                />
-            )}
-
-            {showSwitch && (
+            {isOnly('switchInput') && (
                 <Box
                     sx={{
                         display: 'flex',
@@ -114,12 +123,30 @@ const FormField: React.FC<FormFieldProps> = ({
                         checked={value}
                         onChange={onChange}
                         color="success"
-                        sx={{
-                            transform: 'scale(1.3)',
-                        }}
+                        sx={{ transform: 'scale(1.3)' }}
                     />
                     {value && <CheckCircleIcon color="success" />}
                 </Box>
+            )}
+
+            {isOnly('fileUpload') && onChangeFile && (
+                <FileInput
+                    label={'.pdf; files here, or browse your computer'}
+                    onChange={onChangeFile}
+                    acceptedFileTypes={'.pdf'}
+                />
+            )}
+
+            {!date && !dropdown && !dateTime && !switchInput && !fileUpload && (
+                <InputTextField
+                    label={helperText}
+                    value={value}
+                    onChange={onChange}
+                    fullWidth
+                    required={required}
+                    fontSize={FONT_SIZES.medium}
+                    multiline={multiline}
+                />
             )}
         </Box>
     );

@@ -13,6 +13,7 @@ export const BIBLIROGRAPHY_ROUTES = {
     bibliography: '/api/bibliographies',
     bibliographyFromExcel: '/api/bibliographies/multiple',
     bibliographyById: (id: number) => `/api/bibliographies/${id}`,
+    bibliographyFile: (id: number) => `/api/bibliographies/file/${id}`,
     deleteNomenclatureFromBibliography: (id: number, nomenclatureId: number) => `/api/bibliographies/${id}/nomenclatures/${nomenclatureId}`,
 }
 
