@@ -100,7 +100,7 @@ export const normalizeEntryDates = (entries: any[], userName: string) =>{
     });
 }
 
-export const appendFileToFormData = (data: Record<string, any>, file:any, verified:boolean) => {
+export const appendFileToFormData = (data: Record<string, any>, file:any, verified?:boolean) => {
     const formData = new FormData();
     Object.keys(data).forEach(key => {
         if (data[key] !== undefined && data[key] !== null) {
@@ -111,7 +111,7 @@ export const appendFileToFormData = (data: Record<string, any>, file:any, verifi
         formData.append('file', file);
     }
     if(verified) {
-        formData.append('verified', JSON.stringify(verified));
+        formData.append('verified', verified ? '1' : '0');
     }
     return formData;
 }

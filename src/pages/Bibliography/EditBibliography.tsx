@@ -12,7 +12,13 @@ import StyledButton from "../../components/StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
 import {UpdateBibliography, GetBibliographyById} from "../../services/bibliography/bibliography.ts";
 import dayjs from 'dayjs';
-import {formatLabel, formatAuthors, getAuthors, formatContributors} from "../../utils/helperFunctions.ts";
+import {
+    formatLabel,
+    formatAuthors,
+    getAuthors,
+    formatContributors,
+    appendFileToFormData
+} from "../../utils/helperFunctions.ts";
 import {toast, ToastContainer} from "react-toastify";
 import {useParams} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -20,6 +26,10 @@ import {dropdownFilterBibliographyOptions} from "../../constants/uiConstants.ts"
 import { getNonRequiredFields } from "../../utils/helperFunctions.ts";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../../context/AuthContext.tsx";
+import DownloadIcon from '@mui/icons-material/Download';
+import { GetBibliographyFile, DeleteBibliographyFile } from "../../services/bibliography/bibliography.ts";
+import DeleteIcon from '@mui/icons-material/Delete';
+import CustomDialog from "../../components/CustomDialog.tsx";
 
 
 function EditBibliography (){
@@ -28,11 +38,17 @@ function EditBibliography (){
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
-
+    const [file, setFile] = useState<string | null>(null);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [dialogLoading, setDialogLoading] = useState(false);
     const { id } = useParams();
     const [notRequiredFormData, setNotRequiredFormData] = useState<any>(null);
     const [authorsArray, setAuthorsArray] = useState<string[]>([]);
     const navigate = useNavigate();
+
+    const handleDeleteDialogClose = () => {
+        setDeleteDialogOpen(false);
+    };
 
     const fetchData = async (id: number) => {
         try {
@@ -67,9 +83,36 @@ function EditBibliography (){
         }
     }, [error]);
 
+    const handleDownloadFile = async (id:number) => {
+        setLoading(true);
+        try{
+            await GetBibliographyFile(id);
+        }
+        catch (error){
+            setError("Failed to download file. Please try again later.");
+            setLoading(false);
+            return;
+        }
+        setLoading(false);
+    }
+
+    const handleDeleteFile = async () => {
+        try{
+            setDialogLoading(true);
+            await DeleteBibliographyFile(data.id ?? 0);
+            setFile(null);
+            setData({ ...data, file: null });
+            setDialogLoading(false);
+            setDeleteDialogOpen(false);
+        }
+        catch (error) {
+            setError("Failed to delete file. Please try again later.");
+            setDialogLoading(false);
+        }
+    }
+
     const handleSave = () => {
         const author = formatAuthors(authorsArray);
-        const dateFormatted = data?.date ? dayjs(data?.date).format('YYYY-MM-DD') : null;
         const dateModified = dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss');
         const contributors = formatContributors(data.contributors, user?.name ? user.name : "");
 
@@ -77,14 +120,25 @@ function EditBibliography (){
             ...data,
             ...notRequiredFormData,
             author,
-            date: dateFormatted,
             date_modified: dateModified,
             contributors,
+            verified: null,
 
         };
-        console.log(dataToSend);
-        UpdateBibliography(dataToSend, setError, setLoading, navigate);
+
+        const formData = appendFileToFormData(dataToSend, file, data?.verified);
+        formData.append('_method', 'PUT');
+
+        UpdateBibliography(formData, setError, setLoading, navigate, data.id);
     }
+
+    const deleteDialogContent = (
+        <Box>
+            <Typography variant="body1">
+                Are you sure you want to delete this file?
+            </Typography>
+        </Box>
+    )
 
 
     return (
@@ -98,6 +152,17 @@ function EditBibliography (){
             paddingTop: "20px",
             overflow: 'auto',
         }}>
+            <CustomDialog
+                open={deleteDialogOpen}
+                onClose={handleDeleteDialogClose}
+                title="Confirm Deletion"
+                contentText={deleteDialogContent}
+                content={"delete"}
+                dialogLoading={dialogLoading}
+                action={() => {
+                    handleDeleteFile();
+                }}
+            />
             <ToastContainer />
             {loading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
@@ -141,8 +206,10 @@ function EditBibliography (){
                             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
                                 <FormField
                                     label={"Publication Year"}
-                                    value={data?.publication_year ? dayjs().year(Number(data.publication_year)) : null}
-                                    onChangeDate={(e) => setData({ ...data, date: e })}
+                                    value={data?.publication_year ? dayjs(`${data.publication_year}-01-01`) : null}
+                                    onChangeDate={(e) =>
+                                        setData({ ...data, publication_year: e ? e.year() : '' })
+                                    }
                                     helperText={getHelperText('publication_year', "bibliography") || ''}
                                     required={true}
                                     date={true}
@@ -150,7 +217,7 @@ function EditBibliography (){
                                 <FormField
                                     label={"Item Type"}
                                     value={data?.item_type || ''}
-                                    onChangeDropdown={(e) => setData({ ...data, item_type: e })}
+                                    onChangeDropdown={(e) => setData({ ...data, item_type: e.target.value })}
                                     helperText={getHelperText('item_type', "bibliography") || ''}
                                     required={true}
                                     dropdown={true}
@@ -172,11 +239,44 @@ function EditBibliography (){
                                     required={false}
                                 />
                             </Box>
-                            <Box>
-                                {data}
+                            <FormField label={"Verified"} value={data?.verified} onChange={(e) => setData({...data, verified: e.target.checked})} helperText={getHelperText('verified', "bibliography") || ''} required={false} switchInput={true} />
+                            <Box padding={'8px'}  marginTop={'20px'}>
+                                {data.file ? (
+                                    <Box display={'flex'} flexDirection={'row'} gap={1} alignItems={'center'}>
+                                        <Typography sx={{
+                                            color: COLORS.primary,
+                                            fontSize: {
+                                                xs: FONT_SIZES.xsmall,
+                                                sm: FONT_SIZES.small,
+                                                lg: FONT_SIZES.medium,
+                                            },
+                                            fontWeight: 'bold',
+                                            marginBottom: '8px',}}
+                                            align={"left"}
+                                        >
+                                                File:
+                                            </Typography>
+                                        <StyledButton
+                                            label={data?.file}
+                                            color="primary"
+                                            size="medium"
+                                            icon={<DownloadIcon/>}
+                                            onClick={() => handleDownloadFile(data.id ?? 0)}
+                                            disabled={loading}
+                                        />
+                                        <DeleteIcon
+                                            sx={{ color: COLORS.delete, cursor: "pointer" }}
+                                            onClick={() => setDeleteDialogOpen(true)}
+                                            fontSize={"medium"}
+                                        />
+                                    </Box>
+                                    ):(
+                                    <FormField label={"File"} value={file} onChangeFile={(file) => setFile(file)} helperText={getHelperText('file', "bibliography") || ''} required={false} fileUpload={true} />
+                                    )}
+
                             </Box>
                         </Box>
-                        <Box padding={"0px 10px"}>
+                        <Box padding={"10px"}>
                             <Typography
                                 align={"left"}
                                 sx={{
@@ -197,10 +297,14 @@ function EditBibliography (){
                                             <FormField
                                                 label={formatLabel(field)}
                                                 helperText={getHelperText(field, "bibliography") || ''}
-                                                value={notRequiredFormData[field as keyof typeof notRequiredFormData] || ''}
+                                                value={field === 'date' ? data?.date ? dayjs(`${data.date}-01-01`) : null  : notRequiredFormData[field as keyof typeof notRequiredFormData] || ''}
                                                 onChange={(e) => setNotRequiredFormData({ ...notRequiredFormData, [field]: e.target.value })}
                                                 multiline={field === 'notes' || field === 'extra'}
                                                 required={false}
+                                                onChangeDate={(e) => {
+                                                    setData({ ...data, date: e ? e.year() : '' })
+                                                }}
+                                                date = {field === 'date'}
                                             />
                                         ))}
                                     </Box>

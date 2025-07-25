@@ -71,13 +71,18 @@ export const UpdateBibliography = async (data: any,
                                          setError: (msg: string) => void,
                                          setLoading: (loading: boolean) => void,
                                          navigate: (url: string) => void,
+                                         id: number
 ) => {
     await api.get(COOKIE_ROUTE.csrf);
     try {
         setLoading(true);
-        await api.put(BIBLIROGRAPHY_ROUTES.bibliographyById(data.id), data);
+        await api.post(BIBLIROGRAPHY_ROUTES.bibliographyById(id), data,{
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         setLoading(false)
-        navigate(ROUTES.bibliography + '/' + data.id);
+        navigate(ROUTES.bibliography + '/' + id);
     } catch (err: any) {
         setLoading(false);
         const msg = err.response.data.message;
@@ -97,4 +102,9 @@ export const GetBibliographyFile = async (id: number) => {
     link.setAttribute('download', `bibliography_${id}.zip`);
     document.body.appendChild(link);
     link.click();
+}
+
+export const DeleteBibliographyFile = async (id: number) => {
+    const response = await api.delete(BIBLIROGRAPHY_ROUTES.bibliographyFile(id));
+    return response.data;
 }

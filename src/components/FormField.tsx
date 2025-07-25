@@ -125,7 +125,6 @@ const FormField: React.FC<FormFieldProps> = ({
                         color="success"
                         sx={{ transform: 'scale(1.3)' }}
                     />
-                    {value && <CheckCircleIcon color="success" />}
                 </Box>
             )}
 
