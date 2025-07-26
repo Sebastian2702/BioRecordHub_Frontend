@@ -140,11 +140,10 @@ function Nomenclature() {
                             <DataTable
                                 data={bibliographies}
                                 columns={[
-                                    { id: 'key', label: 'Key' },
-                                    { id: 'item_type', label: 'Item Type' },
-                                    { id: 'title', label: 'Title' },
                                     { id: 'author', label: 'Author' },
-                                    { id: 'publication_year', label: 'Publication Year' }
+                                    { id: 'publication_year', label: 'Publication Year' },
+                                    { id: 'title', label: 'Title' },
+                                    { id: 'publication_title', label: 'Publication Title' }
                                 ]}
                                 editButton={false}
                                 viewButton={true}

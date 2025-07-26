@@ -77,9 +77,10 @@ export const nomenclatureFieldHelpers = [
     {key: 'subspecies', helperText: 'A taxonomic rank below species, indicating variation.'},
     {key: 'author', helperText: 'The person who first described the taxon.'},
     {key: 'remarks', helperText: 'Additional notes, clarifications, or taxonomic comments.'},
+    {key: 'synonyms', helperText: 'Another taxonomic names used to represent this species.'},
 ]
 
 export const nomenclatureFieldKeys = [
-    'kingdom', 'phylum', 'subphylum', 'class', 'order', 'suborder', 'infraorder', 'superfamily', 'family', 'subfamily', 'tribe', 'genus', 'subgenus', 'species', 'subspecies', 'author', 'remarks',
+    'kingdom', 'phylum', 'subphylum', 'class', 'order', 'suborder', 'infraorder', 'superfamily', 'family', 'subfamily', 'tribe', 'genus', 'subgenus', 'species', 'subspecies', 'author', 'remarks','synonyms'
 ]
 

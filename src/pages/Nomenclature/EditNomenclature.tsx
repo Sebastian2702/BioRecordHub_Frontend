@@ -5,7 +5,7 @@ import BackButton from "../../components/BackButton.tsx";
 import FormField from "../../components/FormField.tsx";
 import {useEffect, useState} from "react";
 import {nomenclatureFieldKeys, getHelperText} from "../../utils/formFieldHelpers.ts";
-import {formatLabel, extractBibliographyIds} from "../../utils/helperFunctions.ts";
+import {formatLabel, extractBibliographyIds, formatContributors} from "../../utils/helperFunctions.ts";
 import StyledButton from "../../components/StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
 import {toast, ToastContainer} from "react-toastify";
@@ -14,8 +14,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 import {GetBibliography} from "../../services/bibliography/bibliography.ts";
 import DropdownSelector from "../../components/DropdownSelector.tsx";
 import {GetNomenclatureById, EditNomenclatureRequest} from "../../services/nomenclature/nomenclature.ts";
+import {useAuth} from "../../context/AuthContext.tsx";
 
 function EditNomenclature(){
+    const {user} = useAuth();
     const [nomenclatureData, setNomenclatureData] = useState<any>(null);
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -64,6 +66,7 @@ function EditNomenclature(){
             const data = {
                 ...nomenclatureData,
                 bibliographies: selectedBibliographyIds,
+                contributors: formatContributors(nomenclatureData.contributors, user?.name || "Unknown User"),
             }
 
             EditNomenclatureRequest(Number(id), data, setLoading, setError, navigate);
@@ -126,7 +129,7 @@ function EditNomenclature(){
                                 left: '50%',
                                 transform: 'translateX(-50%)',
                                 fontWeight: 'bold',
-                                fontSize: FONT_SIZES.xlarge,
+                                fontSize: FONT_SIZES.large,
                                 textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
                             }}
                         >

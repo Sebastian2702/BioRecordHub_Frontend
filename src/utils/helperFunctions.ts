@@ -119,3 +119,30 @@ export const appendFileToFormData = (data: Record<string, any>, file:any, verifi
 export const extractBibliographyIds = (bibliographies: { id: number }[]): string[] => {
     return bibliographies.map(b => b.id);
 }
+
+export const checkFormattingTaxonomicFields = (data: Record<string, string>, setError: (msg: string) => void, setLoading: (loading: boolean) => void,): boolean => {
+    const fieldsToCheck = [
+        'kingdom',
+        'phylum',
+        'subphylum',
+        'class',
+        'order',
+        'suborder',
+        'infraorder',
+        'superfamily',
+        'family',
+    ];
+
+    const pattern = /^[A-Za-zÀ-ÿ\s\-]+ [A-Za-zÀ-ÿ.\-]+, \d{4}$/;
+
+    for (const field of fieldsToCheck) {
+        const value = data[field];
+        if (value && !pattern.test(value.trim())) {
+            setLoading(false);
+            setError(`Invalid format in "${field}". Expected: "Name Author, Year"`);
+            return false;
+        }
+    }
+
+    return true;
+}

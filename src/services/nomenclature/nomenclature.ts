@@ -44,9 +44,10 @@ export const SearchNomenclature = async (data: any, setError: (msg: string) => v
     }
     catch (err: any) {
         setLoading(false);
-        const msg = err?.response?.data?.message || "An unknown error occurred";
+        const msg = err?.response.data.message || "An unknown error occurred";
         const cutmsg = msg.includes('.') ? msg.substring(0, msg.lastIndexOf('.')).trim() : msg;
         setError(cutmsg);
+        throw err;
     }
 }
 
@@ -73,7 +74,7 @@ export const EditNomenclatureRequest = async (id: number, data: any, setLoading:
         setLoading(true);
         await api.put(NOMENCLATURE_ROUTES.nomenclatureById(id), data);
         setLoading(false);
-        navigate(ROUTES.nomenclature);
+        navigate(ROUTES.nomenclature + '/' + id);
     }
     catch (err: any) {
         setLoading(false);

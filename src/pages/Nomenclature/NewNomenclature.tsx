@@ -1,4 +1,5 @@
 import Box from "@mui/material/Box";
+import {useAuth} from "../../context/AuthContext.tsx";
 import { COLORS, BORDER, FONT_SIZES } from '../../constants/ui.ts';
 import Typography from '@mui/material/Typography';
 import BackButton from "../../components/BackButton.tsx";
@@ -16,8 +17,10 @@ import DropdownSelector from "../../components/DropdownSelector.tsx";
 import {CreateNomenclature} from "../../services/nomenclature/nomenclature.ts";
 import GetNomenclatureDialog from "../../components/GetNomenclatureDialog.tsx";
 import GBIFLogoUrl from '../../assets/gbif-mark-white-logo.svg';
+import {checkFormattingTaxonomicFields,formatContributors} from "../../utils/helperFunctions.ts";
 
 function NewNomenclature(){
+    const {user} = useAuth();
     const [nomenclatureData, setNomenclatureData] = useState({
         kingdom : '',
         phylum : '',
@@ -36,6 +39,7 @@ function NewNomenclature(){
         subspecies : '',
         author : '',
         remarks : '',
+        synonyms: '',
     });
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -82,7 +86,10 @@ function NewNomenclature(){
     }, []);
 
     const handleSave = () => {
-        if (selectedBibliographyIds.length === 0) {
+        if(!checkFormattingTaxonomicFields(nomenclatureData, setError, setLoading)){
+            return;
+        }
+        else if (selectedBibliographyIds.length === 0) {
             setError("Please select at least one bibliography.");
             return;
         }
@@ -90,6 +97,7 @@ function NewNomenclature(){
             const data = {
                ...nomenclatureData,
                 bibliographies: selectedBibliographyIds,
+                contributors: formatContributors("", user?.name || "Unknown User"),
             }
 
             CreateNomenclature(data, setLoading, setError, navigate);
@@ -182,7 +190,7 @@ function NewNomenclature(){
                                 value={nomenclatureData[field as keyof typeof nomenclatureData] || ''}
                                 onChange={(e) => setNomenclatureData({ ...nomenclatureData, [field]: e.target.value })}
                                 required={getRequiredFields(field)}
-                                multiline={field === 'remarks'}
+                                multiline={field === 'remarks' || field === 'synonyms'}
                             />
                         ))}
                     </Box>
