@@ -100,6 +100,16 @@ export const normalizeEntryDates = (entries: any[], userName: string) =>{
     });
 }
 
+export const addContributorsToEntries = (entries: any[], userName: string) => {
+    console.log(entries)
+    return entries.map(entry => {
+        return {
+            ...entry,
+            contributors: formatContributors(entry.contributors ? entry.contributors : "" , userName),
+        };
+    });
+}
+
 export const appendFileToFormData = (data: Record<string, any>, file:any, verified?:boolean) => {
     const formData = new FormData();
     Object.keys(data).forEach(key => {

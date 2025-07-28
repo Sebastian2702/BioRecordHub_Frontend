@@ -271,7 +271,7 @@ function EditBibliography (){
                                         />
                                     </Box>
                                     ):(
-                                    <FormField label={"File"} value={file} onChangeFile={(file) => setFile(file)} helperText={getHelperText('file', "bibliography") || ''} required={false} fileUpload={true} />
+                                    <FormField label={"File"} value={file} onChangeFile={(file) => setFile(file)} helperText={getHelperText('file', "bibliography") || ''} required={false} fileUpload={true} acceptedFileTypes={'.pdf'} multipleFiles={false}/>
                                     )}
 
                             </Box>

@@ -37,7 +37,7 @@ const bibliographyFieldHelpers = [
     {key: 'extra', helperText: 'Any additional information or metadata.'},
     {key: 'notes', helperText: 'Personal notes or observations about the item.'},
     {key: 'verified', helperText: 'Verified status of the entry, indicating if it has been checked for accuracy and its usable.'},
-    {key: 'file', helperText: 'File associated with the bibliography entry, if applicable.'},
+    {key: 'file', helperText: '.pdf; files here, or browse your computer'},
 ];
 
 export const getHelperText = (key: string, type:string): string | undefined => {
@@ -78,6 +78,7 @@ export const nomenclatureFieldHelpers = [
     {key: 'author', helperText: 'The person who first described the taxon.'},
     {key: 'remarks', helperText: 'Additional notes, clarifications, or taxonomic comments.'},
     {key: 'synonyms', helperText: 'Another taxonomic names used to represent this species.'},
+    {key: 'file', helperText: '.png, .jpg, .jpeg; files here, or browse your computer'}
 ]
 
 export const nomenclatureFieldKeys = [

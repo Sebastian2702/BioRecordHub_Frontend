@@ -193,7 +193,7 @@ function NewBibliography () {
                                 />
                                 <FormField label={"Verified"} value={verified} onChange={(e) => setVerified(e.target.checked) } helperText={getHelperText('verified', "bibliography") || ''} required={false} switchInput={true} />
                             </Box>
-                            <FormField label={"File"} value={file} onChangeFile={(file) => setFile(file)} helperText={getHelperText('file', "bibliography") || ''} required={false} fileUpload={true} />
+                            <FormField label={"File"} value={file} onChangeFile={(file) => setFile(file)} helperText={getHelperText('file', "bibliography") || ''} required={false} fileUpload={true} acceptedFileTypes={'.pdf'} multipleFiles={false}/>
                         </Box>
 
                         <Box padding={"0px 10px"} marginTop={'10px'}>

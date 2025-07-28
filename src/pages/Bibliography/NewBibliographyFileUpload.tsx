@@ -196,6 +196,7 @@ function NewBibliographyFileUpload() {
                 label=".xlsx, .xls; files here, or browse your computer"
                 onChange={setFile}
                 acceptedFileTypes={'.xlsx, .xls'}
+                multiple={false}
             />
             {loading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>

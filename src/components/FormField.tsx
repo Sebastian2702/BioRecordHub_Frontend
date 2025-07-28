@@ -31,6 +31,8 @@ interface FormFieldProps {
     onChangeDropdown?: (event: SelectChangeEvent<string>) => void;
     onChangeDate?: (date: Date | null) => void;
     onChangeFile?: (file: File | null) => void;
+    acceptedFileTypes?: string;
+    multipleFiles?: boolean;
 }
 
 const FormField: React.FC<FormFieldProps> = ({
@@ -50,6 +52,8 @@ const FormField: React.FC<FormFieldProps> = ({
                                                  onChangeDropdown,
                                                  onChangeDate,
                                                  onChangeFile,
+                                                 acceptedFileTypes,
+                                                 multipleFiles
                                              }) => {
     const labelStyles = {
         color: COLORS.primary,
@@ -130,9 +134,10 @@ const FormField: React.FC<FormFieldProps> = ({
 
             {isOnly('fileUpload') && onChangeFile && (
                 <FileInput
-                    label={'.pdf; files here, or browse your computer'}
+                    label={helperText}
                     onChange={onChangeFile}
-                    acceptedFileTypes={'.pdf'}
+                    acceptedFileTypes={acceptedFileTypes}
+                    multiple={multipleFiles}
                 />
             )}
 

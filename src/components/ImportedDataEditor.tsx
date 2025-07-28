@@ -9,7 +9,7 @@ import {COLORS} from "../constants/ui.ts";
 import ImportedDataFormField from "./ImportedDataFormField.tsx";
 import CustomDialog from "./CustomDialog.tsx";
 import Typography from "@mui/material/Typography";
-import {formatLabel, normalizeEntryDates} from "../utils/helperFunctions.ts"
+import {formatLabel, normalizeEntryDates, addContributorsToEntries} from "../utils/helperFunctions.ts"
 import {getHelperText} from "../utils/formFieldHelpers.ts";
 import FormField from "./FormField.tsx";
 import DropdownSelector from "./DropdownSelector.tsx";
@@ -124,11 +124,12 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
                 return;
             }
 
+            const dataToSend = addContributorsToEntries(entries, user?.name ? user.name : "Unknown User");
+
             const nomenclatures = {
-                nomenclatures: entries
+                nomenclatures: dataToSend
             };
 
-            console.log(nomenclatures);
             CreateNomenclatureFromExcel(nomenclatures, SetError, setLoading, navigate);
             return;
         }
@@ -165,7 +166,7 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
                         );
                     }
 
-                    if (dataType === 'nomenclature') {
+                    if (dataType === 'nomenclature' && key !== '') {
                         const isDropdown = key === 'bibliography_ids';
                         return (
                             <Box key={key} sx={isDropdown ? { gridColumn: '1 / -1' } : {}}>
