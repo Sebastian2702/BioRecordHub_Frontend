@@ -100,9 +100,16 @@ function Nomenclature() {
     const handleSearch = async () => {
         setShowNomenclatureList(false)
         setIsExpanded(false);
-        const response = await SearchNomenclature(TaxonomicFields, setError, setLoadingNomenclatureList)
-        setNomenclatureList(response);
-        setShowNomenclatureList(true);
+        try{
+            const response = await SearchNomenclature(TaxonomicFields, setError, setLoadingNomenclatureList);
+            console.log(response);
+            setNomenclatureList(response);
+            setShowNomenclatureList(true);
+        } catch (error) {
+            setShowNomenclatureList(false);
+            return;
+        }
+
     }
 
     const handleFullList = async () => {

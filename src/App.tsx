@@ -7,6 +7,7 @@ import { ROUTES, ADMIN_ROUTES } from './routes/frontendRoutes.ts';
 import AppLayout from './layouts/AppLayout.tsx';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute.tsx';
+import ManagerRoute from './components/ManagerRoute';
 import Bibliography from './pages/Bibliography/Bibliography.tsx';
 import NewBibliography from './pages/Bibliography/NewBibliography.tsx';
 import EditBibliography from './pages/Bibliography/EditBibliography.tsx';
@@ -39,7 +40,6 @@ function App() {
                         <Route path={ROUTES.nomenclature_search} element={<NomenclatureSearch />} />
                         <Route path={ROUTES.nomenclatureId} element={<Nomenclature />}/>
                         <Route path={ROUTES.nomenclatureCreate} element={<NewNomenclature />}/>
-                        <Route path={ROUTES.nomenclatureEdit} element={<EditNomenclature />}/>
                         <Route path={ROUTES.nomenclatureFileUpload} element={<NewNomenclatureFileUpload/>}/>
                         <Route path={ROUTES.bibliography} element={<Bibliographies />} />
                         <Route path={ROUTES.bibliographyId} element={<Bibliography />} />
@@ -52,13 +52,18 @@ function App() {
                     </Route>
                 </Route>
 
+                // Manager only
+                <Route element={<ManagerRoute />}>
+                    <Route element={<AppLayout />}>
+                        <Route path={ADMIN_ROUTES.bibliographyEdit} element={<EditBibliography />} />
+                        <Route path={ADMIN_ROUTES.nomenclatureEdit} element={<EditNomenclature />} />
+                    </Route>
+                </Route>
+
                 // Admin only
                 <Route element={<AdminRoute />}>
                     <Route element={<AppLayout />}>
                         <Route path={ADMIN_ROUTES.admin} element={<AdminControlPanel />} />
-                        <Route path={ADMIN_ROUTES.bibliographyEdit} element={<EditBibliography />} />
-                        <Route path={ADMIN_ROUTES.nomenclatureEdit} element={<EditNomenclature />} />
-
                     </Route>
                 </Route>
             </Routes>

@@ -92,17 +92,15 @@ function NewBibliographyFileUpload() {
                     <li><strong>url</strong></li>
                     <li><strong>abstract_note</strong></li>
                     <li><strong>date</strong></li>
-                    <li><strong>date_added</strong></li>
-                    <li><strong>date_modified</strong></li>
                     <li><strong>access_date</strong></li>
                     <li><strong>pages</strong></li>
                     <li><strong>num_pages</strong></li>
                     <li><strong>issue</strong></li>
                     <li><strong>volume</strong></li>
+                    <li><strong>number_of_volumes</strong></li>
                 </Box>
 
                 <Box component="ul" sx={{ m: 0, pl: 3, flex: 1 }}>
-                    <li><strong>number_of_volumes</strong></li>
                     <li><strong>journal_abbreviation</strong></li>
                     <li><strong>short_title</strong></li>
                     <li><strong>series</strong></li>
@@ -120,6 +118,7 @@ function NewBibliographyFileUpload() {
                     <li><strong>call_number</strong></li>
                     <li><strong>extra</strong></li>
                     <li><strong>notes</strong></li>
+                    <li><strong>verified</strong></li>
                 </Box>
             </Box>
 
@@ -197,6 +196,7 @@ function NewBibliographyFileUpload() {
                 label=".xlsx, .xls; files here, or browse your computer"
                 onChange={setFile}
                 acceptedFileTypes={'.xlsx, .xls'}
+                multiple={false}
             />
             {loading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>

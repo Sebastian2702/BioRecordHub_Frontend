@@ -4,6 +4,7 @@ export const dropdownFilterBibliographyOptions: { display: string; value: string
     { display: "Conference Paper", value: "conference_paper" },
     { display: "Thesis", value: "thesis" },
     { display: "Report", value: "report" },
+    { display: "Book Section", value: "book_section" },
 ];
 
 export const dropdownFilterAdminUserOptions: { display: string; value: string }[] = [

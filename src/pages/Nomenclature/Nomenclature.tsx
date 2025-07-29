@@ -14,12 +14,14 @@ import DataTable from "../../components/DataTable.tsx";
 import {GetNomenclatureById} from "../../services/nomenclature/nomenclature.ts";
 import {toast, ToastContainer} from "react-toastify";
 import StyledBreadcrumbs from "../../components/StyledBreadcrumbs.tsx";
+import ImageList from "../../components/ImageList.tsx";
 
 function Nomenclature() {
     const { isAdmin, isManager } = useAuth();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
     const [bibliographies, setBiblipgraphies] = useState<any>(null);
+    const [images, setImages] = useState<File[]>([]);
     const [error, setError] = useState("");
     const { id } = useParams();
 
@@ -42,7 +44,8 @@ function Nomenclature() {
         try {
             const response = await GetNomenclatureById(id);
             setBiblipgraphies(response.bibliographies);
-            setData({ ...response, bibliographies: undefined });
+            setImages(response.images);
+            setData({ ...response, bibliographies: undefined, images: undefined });
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -114,6 +117,12 @@ function Nomenclature() {
                         <StyledBreadcrumbs data={data}/>
                     </Box>
 
+                    {images && images.length > 0 && (
+                        <Box sx={{ padding: 1 }}>
+                            <ImageList images={images} cols={images.length} rowHeight={600}/>
+                        </Box>
+                    )}
+
                     <Box
                         sx={{
                             display: 'flex',
@@ -140,11 +149,10 @@ function Nomenclature() {
                             <DataTable
                                 data={bibliographies}
                                 columns={[
-                                    { id: 'key', label: 'Key' },
-                                    { id: 'item_type', label: 'Item Type' },
-                                    { id: 'title', label: 'Title' },
                                     { id: 'author', label: 'Author' },
-                                    { id: 'publication_year', label: 'Publication Year' }
+                                    { id: 'publication_year', label: 'Publication Year' },
+                                    { id: 'title', label: 'Title' },
+                                    { id: 'publication_title', label: 'Publication Title' }
                                 ]}
                                 editButton={false}
                                 viewButton={true}

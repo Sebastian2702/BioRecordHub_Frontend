@@ -13,6 +13,7 @@ export const BIBLIROGRAPHY_ROUTES = {
     bibliography: '/api/bibliographies',
     bibliographyFromExcel: '/api/bibliographies/multiple',
     bibliographyById: (id: number) => `/api/bibliographies/${id}`,
+    bibliographyFile: (id: number) => `/api/bibliographies/file/${id}`,
     deleteNomenclatureFromBibliography: (id: number, nomenclatureId: number) => `/api/bibliographies/${id}/nomenclatures/${nomenclatureId}`,
 }
 
@@ -23,6 +24,7 @@ export const NOMENCLATURE_ROUTES = {
     autocompleteNomenclature: '/api/nomenclature/getAutoComplete',
     searchNomenclature: '/api/nomenclature/search',
     deleteBibliographyFromNomenclature: (id: number, bibliographyId: number) => `/api/nomenclature/${id}/bibliographies/${bibliographyId}`,
+    deleteNomenclatureImage: (id: number, imageId: number) => `/api/nomenclature/${id}/image/${imageId}`,
 }
 
 export const EXCEL_ROUTES = {

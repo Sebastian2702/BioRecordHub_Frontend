@@ -36,6 +36,8 @@ const bibliographyFieldHelpers = [
     {key: 'call_number', helperText: 'Library call number for the item.'},
     {key: 'extra', helperText: 'Any additional information or metadata.'},
     {key: 'notes', helperText: 'Personal notes or observations about the item.'},
+    {key: 'verified', helperText: 'Verified status of the entry, indicating if it has been checked for accuracy and its usable.'},
+    {key: 'file', helperText: '.pdf; files here, or browse your computer'},
 ];
 
 export const getHelperText = (key: string, type:string): string | undefined => {
@@ -51,7 +53,7 @@ export const getHelperText = (key: string, type:string): string | undefined => {
 };
 
 export const bibliographyFieldKeys = [
-    'isbn', 'issn', 'doi', 'url', 'abstract_note', 'date', 'date_added', 'date_modified', 'num_pages',
+    'isbn', 'issn', 'doi', 'url', 'abstract_note', 'date', 'num_pages',
     'issue', 'volume', 'number_of_volumes', 'journal_abbreviation', 'short_title', 'series', 'series_number',
     'series_text', 'series_title', 'publisher', 'place', 'language', 'rights', 'type', 'archive',
     'archive_location', 'library_catalog', 'call_number', 'extra', 'notes'
@@ -75,9 +77,11 @@ export const nomenclatureFieldHelpers = [
     {key: 'subspecies', helperText: 'A taxonomic rank below species, indicating variation.'},
     {key: 'author', helperText: 'The person who first described the taxon.'},
     {key: 'remarks', helperText: 'Additional notes, clarifications, or taxonomic comments.'},
+    {key: 'synonyms', helperText: 'Another taxonomic names used to represent this species.'},
+    {key: 'file', helperText: '.png, .jpg, .jpeg; files here, or browse your computer'}
 ]
 
 export const nomenclatureFieldKeys = [
-    'kingdom', 'phylum', 'subphylum', 'class', 'order', 'suborder', 'infraorder', 'superfamily', 'family', 'subfamily', 'tribe', 'genus', 'subgenus', 'species', 'subspecies', 'author', 'remarks',
+    'kingdom', 'phylum', 'subphylum', 'class', 'order', 'suborder', 'infraorder', 'superfamily', 'family', 'subfamily', 'tribe', 'genus', 'subgenus', 'species', 'subspecies', 'author', 'remarks','synonyms'
 ]
 

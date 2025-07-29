@@ -9,10 +9,11 @@ import {COLORS} from "../constants/ui.ts";
 import ImportedDataFormField from "./ImportedDataFormField.tsx";
 import CustomDialog from "./CustomDialog.tsx";
 import Typography from "@mui/material/Typography";
-import {formatLabel, normalizeEntryDates} from "../utils/helperFunctions.ts"
+import {formatLabel, normalizeEntryDates, addContributorsToEntries} from "../utils/helperFunctions.ts"
 import {getHelperText} from "../utils/formFieldHelpers.ts";
 import FormField from "./FormField.tsx";
 import DropdownSelector from "./DropdownSelector.tsx";
+import {useAuth} from "../context/AuthContext.tsx";
 
 
 interface ImportedDataEditorProps {
@@ -24,6 +25,7 @@ interface ImportedDataEditorProps {
 }
 
 const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,SetError, setLoading,dataType, bibliographies}) => {
+    const { user } = useAuth();
     const [entries, setEntries] = useState(importedEntries);
     const [currentIndex, setCurrentIndex] = useState(0);
     const navigate = useNavigate();
@@ -111,7 +113,7 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
         }
 
         if(dataType === "bibliography") {
-            const cleanedEntries = normalizeEntryDates(entries);
+            const cleanedEntries = normalizeEntryDates(entries, user?.name ? user.name : "Unknown User");
             CreateBibliographyFromExcel(cleanedEntries, SetError, navigate, setLoading);
         }
         if(dataType === "nomenclature") {
@@ -122,11 +124,12 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
                 return;
             }
 
+            const dataToSend = addContributorsToEntries(entries, user?.name ? user.name : "Unknown User");
+
             const nomenclatures = {
-                nomenclatures: entries
+                nomenclatures: dataToSend
             };
 
-            console.log(nomenclatures);
             CreateNomenclatureFromExcel(nomenclatures, SetError, setLoading, navigate);
             return;
         }
@@ -146,7 +149,7 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
         <Box sx={{maxWidth: '70%', margin: "auto", mt: 4}}>
             <Box sx={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2}}>
                 {Object.keys(currentEntry ?? {}).map((key) => {
-                    if (dataType === 'bibliography') {
+                    if (dataType === 'bibliography' && key !== 'date_added' && key !== 'date_modified') {
                         return (
                             <ImportedDataFormField
                                 key={key}
@@ -156,14 +159,14 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
                                 onChange={(val) => {
                                     handleFieldChange(
                                         key,
-                                        typeof val === 'string' ? val : val?.toString() ?? ""
+                                        (typeof val === 'string' || typeof val === 'boolean') ? val : val?.toString() ?? ""
                                     );
                                 }}
                             />
                         );
                     }
 
-                    if (dataType === 'nomenclature') {
+                    if (dataType === 'nomenclature' && key !== '') {
                         const isDropdown = key === 'bibliography_ids';
                         return (
                             <Box key={key} sx={isDropdown ? { gridColumn: '1 / -1' } : {}}>

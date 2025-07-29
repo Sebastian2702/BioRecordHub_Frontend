@@ -8,10 +8,11 @@ import { COLORS, FONT_SIZES, BORDER } from "../constants/ui";
 interface FileInputProps {
     label: string;
     acceptedFileTypes?: string;
-    onChange: (file: File | null) => void;
+    multiple?: boolean;
+    onChange: (files: File[] | File | null) => void;
 }
 
-const FileInput: React.FC<FileInputProps> = ({ label, acceptedFileTypes, onChange }) => {
+const FileInput: React.FC<FileInputProps> = ({ label, acceptedFileTypes, onChange, multiple }) => {
     return(
         <Box sx={{
             padding: '10px',
@@ -32,12 +33,23 @@ const FileInput: React.FC<FileInputProps> = ({ label, acceptedFileTypes, onChang
                     type="file"
                     variant="outlined"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        const file = e.target.files?.[0] || null;
-                        onChange(file);
+                        const fileList = e.target.files;
+
+                        if (!fileList || fileList.length === 0) {
+                            onChange(multiple ? [] : null);
+                            return;
+                        }
+
+                        if (multiple) {
+                            onChange(Array.from(fileList));
+                        } else {
+                            onChange(fileList[0]);
+                        }
                     }}
                     slotProps={{
                         htmlInput: {
-                            accept: acceptedFileTypes
+                            accept: acceptedFileTypes,
+                            multiple: multiple || false,
                         }
                     }}
                     fullWidth={false}

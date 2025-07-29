@@ -44,9 +44,10 @@ export const SearchNomenclature = async (data: any, setError: (msg: string) => v
     }
     catch (err: any) {
         setLoading(false);
-        const msg = err?.response?.data?.message || "An unknown error occurred";
+        const msg = err?.response.data.message || "An unknown error occurred";
         const cutmsg = msg.includes('.') ? msg.substring(0, msg.lastIndexOf('.')).trim() : msg;
         setError(cutmsg);
+        throw err;
     }
 }
 
@@ -71,9 +72,9 @@ export const EditNomenclatureRequest = async (id: number, data: any, setLoading:
     await api.get(COOKIE_ROUTE.csrf);
     try{
         setLoading(true);
-        await api.put(NOMENCLATURE_ROUTES.nomenclatureById(id), data);
+        await api.post(NOMENCLATURE_ROUTES.nomenclatureById(id), data);
         setLoading(false);
-        navigate(ROUTES.nomenclature);
+        navigate(ROUTES.nomenclature + '/' + id);
     }
     catch (err: any) {
         setLoading(false);
@@ -122,3 +123,8 @@ export const FetchGbifTaxonomy = async (speciesName: string, setLoading: (loadin
         return null;
     }
 };
+
+export const DeleteNomenclatureImage = async (id: number, imageId: number) => {
+    const response = await api.delete(NOMENCLATURE_ROUTES.deleteNomenclatureImage(id, imageId));
+    return response.data;
+}

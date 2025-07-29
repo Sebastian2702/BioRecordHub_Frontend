@@ -2,22 +2,18 @@ import {GetBibliography} from '../../services/bibliography/bibliography.ts';
 import { Box } from "@mui/material";
 import { COLORS,BORDER } from '../../constants/ui.ts';
 import SearchFilter from "../../components/SearchFilter.tsx";
-import DropdownInput from "../../components/DropdownInput.tsx";
 import {useEffect, useState} from "react";
-import { SelectChangeEvent } from '@mui/material/Select';
 import DateInput from "../../components/DateInput.tsx";
 import RefreshButton from "../../components/RefreshButton.tsx";
 import NewEntryButton from "../../components/NewEntryButton.tsx";
 import DataTable from "../../components/DataTable.tsx";
 import CircularProgress from '@mui/material/CircularProgress';
 import { Dayjs } from 'dayjs';
-import { dropdownFilterBibliographyOptions } from "../../constants/uiConstants.ts";
 import {toast, ToastContainer} from "react-toastify";
 
 
 function Bibliographies(){
     const [searchValue, setSearchValue] = useState('');
-    const [dropdownValue, setDropdownValue] = useState('');
     const [dateInput, setDateInput] = useState<Dayjs | null>(null);
     const [data, setData] = useState<any[]>([]);
     const [refresh, setRefresh] = useState(false);
@@ -26,9 +22,6 @@ function Bibliographies(){
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
-    };
-    const handleDropdownChange = (event: SelectChangeEvent) => {
-        setDropdownValue(event.target.value);
     };
 
     const handleRefresh = () => {
@@ -83,9 +76,6 @@ function Bibliographies(){
                 <Box sx={{ flex: 2, minWidth: '200px' }}>
                     <SearchFilter value={searchValue} onChange={handleSearchChange} label={"Search for key, title and author"}/>
                 </Box>
-                <Box sx={{ flex: 1, minWidth: '150px' }}>
-                    <DropdownInput value={dropdownValue} options={dropdownFilterBibliographyOptions} onChange={handleDropdownChange} label={"Type"} filter={true}/>
-                </Box>
                 <Box sx={{ flex: 1, minWidth: '160px'}}>
                     <DateInput label={"Year"} type={["year"]} value={dateInput} onChange={(e)=>setDateInput(e.target.value)} />
                 </Box>
@@ -105,11 +95,10 @@ function Bibliographies(){
                     <DataTable
                         data={data}
                         columns={[
-                            { id: 'key', label: 'Key' },
-                            { id: 'item_type', label: 'Item Type' },
-                            { id: 'title', label: 'Title' },
                             { id: 'author', label: 'Author' },
-                            { id: 'publication_year', label: 'Publication Year' }
+                            { id: 'publication_year', label: 'Publication Year' },
+                            { id: 'title', label: 'Title' },
+                            { id: 'publication_title', label: 'Publication' },
                         ]}
                         editButton={false}
                         viewButton={true}

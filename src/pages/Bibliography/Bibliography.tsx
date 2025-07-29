@@ -20,7 +20,6 @@ function Bibliography() {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
     const [nomenclature, setNomenclature] = useState<any>(null);
-    const [refresh, setRefresh] = useState(false);
     const [error, setError] = useState("");
     const { id } = useParams();
 
@@ -34,10 +33,6 @@ function Bibliography() {
         } finally {
             setLoading(false);
         }
-    };
-
-    const handleRefresh = () => {
-        setRefresh(prev => !prev);
     };
 
     useEffect(() => {
@@ -94,7 +89,7 @@ function Bibliography() {
                                 textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
                             }}
                         >
-                            {data.key}
+                            {data.author} {data.publication_year}
                         </Typography>
 
                         {(isAdmin || isManager)  && (
@@ -119,10 +114,10 @@ function Bibliography() {
                     >
                         {
                             Object.entries(data)
-                                .filter(([key, value]) => key !== "id" && key !== "created_at" && key !== "key" && value != null)
+                                .filter(([key, value]) => key !== "id" && key !== "created_at"  && value != null)
                                 .map(([key, value]) => (
                                     <Box key={key}  sx={{ flex: '1 1 48%', minWidth: '300px', mb: 2 }}>
-                                        <DataDisplay label={formatLabel(key)} value={value} />
+                                        <DataDisplay label={formatLabel(key)} value={value} id={data.id} />
                                     </Box>
                                 ))
                         }

@@ -1,4 +1,5 @@
 import Box from "@mui/material/Box";
+import {useAuth} from "../../context/AuthContext.tsx";
 import { COLORS, BORDER, FONT_SIZES } from '../../constants/ui.ts';
 import Typography from '@mui/material/Typography';
 import BackButton from "../../components/BackButton.tsx";
@@ -16,8 +17,11 @@ import DropdownSelector from "../../components/DropdownSelector.tsx";
 import {CreateNomenclature} from "../../services/nomenclature/nomenclature.ts";
 import GetNomenclatureDialog from "../../components/GetNomenclatureDialog.tsx";
 import GBIFLogoUrl from '../../assets/gbif-mark-white-logo.svg';
+import {checkFormattingTaxonomicFields,formatContributors} from "../../utils/helperFunctions.ts";
 
 function NewNomenclature(){
+    const {user} = useAuth();
+    const [selectedImages, setSelectedImages] = useState<File[]>([]);
     const [nomenclatureData, setNomenclatureData] = useState({
         kingdom : '',
         phylum : '',
@@ -36,6 +40,7 @@ function NewNomenclature(){
         subspecies : '',
         author : '',
         remarks : '',
+        synonyms: '',
     });
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -82,19 +87,42 @@ function NewNomenclature(){
     }, []);
 
     const handleSave = () => {
+
+        if (!checkFormattingTaxonomicFields(nomenclatureData, setError, setLoading)) return;
+
         if (selectedBibliographyIds.length === 0) {
             setError("Please select at least one bibliography.");
             return;
         }
-        else{
-            const data = {
-               ...nomenclatureData,
-                bibliographies: selectedBibliographyIds,
-            }
 
-            CreateNomenclature(data, setLoading, setError, navigate);
+        const formData = new FormData();
+
+
+        Object.entries(nomenclatureData).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+                formData.append(key, value);
+            }
+        });
+
+        selectedBibliographyIds.forEach((id) => {
+            formData.append("bibliographies[]", String(id));
+        });
+
+
+        formData.append("contributors", formatContributors("", user?.name || "Unknown User"));
+
+
+        if (selectedImages && selectedImages.length > 0) {
+            selectedImages.forEach((file) => {
+                formData.append("images[]", file);
+            });
         }
-    }
+
+
+        CreateNomenclature(formData, setLoading, setError, navigate);
+
+    };
+
 
     useEffect(() => {
         if (error) {
@@ -182,12 +210,33 @@ function NewNomenclature(){
                                 value={nomenclatureData[field as keyof typeof nomenclatureData] || ''}
                                 onChange={(e) => setNomenclatureData({ ...nomenclatureData, [field]: e.target.value })}
                                 required={getRequiredFields(field)}
-                                multiline={field === 'remarks'}
+                                multiline={field === 'remarks' || field === 'synonyms'}
                             />
                         ))}
                     </Box>
                     <DropdownSelector data={bibliographies} selectedIds={selectedBibliographyIds} onChange={setSelectedBibliographyIds} dataType={'bibliography'}/>
-
+                    <Box padding={'0px 10px'}>
+                        <FormField
+                            label={"Files"}
+                            helperText={getHelperText('file', "nomenclature") || ''}
+                            value={selectedImages}
+                            acceptedFileTypes={'.png, .jpg, .jpeg'}
+                            fileUpload={true}
+                            onChangeFile={
+                                (files: File[] | File | null) => {
+                                    if (Array.isArray(files)) {
+                                        setSelectedImages(files);
+                                    } else if (files) {
+                                        setSelectedImages([files]);
+                                    } else {
+                                        setSelectedImages([]);
+                                    }
+                                }
+                            }
+                            required={false}
+                            multipleFiles={true}
+                        />
+                    </Box>
                     <Box margin={"20px"} display={"flex"} justifyContent={"flex-end"} height={"60px"}>
                         <StyledButton label={"Save"} color={"primary"} size={"large"} onClick={handleSave} icon={<SaveIcon sx={{color: COLORS.white}} fontSize={"large"} />} />
                     </Box>

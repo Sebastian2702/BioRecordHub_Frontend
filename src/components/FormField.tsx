@@ -1,11 +1,18 @@
+import React from 'react';
 import Box from '@mui/material/Box';
-import {COLORS, FONT_SIZES} from '../constants/ui';
 import Typography from '@mui/material/Typography';
-import InputTextField from "./InputTextField.tsx";
-import DateInput from "./DateInput.tsx";
-import {SelectChangeEvent} from "@mui/material/Select";
-import DropDownInput from "./DropdownInput.tsx";
-import DateTimeInput from "./DateTimeInput.tsx";
+import Switch from '@mui/material/Switch';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { SelectChangeEvent } from '@mui/material/Select';
+import Tooltip from '@mui/material/Tooltip';
+
+import InputTextField from './InputTextField.tsx';
+import DateInput from './DateInput.tsx';
+import DropDownInput from './DropdownInput.tsx';
+import DateTimeInput from './DateTimeInput.tsx';
+import FileInput from './FileInput.tsx';
+
+import { COLORS, FONT_SIZES } from '../constants/ui';
 
 interface FormFieldProps {
     label: string;
@@ -17,10 +24,15 @@ interface FormFieldProps {
     dateType?: ['day', 'month', 'year'] | ['month', 'year'] | ['year'] | ['day', 'month'] | ['day'];
     dropdown?: boolean;
     dateTime?: boolean;
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    switchInput?: boolean;
+    fileUpload?: boolean;
     options?: { display: string; value: string }[];
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onChangeDropdown?: (event: SelectChangeEvent<string>) => void;
     onChangeDate?: (date: Date | null) => void;
+    onChangeFile?: (file: File | null) => void;
+    acceptedFileTypes?: string;
+    multipleFiles?: boolean;
 }
 
 const FormField: React.FC<FormFieldProps> = ({
@@ -28,47 +40,108 @@ const FormField: React.FC<FormFieldProps> = ({
                                                  value,
                                                  required,
                                                  helperText,
-                                                 multiline,
-                                                 date,
-                                                 dateType,
-                                                 dateTime,
+                                                 multiline = false,
+                                                 date = false,
+                                                 dateType = ['year'],
+                                                 dropdown = false,
+                                                 dateTime = false,
+                                                 switchInput = false,
+                                                 fileUpload = false,
+                                                 options = [],
                                                  onChange,
-                                                 dropdown,
-                                                 options,
                                                  onChangeDropdown,
-                                                 onChangeDate
+                                                 onChangeDate,
+                                                 onChangeFile,
+                                                 acceptedFileTypes,
+                                                 multipleFiles
                                              }) => {
+    const labelStyles = {
+        color: COLORS.primary,
+        fontSize: {
+            xs: FONT_SIZES.xsmall,
+            sm: FONT_SIZES.small,
+            lg: FONT_SIZES.medium,
+        },
+        fontWeight: 'bold',
+        marginBottom: '8px',
+    };
+
+    const isOnly = (type: 'date' | 'dropdown' | 'dateTime' | 'switchInput' | 'fileUpload') => {
+        const types = { date, dropdown, dateTime, switchInput, fileUpload };
+        return types[type] && Object.values(types).filter(Boolean).length === 1;
+    };
+
+    const labelContent = (
+        <Typography align="left" sx={labelStyles}>
+            {label}:
+        </Typography>
+    );
+
     return (
-        <Box sx={{margin: '0 10px'}}>
-            <Typography
-                align={"left"}
-                sx={{
-                    color: COLORS.primary,
-                    fontSize: {xs: FONT_SIZES.xsmall, sm: FONT_SIZES.small, lg: FONT_SIZES.medium},
-                    fontWeight: 'bold',
-                    marginBottom: '8px',
-                }}
-            >
-                {label}:
-            </Typography>
-            {
-                date && !dropdown && !dateTime && (
-                    <DateInput type={['year']} label={helperText} value={value} onChange={onChangeDate}/>
-                )
-            }
-            {dropdown && !date && !dateTime && (
-                <DropDownInput options={options || []} value={value} onChange={onChangeDropdown} label={helperText}
-                               required={true} filter={false}/>
+        <Box sx={{ margin: '0 10px' }}>
+            {(switchInput || fileUpload) ? (
+                <Tooltip title={helperText} placement="top-start" arrow>
+                    {labelContent}
+                </Tooltip>
+            ) : (
+                labelContent
             )}
-            {dateTime && !dropdown && !date && (
+
+            {isOnly('date') && (
+                <DateInput label={helperText} value={value} onChange={onChangeDate} type={dateType} />
+            )}
+
+            {isOnly('dropdown') && (
+                <DropDownInput
+                    options={options}
+                    value={value}
+                    onChange={onChangeDropdown}
+                    label={helperText}
+                    required={required}
+                    filter={false}
+                />
+            )}
+
+            {isOnly('dateTime') && (
                 <DateTimeInput
                     label={helperText}
                     value={value}
                     onChange={onChangeDate}
-                    type={dateType || ['day', 'month', 'year']}
+                    type={dateType}
                 />
             )}
-            {!date && !dropdown && !dateTime && (
+
+            {isOnly('switchInput') && (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        backgroundColor: '#f5f5f5',
+                        borderRadius: '8px',
+                        padding: '6px 12px',
+                        width: 'fit-content',
+                    }}
+                >
+                    <Switch
+                        checked={value}
+                        onChange={onChange}
+                        color="success"
+                        sx={{ transform: 'scale(1.3)' }}
+                    />
+                </Box>
+            )}
+
+            {isOnly('fileUpload') && onChangeFile && (
+                <FileInput
+                    label={helperText}
+                    onChange={onChangeFile}
+                    acceptedFileTypes={acceptedFileTypes}
+                    multiple={multipleFiles}
+                />
+            )}
+
+            {!date && !dropdown && !dateTime && !switchInput && !fileUpload && (
                 <InputTextField
                     label={helperText}
                     value={value}

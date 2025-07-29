@@ -55,7 +55,7 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
         const bib = data.find((b) => b.id === id);
         if (!bib) return id;
         if(dataType === 'bibliography') {
-            return `${bib.key} — ${bib.author}, ${bib.publication_year}`;
+            return `${bib.author}, ${bib.publication_year} - ${truncateString(bib.title, 30)}`;
         }
         else if(dataType === 'nomenclature') {
             return `${bib.species}, ${bib.author}`;
@@ -77,7 +77,7 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
                 Bibliographies:
             </Typography>
 
-            <Box display="flex" gap={"20px"} height={"60px"} marginBottom={"20px"}>
+            <Box display="flex" gap={"20px"} height={"60px"} marginBottom={"20px"} alignItems={'center'}>
                 <Box flex={1}>
                     <DropdownInput
                         options={getOptions()}

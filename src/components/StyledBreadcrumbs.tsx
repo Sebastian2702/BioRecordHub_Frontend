@@ -35,7 +35,6 @@ const StyledBreadcrumbs: React.FC< StyledBreadcrumbs> = ({ data }) => {
                         href={`/nomenclature_search/${field}/${value}`}
                         sx={{ display: "inline-flex", alignItems: "center" }}
                     >
-                        <strong>{formatLabel(field)}:</strong>&nbsp;
                         <Typography component="span" variant="body2" color="inherit">
                             {value}
                         </Typography>

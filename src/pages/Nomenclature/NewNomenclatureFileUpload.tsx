@@ -112,6 +112,7 @@ function NewNomenclatureFileUpload() {
                 <li><strong>subspecies</strong></li>
                 <li><strong>author</strong></li>
                 <li><strong>remarks</strong></li>
+                <li><strong>synonyms</strong></li>
                 <li><strong>bibliography_key</strong></li>
                 <li><strong>bibliography_key2</strong></li>
                 <li><strong>bibliography_key3</strong></li>
@@ -197,6 +198,7 @@ function NewNomenclatureFileUpload() {
                 label=".xlsx, .xls; files here, or browse your computer"
                 onChange={setFile}
                 acceptedFileTypes={'.xlsx, .xls'}
+                multiple={false}
             />
             {loading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
