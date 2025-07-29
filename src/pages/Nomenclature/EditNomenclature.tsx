@@ -15,10 +15,13 @@ import {GetBibliography} from "../../services/bibliography/bibliography.ts";
 import DropdownSelector from "../../components/DropdownSelector.tsx";
 import {GetNomenclatureById, EditNomenclatureRequest} from "../../services/nomenclature/nomenclature.ts";
 import {useAuth} from "../../context/AuthContext.tsx";
+import FilesEditor from "../../components/FilesEditor.tsx";
 
 function EditNomenclature(){
     const {user} = useAuth();
     const [nomenclatureData, setNomenclatureData] = useState<any>(null);
+    const [images, setImages] = useState<File[]>([]);
+    const [newImages, setNewImages] = useState<File[]>([]);
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
@@ -45,6 +48,7 @@ function EditNomenclature(){
             const responseNomenclature = await GetNomenclatureById(id);
             setNomenclatureData(responseNomenclature);
             setSelectedBibliographyIds(extractBibliographyIds(responseNomenclature.bibliographies));
+            setImages(responseNomenclature.images || []);
         } catch (error) {
             console.error("Error fetching data:", error);
         }finally {
@@ -150,9 +154,38 @@ function EditNomenclature(){
                     </Box>
                     <DropdownSelector data={bibliographies} selectedIds={selectedBibliographyIds} onChange={setSelectedBibliographyIds} dataType={'bibliography'}/>
 
+                    <FilesEditor images={images} altText={"Nomenclature Image"} deleteImage={(index) => {console.log(index)}} />
+                    <Box padding={'10px'} marginTop={'30px'}>
+                        <FormField
+                            label={"New Files"}
+                            helperText={getHelperText('file', "nomenclature") || ''}
+                            value={newImages}
+                            acceptedFileTypes={'.png, .jpg, .jpeg'}
+                            fileUpload={true}
+                            onChangeFile={
+                                (files: File[] | File | null) => {
+                                    if (Array.isArray(files)) {
+                                        setNewImages(files);
+                                    } else if (files) {
+                                        setNewImages([files]);
+                                    } else {
+                                        setNewImages([]);
+                                    }
+                                }
+                            }
+                            required={false}
+                            multipleFiles={true}
+                        />
+
+                    </Box>
+
+
+
+
                     <Box margin={"20px"} display={"flex"} justifyContent={"flex-end"} height={"60px"}>
                         <StyledButton label={"Save"} color={"primary"} size={"large"} onClick={handleSave} icon={<SaveIcon sx={{color: COLORS.white}} fontSize={"large"} />} />
                     </Box>
+
                 </Box>
             }
         </Box>

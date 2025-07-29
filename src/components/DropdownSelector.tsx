@@ -77,7 +77,7 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
                 Bibliographies:
             </Typography>
 
-            <Box display="flex" gap={"20px"} height={"60px"} marginBottom={"20px"}>
+            <Box display="flex" gap={"20px"} height={"60px"} marginBottom={"20px"} alignItems={'center'}>
                 <Box flex={1}>
                     <DropdownInput
                         options={getOptions()}
