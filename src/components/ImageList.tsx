@@ -15,7 +15,7 @@ const CustomImageList: React.FC<ImageListProps> = ({
     rowHeight = 164
 }) => {
     return (
-        <ImageList sx={{ width: '100%', minHeight: '30vh' }} cols={cols} rowHeight={rowHeight}>
+        <ImageList sx={{ width: '100%' }} cols={cols} rowHeight={rowHeight}>
             {images.map((image, index) => (
                 <ImageListItem key={index}>
                     <img

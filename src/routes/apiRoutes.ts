@@ -24,6 +24,7 @@ export const NOMENCLATURE_ROUTES = {
     autocompleteNomenclature: '/api/nomenclature/getAutoComplete',
     searchNomenclature: '/api/nomenclature/search',
     deleteBibliographyFromNomenclature: (id: number, bibliographyId: number) => `/api/nomenclature/${id}/bibliographies/${bibliographyId}`,
+    deleteNomenclatureImage: (id: number, imageId: number) => `/api/nomenclature/${id}/image/${imageId}`,
 }
 
 export const EXCEL_ROUTES = {

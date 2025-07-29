@@ -119,7 +119,7 @@ function Nomenclature() {
 
                     {images && images.length > 0 && (
                         <Box sx={{ padding: 1 }}>
-                            <ImageList images={images} />
+                            <ImageList images={images} cols={images.length} rowHeight={600}/>
                         </Box>
                     )}
 

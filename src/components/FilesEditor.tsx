@@ -7,7 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 interface FilesEditorProps {
     images: any[];
     altText?: string;
-    deleteImage?: (index: number) => void;
+    deleteImage: (index: number) => void;
 }
 
 const FilesEditor: React.FC<FilesEditorProps> = ({
@@ -38,7 +38,7 @@ const FilesEditor: React.FC<FilesEditorProps> = ({
                                     alt={altText}
                                     style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
                                 />
-                                <StyledButton label={"Delete"} color={'delete'} size={'medium'} onClick={() => deleteImage(image.id)} icon={<DeleteIcon/>}/>
+                                <StyledButton label={"Delete"} color={'delete'} size={'small'} onClick={() => deleteImage(image.id)} icon={<DeleteIcon/>}/>
 
                             </Box>
                         ))}
@@ -49,7 +49,7 @@ const FilesEditor: React.FC<FilesEditorProps> = ({
                     <Typography variant="body1" textAlign={'left'} sx={{ color: COLORS.primary, fontSize: FONT_SIZES.large, mb: 2, fontWeight:'bold' }}>
                         Images:
                     </Typography>
-                    <Typography variant="body1" sx={{ color: COLORS.gray, fontSize: FONT_SIZES.medium }}>
+                    <Typography variant="body1" sx={{ color: COLORS.black, fontSize: FONT_SIZES.medium }}>
                         No images available
                     </Typography>
                 </Box>
