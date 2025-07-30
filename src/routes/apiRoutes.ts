@@ -39,3 +39,8 @@ export const Admin_ROUTES = {
     getOccurrenceFields: '/api/admin/occurrenceField',
     getOccurrenceFieldById: (id: number) => `/api/admin/occurrenceField/${id}`,
 }
+
+export const PROJECT_ROUTES = {
+    projects: '/api/project',
+    projectsById: (id: number) => `/api/project/${id}`,
+}

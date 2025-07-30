@@ -19,6 +19,7 @@ import Box from '@mui/material/Box';
 import Typography from "@mui/material/Typography";
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
+import {dateTimePickerTabsClasses} from "@mui/x-date-pickers";
 
 
 interface DataTableProps {
@@ -157,7 +158,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
 
 
     const getDialogContent = (row:any) => {
-        if (dataType === "bibliography" || dataType === "nomenclatureBibliography") {
+        if (dataType === "bibliography" || dataType === "nomenclatureBibliography" || dataType === "projects") {
             return row.title
         }
         if (dataType === "bibliographyNomenclature" || dataType === "nomenclature") {

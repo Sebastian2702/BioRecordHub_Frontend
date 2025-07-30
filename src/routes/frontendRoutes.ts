@@ -18,6 +18,7 @@ export const ROUTES = {
     nomenclature_search: '/nomenclature_search/:field/:value',
     nomenclatureFileUpload: '/nomenclature/new_file_upload',
     nomenclatureSearchResults: '/nomenclature/search_results',
+    projectsId: '/projects/:id',
 }
 
 export const ADMIN_ROUTES = {
