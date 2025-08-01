@@ -22,6 +22,8 @@ import AdminControlPanel from "./pages/Admin/AdminControlPanel.tsx";
 import Projects from "./pages/Projects/Projects.tsx";
 import Project from "./pages/Projects/Project.tsx";
 import 'react-toastify/dist/ReactToastify.css';
+import NewProject from "./pages/Projects/NewProject.tsx";
+import EditProject from "./pages/Projects/EditProject.tsx";
 
 function App() {
 
@@ -49,6 +51,7 @@ function App() {
                         <Route path={ROUTES.bibliographyFileUpload} element={<NewBibliographyFileUpload />} />
                         <Route path={ROUTES.occurrences} element={<Dashboard />} />
                         <Route path={ROUTES.projects} element={<Projects />} />
+                        <Route path={ROUTES.projectsCreate} element={<NewProject/>}/>
                         <Route path={ROUTES.projectsId} element={<Project />} />
                     </Route>
                 </Route>
@@ -58,6 +61,7 @@ function App() {
                     <Route element={<AppLayout />}>
                         <Route path={ADMIN_ROUTES.bibliographyEdit} element={<EditBibliography />} />
                         <Route path={ADMIN_ROUTES.nomenclatureEdit} element={<EditNomenclature />} />
+                        <Route path={ADMIN_ROUTES.projectsEdit} element={<EditProject />} />
                     </Route>
                 </Route>
 

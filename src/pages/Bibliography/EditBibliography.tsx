@@ -55,7 +55,7 @@ function EditBibliography (){
             const response = await GetBibliographyById(id);
             setData(response);
             setNotRequiredFormData(getNonRequiredFields(response, bibliographyFieldKeys));
-            setAuthorsArray(getAuthors(response));
+            setAuthorsArray(getAuthors(response, 'authors'));
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {

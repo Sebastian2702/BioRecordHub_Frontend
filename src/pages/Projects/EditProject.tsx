@@ -1,36 +1,47 @@
-import Box from "@mui/material/Box";
-import { COLORS, BORDER, FONT_SIZES } from '../../constants/ui.ts';
-import Typography from '@mui/material/Typography';
-import FormField from "../../components/FormField.tsx";
-import { useState } from "react";
-import { getHelperText } from "../../utils/formFieldHelpers.ts";
-import { formatContributors, formatLabel, formatAuthors} from "../../utils/helperFunctions.ts";
 import ListInput from "../../components/ListInput.tsx";
 import StyledButton from "../../components/StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
-import { useNavigate } from "react-router-dom";
-import {useAuth} from "../../context/AuthContext.tsx";
-import {ToastContainer} from "react-toastify";
+import { getHelperText } from "../../utils/formFieldHelpers.ts";
+import {toast, ToastContainer} from "react-toastify";
+import {useParams} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
+import {useNavigate} from "react-router-dom";
+import {useAuth} from "../../context/AuthContext.tsx";
+import {useEffect, useState} from "react";
+import {formatAuthors, formatContributors, getAdvisors} from "../../utils/helperFunctions.ts";
+import {BORDER, COLORS, FONT_SIZES} from "../../constants/ui.ts";
+import Box from "@mui/material/Box";
+import {EditProjectRequest, DeleteProjectFile, GetProjectById} from "../../services/project/project.ts";
 import BackButton from "../../components/BackButton.tsx";
+import Typography from "@mui/material/Typography";
+import FormField from "../../components/FormField.tsx";
 import {dropdownProjectOptions} from "../../constants/uiConstants.ts";
-import { CreateProject } from "../../services/project/project.ts";
+import FilesEditor from "../../components/FilesEditor.tsx";
 
-function NewProject() {
-    const navigate = useNavigate();
+function EditProject() {
     const { user } = useAuth();
-    const [advisors, setAdvisors] = useState<string[]>([]);
-    const [files, setFiles] = useState<File[]>([]);
-    const [projectData, setProjectData] = useState({
-        title: '',
-        research_type: '',
-        department: '',
-        course: '',
-        description: '',
-    }
-    );
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [projectData, setProjectData] = useState<any>(null);
+    const [files, setFiles] = useState<File[]>([]);
+    const [newFiles, setNewFiles] = useState<File[]>([]);
+    const { id } = useParams();
+    const [advisors, setAdvisors] = useState<string[]>([]);
+    const navigate = useNavigate();
+
+
+    const fetchData = async (id: number) => {
+        try {
+            const response = await GetProjectById(id);
+            setProjectData(response);
+            setAdvisors(getAdvisors(response));
+            setFiles(response.files);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleSave = () => {
 
@@ -39,7 +50,7 @@ function NewProject() {
         const formData = new FormData();
 
         formData.append("advisor", advisor);
-        formData.append("creator", formatContributors("", user?.name || "Unknown User"));
+        formData.append("creator", formatContributors(projectData.creator, user?.name || "Unknown User"));
 
         Object.entries(projectData).forEach(([key, value]) => {
             if (value !== undefined && value !== null) {
@@ -47,32 +58,80 @@ function NewProject() {
             }
         });
 
-        if (files && files.length > 0) {
-            files.forEach((file) => {
-                formData.append("files[]", file);
+        if (newFiles && newFiles.length > 0) {
+            newFiles.forEach((file) => {
+                formData.append("newFiles[]", file);
             });
         }
 
-        CreateProject(formData, setLoading, setError, navigate)
+        formData.append('_method', 'PUT');
+
+        EditProjectRequest(Number(id),formData, setLoading, setError, navigate)
     };
 
-    return (
-        <Box sx={{
-            width: '97%',
-            height: 'calc(100vh - 150px)',
-            backgroundColor: COLORS.white,
-            color: COLORS.primary,
-            borderRadius: BORDER.radius,
-            margin: 'auto',
-            paddingTop: "20px",
-            overflow: 'auto',
-        }}>
+    const handleDeleteFile = async (fileID: number) => {
+        if (fileID) {
+            try {
+                setLoading(true);
+                await DeleteProjectFile(Number(id), fileID);
+                setFiles(prev => prev.filter((file) => Number(file.id) !== Number(fileID)));
+                toast.success("Image deleted successfully", {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            } catch (error) {
+                console.error("Error deleting image:", error);
+                setError("Failed to delete image");
+            } finally {
+                setLoading(false);
+            }
+        }
+    }
+
+    useEffect(() => {
+        if (!id) return;
+        fetchData(Number(id));
+    }, [id]);
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            setError("");
+        }
+    }, [error]);
+
+    return(
+        <Box
+            sx={{
+                width: '97%',
+                height: 'calc(100vh - 150px)',
+                backgroundColor: COLORS.white,
+                color: COLORS.primary,
+                borderRadius: BORDER.radius,
+                margin: 'auto',
+                paddingTop: "20px",
+                overflow: 'auto',
+            }}
+        >
             <ToastContainer />
             {loading ? (
-                <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
-                    <CircularProgress/>
-                </Box>
-            ):
+                    <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
+                        <CircularProgress/>
+                    </Box>
+                ):
                 <Box>
                     <Box sx={{ position: 'relative', height: '50px', marginBottom: '20px' }}>
                         <Box sx={{ position: 'absolute', left: 0 }}>
@@ -89,7 +148,7 @@ function NewProject() {
                                 textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
                             }}
                         >
-                            New Project
+                            {projectData ? `Edit Project: ${projectData.title}` : "Loading..."}
                         </Typography>
                     </Box>
                     <Box padding={"10px"} display={'flex'} flexDirection={'column'} gap={2}>
@@ -137,20 +196,21 @@ function NewProject() {
                             required={true}
                             multiline={true}
                         />
+                        <FilesEditor files={files} altText={"Nomenclature Image"} deleteImage={(index) => {handleDeleteFile(index)}} images={false}/>
                         <FormField
                             label={"Files"}
                             helperText={getHelperText('files', "projects") || ''}
-                            value={files}
+                            value={newFiles}
                             acceptedFileTypes={'.pdf'}
                             fileUpload={true}
                             onChangeFile={
                                 (files: File[] | File | null) => {
                                     if (Array.isArray(files)) {
-                                        setFiles(files);
+                                        setNewFiles(files);
                                     } else if (files) {
-                                        setFiles([files]);
+                                        setNewFiles([files]);
                                     } else {
-                                        setFiles([]);
+                                        setNewFiles([]);
                                     }
                                 }
                             }
@@ -165,6 +225,7 @@ function NewProject() {
             }
         </Box>
     )
+
 }
 
-export default NewProject
+export default EditProject

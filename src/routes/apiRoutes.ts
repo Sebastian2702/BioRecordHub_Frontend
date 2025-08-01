@@ -43,4 +43,5 @@ export const Admin_ROUTES = {
 export const PROJECT_ROUTES = {
     projects: '/api/project',
     projectsById: (id: number) => `/api/project/${id}`,
+    deleteProjectFileById: (id: number, fileID: number) => `/api/project/${id}/file/${fileID}`,
 }

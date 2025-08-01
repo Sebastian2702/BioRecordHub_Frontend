@@ -10,9 +10,9 @@ import { formatLabel } from "../../utils/helperFunctions.ts";
 import StyledButton from "../../components/StyledButton.tsx";
 import EditIcon from '@mui/icons-material/Edit';
 import { useAuth } from "../../context/AuthContext.tsx";
-import DataTable from "../../components/DataTable.tsx";
 import {toast, ToastContainer} from "react-toastify";
 import { GetProjectById } from "../../services/project/project.ts";
+import AccessFile from "../../components/AccessFile.tsx"
 
 function Project() {
     const { isAdmin, isManager } = useAuth();
@@ -51,6 +51,16 @@ function Project() {
             setError("");
         }
     }, [error]);
+
+    const handleDownload = async (url: string) => {
+        try {
+            window.open(url, '_blank');
+        } catch (error) {
+            setError("Failed to download file. Please try again later.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <Box sx={{
@@ -115,6 +125,16 @@ function Project() {
                             </Box>
                         ))
                     }
+                        <Typography sx={{ fontSize: FONT_SIZES.medium, color: COLORS.black,textShadow: '0px 4px 12px rgba(0,0,0,0.15)', }}>Files:</Typography>
+                        <Box display="flex" flexDirection="row" width="100%" gap = {2} flexWrap="wrap">
+                        {
+                            Object.entries(data.files).map(([key, value]) => (
+                               <AccessFile url={value.url} fileName={value.filename} />
+                            ))
+
+                        }
+
+                    </Box>
                     </Box>
                 </Box>
             }

@@ -19,10 +19,12 @@ export const ROUTES = {
     nomenclatureFileUpload: '/nomenclature/new_file_upload',
     nomenclatureSearchResults: '/nomenclature/search_results',
     projectsId: '/projects/:id',
+    projectsCreate: '/projects/new',
 }
 
 export const ADMIN_ROUTES = {
     admin: '/administrator',
     bibliographyEdit: '/bibliography/edit/:id',
     nomenclatureEdit: '/nomenclature/edit/:id',
+    projectsEdit: '/projects/edit/:id',
 }

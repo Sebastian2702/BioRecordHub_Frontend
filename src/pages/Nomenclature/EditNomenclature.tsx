@@ -194,7 +194,7 @@ function EditNomenclature(){
                     </Box>
                     <DropdownSelector data={bibliographies} selectedIds={selectedBibliographyIds} onChange={setSelectedBibliographyIds} dataType={'bibliography'}/>
 
-                    <FilesEditor images={images} altText={"Nomenclature Image"} deleteImage={(index) => {handleDeleteImage(index)}} />
+                    <FilesEditor files={images} altText={"Nomenclature Image"} deleteImage={(index) => {handleDeleteImage(index)}} images={true} />
                     <Box padding={'10px'} marginTop={'30px'}>
                         <FormField
                             label={"New Files"}

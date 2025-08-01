@@ -37,3 +37,29 @@ export const DeleteProject = async (id: number) => {
         throw new Error(cutmsg);
     }
 }
+
+export const EditProjectRequest = async (id: number, data: any, setLoading: (loading: boolean) => void, setError: (msg: string) => void, navigate: (url: string) => void) => {
+    await api.get(COOKIE_ROUTE.csrf);
+    try {
+        setLoading(true);
+        await api.post(PROJECT_ROUTES.projectsById(id), data);
+        setLoading(false);
+        navigate(ROUTES.projects);
+    } catch (err: any) {
+        setLoading(false);
+        const msg = err.response.data.message;
+        const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
+        setError(cutmsg);
+    }
+}
+
+export const DeleteProjectFile = async (id: number, fileID: number) => {
+    await api.get(COOKIE_ROUTE.csrf);
+    try {
+        await api.delete(PROJECT_ROUTES.deleteProjectFileById(id, fileID));
+    } catch (err: any) {
+        const msg = err.response.data.message;
+        const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
+        throw new Error(cutmsg);
+    }
+}

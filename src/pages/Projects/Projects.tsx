@@ -89,8 +89,8 @@ function Projects() {
                 <Box sx={{ flexShrink: 0 }}>
                     <RefreshButton onClick={handleRefresh} />
                 </Box>
-                <Box sx={{ flexShrink: 0, minWidth: '150px', marginTop: '10px' }}>
-                    <StyledButton label={'New Entry'} onClick={() => {navigate('projects/new')}} color={'primary'} size={'medium'} icon={<AddIcon/>}/>
+                <Box sx={{ flexShrink: 0, minWidth: '150px'}}>
+                    <StyledButton label={'New Entry'} onClick={() => {navigate('/projects/new')}} color={'primary'} size={'medium'} icon={<AddIcon/>}/>
                 </Box>
             </Box>
             <Box sx={{padding: '0px 10px', overflowY: 'hidden',}}>
