@@ -48,6 +48,9 @@ export const getHelperText = (key: string, type:string): string | undefined => {
     if(type === "nomenclature") {
         field = nomenclatureFieldHelpers.find(item => item.key === key);
     }
+    if (type === "projects") {
+        field = projectsFieldHelpers.find(item => item.key === key);
+    }
 
     return field ? field.helperText : "No helper text available for this field.";
 };
@@ -79,6 +82,16 @@ export const nomenclatureFieldHelpers = [
     {key: 'remarks', helperText: 'Additional notes, clarifications, or taxonomic comments.'},
     {key: 'synonyms', helperText: 'Another taxonomic names used to represent this species.'},
     {key: 'file', helperText: '.png, .jpg, .jpeg; files here, or browse your computer'}
+]
+
+export const projectsFieldHelpers=[
+    {key: 'title', helperText: 'Title of the project'},
+    {key: 'research_type', helperText: 'Research type of the project'},
+    {key: 'department', helperText: 'Department of the project'},
+    {key: 'course', helperText: 'Course of the project'},
+    {key: 'description', helperText: 'Description of the project'},
+    {key: 'advisor', helperText: 'Advisor of the project'},
+    {key: 'files', helperText: 'Files related to the project, you can upload multiple files.'}
 ]
 
 export const nomenclatureFieldKeys = [

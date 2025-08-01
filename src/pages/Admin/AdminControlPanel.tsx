@@ -9,7 +9,7 @@ import {SelectChangeEvent} from "@mui/material/Select";
 import InfoIcon from '@mui/icons-material/Info';
 import CustomDialog from "../../components/CustomDialog.tsx";
 import DataTable from "../../components/DataTable.tsx";
-import {GetUsers, GetOccurrenceFields, newOccurrenceField} from "../../services/Admin/admin.ts";
+import {GetUsers, GetOccurrenceFields, newOccurrenceField} from "../../services/admin/admin.ts";
 import {ToastContainer} from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
 import StyledButton from "../../components/StyledButton.tsx";

@@ -7,8 +7,24 @@ export const dropdownFilterBibliographyOptions: { display: string; value: string
     { display: "Book Section", value: "book_section" },
 ];
 
+export const dropdownProjectOptions: { display: string; value: string }[] = [
+    { display: "Undergraduate Thesis", value: "undergraduate_thesis" },
+    { display: "Master's Thesis", value: "masters_thesis" },
+    { display: "PhD Dissertation", value: "phd_dissertation" },
+    { display: "Postdoctoral Research", value: "postdoctoral_research" },
+    { display: "Independent Study", value: "independent_study" },
+    { display: "Scientific Paper", value: "scientific_paper" },
+    { display: "Research Project", value: "research_project" },
+    { display: "Capstone Project", value: "capstone_project" },
+    { display: "Internship Report", value: "internship_report" },
+    { display: "Coursework Project", value: "coursework_project" },
+    { display: "Technical Report", value: "technical_report" },
+    { display: "Other", value: "other" },
+];
+
+
 export const dropdownFilterAdminUserOptions: { display: string; value: string }[] = [
-    { display: "Admin", value: "admin" },
+    { display: "admin", value: "admin" },
     { display: "Manager", value: "Manager" },
     { display: "Biologist", value: "user" },
 
@@ -25,7 +41,7 @@ export const dropdownFilterAdminFiledStatusOptions: { display: string; value: st
 ]
 
 export const dropdownEditUserRoleOptions: { display: string; value: string }[] = [
-    { display: "Admin", value: "admin" },
+    { display: "admin", value: "admin" },
     { display: "Manager", value: "manager" },
     { display: "User", value: "user" },
 ]

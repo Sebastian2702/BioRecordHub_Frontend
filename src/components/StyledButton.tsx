@@ -33,6 +33,7 @@ const StyledButton: React.FC<ButtonProps> = ({ label, color, size, onClick, disa
                 borderColor: border ? COLORS.white : 'transparent',
                 borderWidth: border ? BORDER.weight : 0,
                 borderStyle: border ? 'solid' : 'none',
+                minHeight: size === 'small' ? '32px' : size === 'medium' ? '60px' : '60px',
                 '&:hover': {
                     backgroundColor: darken(color === 'primary' ? COLORS.primary : color === 'secondary' ? COLORS.secondary : color === 'edit' ? COLORS.edit : COLORS.delete, 0.3),
                     boxShadow: '0px 6px 10px rgba(0, 0, 0, 0.15)',

@@ -3,42 +3,55 @@ import { COLORS, BORDER, FONT_SIZES } from '../constants/ui.ts';
 import Typography from '@mui/material/Typography';
 import StyledButton from "./StyledButton.tsx";
 import DeleteIcon from '@mui/icons-material/Delete';
+import AccessFile from "../components/AccessFile.tsx"
 
 interface FilesEditorProps {
-    images: any[];
+    files: any[];
     altText?: string;
     deleteImage: (index: number) => void;
+    images:boolean
 }
 
 const FilesEditor: React.FC<FilesEditorProps> = ({
-                                                     images,
+                                                     files,
                                                      altText = 'Image',
-                                                     deleteImage
+                                                     deleteImage,
+                                                     images = false
                                                  }) => {
     return (
         <Box>
 
-            {images.length > 0 ? (
+            {files.length > 0 ? (
                 <Box padding={'20px'}>
                     <Typography variant="body1" textAlign={'left'} sx={{ color: COLORS.primary, fontSize: FONT_SIZES.large, mb: 2, fontWeight:'bold' }}>
-                        Images:
+                        {images ? 'Images:' : 'Files:'}
                     </Typography>
                     <Box sx={{
                         display: 'flex',
                         flexWrap: 'wrap',
-                        gap: 2,
+                        gap: 6,
                         border: `1px solid ${BORDER}`,
                         padding: 2,
                         borderRadius: 1
                     }}>
-                        {images.map((image, index) => (
+                        {files.map((file, index) => (
                             <Box key={index} sx={{ width: '150px', height: '150px', position: 'relative' }}>
-                                <img
-                                    src={image.url}
-                                    alt={altText}
-                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
-                                />
-                                <StyledButton label={"Delete"} color={'delete'} size={'small'} onClick={() => deleteImage(image.id)} icon={<DeleteIcon/>}/>
+                                {images ? (
+                                    <Box>
+                                        <img
+                                            src={file.url}
+                                            alt={altText}
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+                                        />
+                                        <StyledButton label={"Delete"} color={'delete'} size={'small'} onClick={() => deleteImage(file.id)} icon={<DeleteIcon/>}/>
+                                    </Box>
+                                ):
+                                    <Box alignItems={"center"} display={"flex"} flexDirection={"column"} justifyContent={"center"} gap={2} marginLeft={'20px'}>
+                                        <AccessFile url={file.url} fileName={file.filename}/>
+                                        <StyledButton label={"Delete"} color={'delete'} size={'small'} onClick={() => deleteImage(file.id)} icon={<DeleteIcon/>}/>
+                                    </Box>
+                                }
+
 
                             </Box>
                         ))}
@@ -47,10 +60,10 @@ const FilesEditor: React.FC<FilesEditorProps> = ({
             ) : (
                 <Box padding={'20px'}>
                     <Typography variant="body1" textAlign={'left'} sx={{ color: COLORS.primary, fontSize: FONT_SIZES.large, mb: 2, fontWeight:'bold' }}>
-                        Images:
+                        {images ? 'Images:' : 'Files:'}
                     </Typography>
                     <Typography variant="body1" sx={{ color: COLORS.black, fontSize: FONT_SIZES.medium }}>
-                        No images available
+                        No {images ? 'images' : 'files'} available.
                     </Typography>
                 </Box>
             )}

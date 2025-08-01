@@ -63,6 +63,25 @@ export const getAuthors = (data: Record<string, any>): string[] => {
     return [];
 };
 
+export const getAdvisors = (data: Record<string, any>): string[] => {
+    if (!data || !data.advisor) {
+        return [];
+    }
+
+    if (Array.isArray(data.advisor)) {
+        return data.advisor.map((advisor: string) => advisor.trim());
+    }
+
+    if (typeof data.advisor === 'string') {
+        return data.advisor
+            .split('; ')
+            .map((advisor: string) => advisor.trim())
+            .filter(Boolean);
+    }
+
+    return [];
+}
+
 export const getNonRequiredFields = (data: Record<string, any>, notRequiredFields: string[]) => {
     const requiredFields = [
         'key',

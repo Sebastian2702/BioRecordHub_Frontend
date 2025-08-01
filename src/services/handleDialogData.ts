@@ -1,7 +1,7 @@
 import {DeleteBibliography, DeleteNomenclatureFromBibliography} from './bibliography/bibliography.ts';
 import {DeleteBibliographyFromNomenclature, DeleteNomenclature} from './nomenclature/nomenclature.ts';
-import {DeleteUser, updateOccurrenceField, UpdateUserRole} from './Admin/admin.ts';
-import {unformatLabel} from "../utils/helperFunctions.ts";
+import {DeleteUser, updateOccurrenceField, UpdateUserRole} from './admin/admin.ts';
+import {DeleteProject} from './project/project.ts';
 
 export const handleDeleteData = async (id:number, dataType:string, referenceID?: number) => {
     switch(dataType) {
@@ -20,8 +20,9 @@ export const handleDeleteData = async (id:number, dataType:string, referenceID?:
         case "users":
             await DeleteUser(id);
             break;
-
-
+        case "projects":
+            await DeleteProject(id);
+            break;
         // Add more cases for other data types as needed
         default:
             throw new Error(`Unsupported data type: ${dataType}`);
