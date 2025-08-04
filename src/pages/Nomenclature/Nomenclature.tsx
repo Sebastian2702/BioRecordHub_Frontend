@@ -15,6 +15,7 @@ import {GetNomenclatureById} from "../../services/nomenclature/nomenclature.ts";
 import {toast, ToastContainer} from "react-toastify";
 import StyledBreadcrumbs from "../../components/StyledBreadcrumbs.tsx";
 import ImageList from "../../components/ImageList.tsx";
+import StyledAccordion from "../../components/StyledAccordion.tsx";
 
 function Nomenclature() {
     const { isAdmin, isManager } = useAuth();
@@ -22,6 +23,9 @@ function Nomenclature() {
     const [data, setData] = useState<any>(null);
     const [bibliographies, setBiblipgraphies] = useState<any>(null);
     const [images, setImages] = useState<File[]>([]);
+    const [occurrences, setOccurrences] = useState<any[]>([]);
+    const [bibliographiesAccordion, setBibliographiesAccordion] = useState(false);
+    const [occurrencesAccordion, setOccurrencesAccordion] = useState(false);
     const [error, setError] = useState("");
     const { id } = useParams();
 
@@ -45,7 +49,8 @@ function Nomenclature() {
             const response = await GetNomenclatureById(id);
             setBiblipgraphies(response.bibliographies);
             setImages(response.images);
-            setData({ ...response, bibliographies: undefined, images: undefined });
+            setOccurrences(response.occurrences);
+            setData({ ...response, bibliographies: undefined, images: undefined, occurrences: undefined });
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -141,41 +146,81 @@ function Nomenclature() {
                                 ))
                         }
                     </Box>
-                    {bibliographies && bibliographies.length > 0 ? (
-                        <Box sx={{ padding: 1 }}>
-                            <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
-                                Bibliographies
-                            </Typography>
-                            <DataTable
-                                data={bibliographies}
-                                columns={[
-                                    { id: 'author', label: 'Author' },
-                                    { id: 'publication_year', label: 'Publication Year' },
-                                    { id: 'title', label: 'Title' },
-                                    { id: 'publication_title', label: 'Publication Title' }
-                                ]}
-                                editButton={false}
-                                viewButton={true}
-                                viewLink={"/bibliography/"}
-                                deleteButton={false}
-                                trashCanButton={true}
-                                dataType={"nomenclatureBibliography"}
-                                referenceId={data.id}
-                                setError={setError}
+                    <Box marginBottom={'20px'}>
+                        {bibliographies && bibliographies.length > 0 ? (
+                            <StyledAccordion title={'Bibliographies associated with this nomenclature entry'}
+                                             expanded={bibliographiesAccordion}
+                                             onToggle={() => setBibliographiesAccordion(prev => !prev)}
+                                             children={
+                                                 <Box sx={{ padding: 1 }}>
+                                                     <DataTable
+                                                         data={bibliographies}
+                                                         columns={[
+                                                             { id: 'author', label: 'Author' },
+                                                             { id: 'publication_year', label: 'Publication Year' },
+                                                             { id: 'title', label: 'Title' },
+                                                             { id: 'publication_title', label: 'Publication Title' }
+                                                         ]}
+                                                         editButton={false}
+                                                         viewButton={true}
+                                                         viewLink={"/bibliography/"}
+                                                         deleteButton={false}
+                                                         trashCanButton={true}
+                                                         dataType={"nomenclatureBibliography"}
+                                                         referenceId={data.id}
+                                                         setError={setError}
+                                                     />
+                                                 </Box>
+                                             }
                             />
-                        </Box>
-                    ) : (
-                        <Box>
-                            <Typography variant='h6'>
-                                No bibliographies available for this nomenclature entry.
-                            </Typography>
-                            <Typography variant='h6' fontWeight={'bold'} color={COLORS.delete}>
-                                Bibliographies need to be added to the Nomenclature before they can be used in occurrences.
-                            </Typography>
+                        ) : (
+                            <Box>
+                                <Typography variant='h6'>
+                                    No bibliographies available for this nomenclature entry.
+                                </Typography>
+                                <Typography variant='h6' fontWeight={'bold'} color={COLORS.delete}>
+                                    Bibliographies need to be added to the Nomenclature before they can be used in occurrences.
+                                </Typography>
 
-                        </Box>
+                            </Box>
 
-                    )}
+                        )}
+                    </Box>
+                    <Box marginBottom={'20px'}>
+                        {occurrences && occurrences.length > 0 ? (
+                            <StyledAccordion title={'Occurrences associated with this nomenclature entry'}
+                                             expanded={occurrencesAccordion}
+                                             onToggle={() => setOccurrencesAccordion(prev => !prev)}
+                                             children={
+                                                 <Box sx={{ padding: 1, marginTop: '20px' }}>
+                                                     <DataTable
+                                                         data={occurrences}
+                                                         columns={[
+                                                             { id: 'scientific_name', label: 'Scientific Name' },
+                                                             { id: 'event_date', label: 'Event Date' },
+                                                             { id: 'locality', label: 'Locality' },
+                                                         ]}
+                                                         editButton={false}
+                                                         viewButton={true}
+                                                         viewLink={"/occurrence/"}
+                                                         deleteButton={false}
+                                                         trashCanButton={true}
+                                                         dataType={"occurrence"}
+                                                         referenceId={data.id}
+                                                         setError={setError}
+                                                     />
+                                                 </Box>
+                                             }
+                            />
+                        ) : (
+                            <Box>
+                                <Typography variant='h6'>
+                                    No Occurrences available for this project entry.
+                                </Typography>
+                            </Box>
+
+                        )}
+                    </Box>
                 </Box>
 
             }

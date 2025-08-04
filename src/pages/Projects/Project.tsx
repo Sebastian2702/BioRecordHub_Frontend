@@ -13,18 +13,21 @@ import { useAuth } from "../../context/AuthContext.tsx";
 import {toast, ToastContainer} from "react-toastify";
 import { GetProjectById } from "../../services/project/project.ts";
 import AccessFile from "../../components/AccessFile.tsx"
+import DataTable from "../../components/DataTable.tsx";
 
 function Project() {
     const { isAdmin, isManager } = useAuth();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
+    const [occurrences, setOccurrences] = useState<any[]>([]);
     const [error, setError] = useState("");
     const { id } = useParams();
 
     const fetchData = async (id: number) => {
         try {
             const response = await GetProjectById(id);
-            setData({ ...response, nomenclatures: undefined });
+            setOccurrences(response.occurrences ? response.occurrences : []);
+            setData({ ...response, occurrences: undefined });
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -108,34 +111,64 @@ function Project() {
                             </Box>
                         )}
                     </Box>
-                    <Box
-                    sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: 2,
-                        padding: 2,
-                    }}
-                    >
-                    {
-                    Object.entries(data)
-                        .filter(([key, value]) => key !== "id" && key !== "created_at" && key !== 'files'  && value != null)
-                        .map(([key, value]) => (
-                            <Box key={key}  sx={{ flex: '1 1 48%', minWidth: '300px', mb: 2 }}>
-                                <DataDisplay label={formatLabel(key)} value={key === 'research_type' ? formatLabel(value) : value} id={data.id} />
-                            </Box>
-                        ))
-                    }
-                        <Typography sx={{ fontSize: FONT_SIZES.medium, color: COLORS.black,textShadow: '0px 4px 12px rgba(0,0,0,0.15)', }}>Files:</Typography>
-                        <Box display="flex" flexDirection="row" width="100%" gap = {2} flexWrap="wrap">
+                        <Box
+                        sx={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: 2,
+                            padding: 2,
+                        }}
+                        >
                         {
-                            Object.entries(data.files).map(([key, value]) => (
-                               <AccessFile url={value.url} fileName={value.filename} />
+                        Object.entries(data)
+                            .filter(([key, value]) => key !== "id" && key !== "created_at" && key !== 'files'  && value != null)
+                            .map(([key, value]) => (
+                                <Box key={key}  sx={{ flex: '1 1 48%', minWidth: '300px', mb: 2 }}>
+                                    <DataDisplay label={formatLabel(key)} value={key === 'research_type' ? formatLabel(value) : value} id={data.id} />
+                                </Box>
                             ))
-
                         }
+                            <Typography sx={{ fontSize: FONT_SIZES.medium, color: COLORS.black,textShadow: '0px 4px 12px rgba(0,0,0,0.15)', }}>Files:</Typography>
+                            <Box display="flex" flexDirection="row" width="100%" gap = {2} flexWrap="wrap">
+                            {
+                                Object.entries(data.files).map(([key, value]) => (
+                                   <AccessFile url={value.url} fileName={value.filename} />
+                                ))
 
+                            }
+
+                        </Box>
                     </Box>
-                    </Box>
+                    {occurrences && occurrences.length > 0 ? (
+                        <Box sx={{ padding: 1 }}>
+                            <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
+                                Occurrences:
+                            </Typography>
+                            <DataTable
+                                data={occurrences}
+                                columns={[
+                                    { id: 'scientific_name', label: 'Scientific Name' },
+                                    { id: 'event_date', label: 'Event Date' },
+                                    { id: 'locality', label: 'Locality' },
+                                ]}
+                                editButton={false}
+                                viewButton={true}
+                                viewLink={"/occurrence/"}
+                                deleteButton={false}
+                                trashCanButton={true}
+                                dataType={"occurrence"}
+                                referenceId={data.id}
+                                setError={setError}
+                            />
+                        </Box>
+                    ) : (
+                        <Box>
+                            <Typography variant='h6'>
+                                No Occurrences available for this project entry.
+                            </Typography>
+                        </Box>
+
+                    )}
                 </Box>
             }
             <ToastContainer />

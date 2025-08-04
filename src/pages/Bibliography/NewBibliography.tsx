@@ -7,7 +7,7 @@ import {useEffect, useState} from "react";
 import { getHelperText } from "../../utils/formFieldHelpers.ts";
 import { formatLabel } from "../../utils/helperFunctions.ts";
 import { bibliographyFieldKeys } from "../../utils/formFieldHelpers.ts";
-import ExtraFieldAccordion from "../../components/ExtraFieldAccordion.tsx";
+import StyledAccordion from "../../components/StyledAccordion.tsx";
 import ListInput from "../../components/ListInput.tsx";
 import StyledButton from "../../components/StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
@@ -209,7 +209,7 @@ function NewBibliography () {
                                 Extra Fields:
                             </Typography>
 
-                            <ExtraFieldAccordion
+                            <StyledAccordion
                                 title={"Extra fields like ISBN, Issue, Volume, DOI, etc..."}
                                 children={
                                     <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
