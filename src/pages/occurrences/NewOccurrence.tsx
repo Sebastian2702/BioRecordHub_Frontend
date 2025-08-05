@@ -224,7 +224,7 @@ function NewOccurrence() {
                                 })}
                             </Box>
                             <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
-                                3. Additional Not Required Fields
+                                3. Additional Non-Required Fields
                             </Typography>
                             {occurrenceGroupKeys.map((group) => (
                                 <Box marginBottom={'20px'} key={group}>
