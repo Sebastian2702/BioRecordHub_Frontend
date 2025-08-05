@@ -175,3 +175,10 @@ export const checkFormattingTaxonomicFields = (data: Record<string, string>, set
 
     return true;
 }
+
+export const splitFieldsByRequirement = (fields: any[]) => {
+    return {
+        required: fields.filter(field => field.is_required),
+        nonRequired: fields.filter(field => !field.is_required),
+    };
+};

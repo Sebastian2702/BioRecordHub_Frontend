@@ -45,11 +45,14 @@ export const getHelperText = (key: string, type:string): string | undefined => {
     if(type === "bibliography") {
         field = bibliographyFieldHelpers.find(item => item.key === key);
     }
-    if(type === "nomenclature") {
+    else if(type === "nomenclature") {
         field = nomenclatureFieldHelpers.find(item => item.key === key);
     }
-    if (type === "projects") {
+    else if (type === "projects") {
         field = projectsFieldHelpers.find(item => item.key === key);
+    }
+    else if (type === "occurrence") {
+        field = occurrenceFieldHelpers.find(item => item.key === key);
     }
 
     return field ? field.helperText : "No helper text available for this field.";
@@ -93,8 +96,27 @@ export const projectsFieldHelpers=[
     {key: 'advisor', helperText: 'Advisor of the project'},
     {key: 'files', helperText: 'Files related to the project, you can upload multiple files.'}
 ]
+export const occurrenceFieldHelpers = [
+    { key: 'scientific_name', helperText: 'Scientific name of the organism observed' },
+    { key: 'event_date', helperText: 'Date when the occurrence was recorded' },
+    { key: 'country', helperText: 'Country where the occurrence took place' },
+    { key: 'locality', helperText: 'More specific location of the occurrence' },
+    { key: 'decimal_latitude', helperText: 'Latitude of the occurrence in decimal degrees' },
+    { key: 'decimal_longitude', helperText: 'Longitude of the occurrence in decimal degrees' },
+    { key: 'basis_of_record', helperText: 'Type of record (e.g., HumanObservation, Specimen, etc.)' },
+];
+
 
 export const nomenclatureFieldKeys = [
     'kingdom', 'phylum', 'subphylum', 'class', 'order', 'suborder', 'infraorder', 'superfamily', 'family', 'subfamily', 'tribe', 'genus', 'subgenus', 'species', 'subspecies', 'author', 'remarks','synonyms'
 ]
+
+export const occurrenceFieldKeys = [
+    'scientific_name', 'event_date', 'country', 'locality', 'decimal_latitude', 'decimal_longitude', 'basis_of_record'
+]
+
+export const occurrenceGroupKeys = [
+    'geographic', 'event', 'occurrence', 'organism', 'identification', 'collection', 'dataset', 'record', 'location', 'other'
+]
+
 

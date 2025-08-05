@@ -176,6 +176,7 @@ const ImportedDataEditor: React.FC<ImportedDataEditorProps> = ({importedEntries,
                                         selectedIds={currentEntry[key] ?? ""}
                                         onChange={handleBiliographyChange}
                                         dataType="bibliography"
+                                        isSingleSelect={false}
                                     />
                                 ) : (
                                     <FormField

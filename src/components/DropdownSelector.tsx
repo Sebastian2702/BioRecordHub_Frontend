@@ -13,6 +13,7 @@ interface DropdownSelectorProps {
     selectedIds: string[];
     onChange: (newIds: any[]) => void;
     dataType: 'bibliography' | 'nomenclature' | 'projects';
+    isSingleSelect : boolean;
 }
 
 const DropdownSelector: React.FC<DropdownSelectorProps> = ({
@@ -20,60 +21,80 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
                                                                selectedIds,
                                                                onChange,
                                                                dataType,
+                                                               isSingleSelect
                                                            }) => {
     const [selectedValue, setSelectedValue] = useState('');
+
 
     const getOptions = () => {
         if (dataType === 'bibliography') {
             return data.map((b) => ({
                 value: b.id,
                 display: `${b.key} — ${b.author}, ${b.publication_year} — ${truncateString(b.title, 50)}`,
-            }))
-        }
-        else if (dataType === 'projects') {
+            }));
+        } else if (dataType === 'projects') {
             return data.map((b) => ({
                 value: b.id,
                 display: `${b.title} — ${b.research_type ? truncateString(b.description, 50) : ''}`,
-            }))
-        }
-        else{
+            }));
+        } else {
             return data.map((b) => ({
                 value: b.id,
-                display: `${b.species} — ${b.author}}`,
-            }))
+                display: `${b.species} — ${b.author}`,
+            }));
         }
-    }
+    };
 
-
+    const isAddDisabled = () => {
+        return isSingleSelect && selectedIds.length > 0;
+    };
 
     const handleAdd = () => {
-        if (selectedValue && !selectedIds.includes(selectedValue)) {
-            onChange([...selectedIds, selectedValue]);
-            setSelectedValue('');
+        if (!selectedValue) return;
+
+        if (isSingleSelect) {
+            if (selectedIds[0] !== selectedValue) {
+                onChange([selectedValue]);
+            }
+        } else {
+            if (!selectedIds.includes(selectedValue)) {
+                onChange([...selectedIds, selectedValue]);
+            }
         }
+
+        setSelectedValue('');
     };
 
     const handleRemove = (id: string) => {
-        onChange(selectedIds.filter((i) => i !== id));
+        if (isSingleSelect) {
+            onChange([]);
+        } else {
+            onChange(selectedIds.filter((i) => i !== id));
+        }
     };
 
     const getDisplay = (id: string) => {
-        const bib = data.find((b) => b.id === id);
-        if (!bib) return id;
-        if(dataType === 'bibliography') {
-            return `${bib.author}, ${bib.publication_year} - ${truncateString(bib.title, 30)}`;
-        }
-        else if(dataType === 'nomenclature') {
-            return `${bib.species}, ${bib.author}`;
-        }
-        else if(dataType === 'projects') {
-            return `${bib.title} — ${bib.research_type ? truncateString(bib.description, 50) : ''}`;
-        }
+        const item = data.find((b) => b.id === id);
+        if (!item) return id;
 
+        if (dataType === 'bibliography') {
+            return `${item.author}, ${item.publication_year} - ${truncateString(item.title, 30)}`;
+        } else if (dataType === 'nomenclature') {
+            return `${item.species}, ${item.author}`;
+        } else if (dataType === 'projects') {
+            return `${item.title} — ${item.research_type ? truncateString(item.description, 50) : ''}`;
+        }
+    };
+
+    const getTitle = () => {
+        if (dataType === 'bibliography') return 'Bibliographies';
+        if (dataType === 'nomenclature') return 'Nomenclature';
+        if (dataType === 'projects') return 'Project';
+        return '';
     };
 
     return (
-        <Box sx={{margin: '0 10px', padding: '0 10px'}}>
+        <Box sx={{ margin: '0 10px', padding: '0 10px' }}>
             <Typography
                 align="left"
                 sx={{
@@ -83,7 +104,7 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
                     marginBottom: '8px',
                 }}
             >
-                Bibliographies:
+                {getTitle()}
             </Typography>
 
             <Box display="flex" gap={"20px"} height={"60px"} marginBottom={"20px"} alignItems={'center'}>
@@ -92,7 +113,7 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
                         options={getOptions()}
                         value={selectedValue}
                         onChange={(e) => setSelectedValue(e.target.value)}
-                        label="Select a bibliography"
+                        label={`Select a ${getTitle().toLowerCase()}`}
                         required={false}
                     />
                 </Box>
@@ -101,13 +122,14 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
                     label="Add"
                     color="primary"
                     size="medium"
-                    icon={<AddIcon sx={{color: COLORS.white}} fontSize={"large"}/>}
+                    icon={<AddIcon sx={{ color: COLORS.white }} fontSize={"large"} />}
                     onClick={handleAdd}
+                    disabled={isAddDisabled()}
                 />
             </Box>
 
             {selectedIds.length > 0 && (
-                <Box display="flex" gap="10px" sx={{marginTop: '5px', flexWrap: 'wrap'}}>
+                <Box display="flex" gap="10px" sx={{ marginTop: '5px', flexWrap: 'wrap' }}>
                     {selectedIds.map((id) => (
                         <ListInputValue
                             key={id}
@@ -122,3 +144,4 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
 };
 
 export default DropdownSelector;
+
