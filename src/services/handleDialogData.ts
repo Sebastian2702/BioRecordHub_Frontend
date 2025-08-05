@@ -1,6 +1,6 @@
 import {DeleteBibliography, DeleteNomenclatureFromBibliography} from './bibliography/bibliography.ts';
 import {DeleteBibliographyFromNomenclature, DeleteNomenclature} from './nomenclature/nomenclature.ts';
-import {DeleteUser, updateOccurrenceField, UpdateUserRole} from './admin/admin.ts';
+import {DeleteUser, UpdateOccurrenceField, UpdateUserRole, DeleteOccurrenceField} from './admin/admin.ts';
 import {DeleteProject} from './project/project.ts';
 import {DeleteOccurrence} from './occurrences/occurrences.ts';
 
@@ -24,6 +24,9 @@ export const handleDeleteData = async (id:number, dataType:string, referenceID?:
         case "projects":
             await DeleteProject(id);
             break;
+        case "occurrenceFields":
+            await DeleteOccurrenceField(id);
+            break;
         case "occurrence":
             await DeleteOccurrence(id);
             break;
@@ -40,7 +43,7 @@ export const handleEditData = async (id:number, dataType:string, data:any) => {
            await UpdateUserRole(id,data);
             break;
         case 'occurrenceFields':
-            await updateOccurrenceField(id, data);
+            await UpdateOccurrenceField(id, data);
             break;
 
         // Add more cases for other data types as needed

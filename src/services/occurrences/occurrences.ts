@@ -22,3 +22,15 @@ export const DeleteOccurrence = async (occurrenceId: number) => {
         throw new Error(cutmsg);
     }
 }
+
+export const CreateOccurrence = async (data: any) => {
+    await api.get(COOKIE_ROUTE.csrf);
+    try {
+        const response = await api.post(OCCURRENCE_ROUTES.occurrences, data);
+        return response.data;
+    } catch (err: any) {
+        const msg = err.response.data.message;
+        const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
+        throw new Error(cutmsg);
+    }
+}

@@ -164,7 +164,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
         else if (dataType === "bibliographyNomenclature" || dataType === "nomenclature") {
             return row.species
         }
-        else if (dataType === "users") {
+        else if (dataType === "users" || dataType === 'occurrenceFields') {
             return row.name;
         }
         else if (dataType === "occurrence") {

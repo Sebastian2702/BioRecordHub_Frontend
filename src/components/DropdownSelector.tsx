@@ -12,7 +12,7 @@ interface DropdownSelectorProps {
     data: { id: string; [key: string]: string }[];
     selectedIds: string[];
     onChange: (newIds: any[]) => void;
-    dataType: 'bibliography' | 'nomenclature';
+    dataType: 'bibliography' | 'nomenclature' | 'projects';
 }
 
 const DropdownSelector: React.FC<DropdownSelectorProps> = ({
@@ -28,6 +28,12 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
             return data.map((b) => ({
                 value: b.id,
                 display: `${b.key} — ${b.author}, ${b.publication_year} — ${truncateString(b.title, 50)}`,
+            }))
+        }
+        else if (dataType === 'projects') {
+            return data.map((b) => ({
+                value: b.id,
+                display: `${b.title} — ${b.research_type ? truncateString(b.description, 50) : ''}`,
             }))
         }
         else{
@@ -59,6 +65,9 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
         }
         else if(dataType === 'nomenclature') {
             return `${bib.species}, ${bib.author}`;
+        }
+        else if(dataType === 'projects') {
+            return `${bib.title} — ${bib.research_type ? truncateString(bib.description, 50) : ''}`;
         }
 
     };

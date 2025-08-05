@@ -25,6 +25,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import NewProject from "./pages/Projects/NewProject.tsx";
 import EditProject from "./pages/Projects/EditProject.tsx";
 import Occurrences from "./pages/occurrences/Occurrences.tsx";
+import NewOccurrence from "./pages/occurrences/NewOccurrence.tsx";
 
 function App() {
 
@@ -51,6 +52,7 @@ function App() {
                         <Route path={ROUTES.bibliographyCreate} element={<NewBibliography />} />
                         <Route path={ROUTES.bibliographyFileUpload} element={<NewBibliographyFileUpload />} />
                         <Route path={ROUTES.occurrences} element={<Occurrences />} />
+                        <Route path={ROUTES.occurrenceCreate} element={<NewOccurrence />} />
                         <Route path={ROUTES.projects} element={<Projects />} />
                         <Route path={ROUTES.projectsCreate} element={<NewProject/>}/>
                         <Route path={ROUTES.projectsId} element={<Project />} />

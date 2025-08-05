@@ -23,14 +23,20 @@ export const GetOccurrenceFields = async () => {
     return response.data;
 }
 
-export const newOccurrenceField = async (data: any) => {
+export const NewOccurrenceField = async (data: any) => {
     await api.get(COOKIE_ROUTE.csrf);
     const response = await api.post(Admin_ROUTES.getOccurrenceFields, data);
     return response.data;
 }
 
-export const updateOccurrenceField = async (id: number, data: any) => {
+export const UpdateOccurrenceField = async (id: number, data: any) => {
     await api.get(COOKIE_ROUTE.csrf);
     const response = await api.put(Admin_ROUTES.getOccurrenceFieldById(id), data);
+    return response.data;
+}
+
+export const DeleteOccurrenceField = async (id: number) => {
+    await api.get(COOKIE_ROUTE.csrf);
+    const response = await api.delete(Admin_ROUTES.getOccurrenceFieldById(id));
     return response.data;
 }

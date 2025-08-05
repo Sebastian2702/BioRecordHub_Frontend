@@ -9,8 +9,8 @@ import {SelectChangeEvent} from "@mui/material/Select";
 import InfoIcon from '@mui/icons-material/Info';
 import CustomDialog from "../../components/CustomDialog.tsx";
 import DataTable from "../../components/DataTable.tsx";
-import {GetUsers, GetOccurrenceFields, newOccurrenceField} from "../../services/admin/admin.ts";
-import {ToastContainer} from "react-toastify";
+import {GetUsers, GetOccurrenceFields, NewOccurrenceField} from "../../services/admin/admin.ts";
+import {toast, ToastContainer} from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
 import StyledButton from "../../components/StyledButton.tsx";
 import AddIcon from '@mui/icons-material/Add';
@@ -94,16 +94,29 @@ function AdminControlPanel() {
             name: unformatLabel(occurrenceFields.name),
         };
         try{
-            await newOccurrenceField(formatedData);
+            await NewOccurrenceField(formatedData);
             window.location.reload();
         }
         catch (error) {
             console.error("Error creating new field:", error);
             setError("Failed to create new field. Please try again later.");
         }
-
-
     }
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            setError("");
+        }
+    }, [error]);
 
     const infoUsersDialogContent = (
         <Box>
