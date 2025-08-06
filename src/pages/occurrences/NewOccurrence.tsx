@@ -5,20 +5,21 @@ import Typography from '@mui/material/Typography';
 import BackButton from "../../components/BackButton.tsx";
 import FormField from "../../components/FormField.tsx";
 import {useEffect, useState} from "react";
-import {formatLabel} from "../../utils/helperFunctions.ts";
+import {formatLabel, truncateString} from "../../utils/helperFunctions.ts";
 import StyledButton from "../../components/StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
 import {toast, ToastContainer} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import {formatContributors, splitFieldsByRequirement} from "../../utils/helperFunctions.ts";
-import {GetNomenclature} from "../../services/nomenclature/nomenclature.ts";
-import {GetProject} from "../../services/project/project.ts";
+import {GetSpeciesAutocomplete} from "../../services/nomenclature/nomenclature.ts";
+import {GetProjectAutoComplete} from "../../services/project/project.ts";
 import {GetOccurrenceFields} from "../../services/admin/admin.ts";
-import DropdownSelector from "../../components/DropdownSelector.tsx";
+import {CreateOccurrence} from "../../services/occurrences/occurrences.ts";
 import {getHelperText, occurrenceFieldKeys, occurrenceGroupKeys} from "../../utils/formFieldHelpers.ts";
 import dayjs from "dayjs";
 import StyledAccordion from "../../components/StyledAccordion.tsx";
+import OccurrencesFormAutoComplete from "../../components/OccurrencesFormAutoComplete.tsx";
 
 function NewOccurrence() {
     const {user} = useAuth();
@@ -29,8 +30,8 @@ function NewOccurrence() {
     const [notRequiredFormFields, setNotRequiredFormFields] = useState<any[]>([]);
     const [nomenclatureOptions, setNomenclatureOptions] = useState<any[]>([]);
     const [projectOptions, setProjectOptions] = useState<any[]>([]);
-    const [selectedProjectId, setSelectedProjectId] = useState<string[]>([]);
-    const [selectedNomenclatureId, setSelectedNomenclatureId] = useState<string[]>([]);
+    const [selectedProjectId, setSelectedProjectId] = useState<number>();
+    const [selectedNomenclatureId, setSelectedNomenclatureId] = useState<number>();
     const [occurrenceData, setOccurrenceData] = useState({
         scientific_name: '',
         event_date: '',
@@ -41,8 +42,8 @@ function NewOccurrence() {
         basis_of_record: '',
     });
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-    const [usedFormFields, setUsedFormFields] = useState<string[]>([]);
-    const [notRequiredFormFieldsAccordion, setNotRequiredFormFieldsAccordion] = useState({
+    const [usedFormFields, setUsedFormFields] = useState<{ id: string, value: string }[]>([]);
+    const [notRequiredFormFieldsAccordions, setNotRequiredFormFieldsAccordions] = useState({
         geographic: false,
         event: false,
         occurrence: false,
@@ -61,15 +62,23 @@ function NewOccurrence() {
         try {
             const [fieldsResponse, nomenclatureResponse, projectsResponse] = await Promise.all([
                 GetOccurrenceFields(),
-                GetNomenclature(),
-                GetProject()
+                GetSpeciesAutocomplete(),
+                GetProjectAutoComplete()
             ]);
             const { required, nonRequired } = splitFieldsByRequirement(fieldsResponse);
             setRequiredFormFields(required);
             setNotRequiredFormFields(nonRequired);
 
-            setNomenclatureOptions(nomenclatureResponse);
-            setProjectOptions(projectsResponse);
+            const formattedNomenclature = nomenclatureResponse.map((item: any) => ({
+                id: item.id,
+                label: `${item.species} - ${item.author}`
+            }));
+            const formattedProjects = projectsResponse.map((item: any) => ({
+                id: item.id,
+                label: `${item.title} - ${formatLabel(item.research_type)} - ${truncateString(item.description, 50)}`
+            }));
+            setNomenclatureOptions(formattedNomenclature);
+            setProjectOptions(formattedProjects);
         } catch (err: any) {
             setError(err.message || "Failed to fetch data");
         } finally {
@@ -90,7 +99,79 @@ function NewOccurrence() {
     };
 
     const handleSave = () => {
-        console.log("Saving occurrence data:", occurrenceData);
+        const missingBasicFields = Object.entries(occurrenceData).filter(([_, value]) => !value);
+        const missingProjectOrNomenclature = !selectedProjectId || !selectedNomenclatureId;
+
+        const requiredIds = requiredFormFields
+            .filter(field => field.is_required)
+            .map(field => field.id);
+
+        const usedFieldMap = new Map(usedFormFields.map(f => [f.id, f.value]));
+        const missingRequiredFields = requiredIds.filter(id => !usedFieldMap.get(id));
+
+        if (missingBasicFields.length > 0) {
+            setError("Please fill all required basic fields.");
+            return;
+        }
+
+        if (missingProjectOrNomenclature) {
+            setError("Please select a project and a nomenclature.");
+            return;
+        }
+
+        if (missingRequiredFields.length > 0) {
+            setError("Please complete all additional required fields.");
+            return;
+        }
+
+        const formData = new FormData();
+
+        Object.entries(occurrenceData).forEach(([key, value]) => {
+            if (value) {
+                formData.append(key, value);
+            }
+        });
+
+        formData.append('nomenclature_id', selectedNomenclatureId);
+        formData.append('project_id', selectedProjectId);
+        formData.append("contributors", formatContributors("", user?.name || "Unknown User"));
+
+        if (selectedFiles && selectedFiles.length > 0) {
+            selectedFiles.forEach((file) => {
+                formData.append("files[]", file);
+            });
+        }
+
+        if (usedFormFields && usedFormFields.length > 0) {
+            formData.append('fields', JSON.stringify(usedFormFields));
+        }
+
+        CreateOccurrence(formData, setLoading, setError, navigate);
+
+    }
+
+    const handleDynamicFieldChange = (fieldId: string, value: string) => {
+        setUsedFormFields(prevFields => {
+            const exists = prevFields.find(f => f.id === fieldId);
+            if (exists) {
+                return prevFields.map(f => f.id === fieldId ? { ...f, value } : f);
+            } else {
+                return [...prevFields, { id: fieldId, value }];
+            }
+        });
+    };
+
+    const handleDynamicDateChange = (fieldId: string, date: Date | null) => {
+        const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
+        handleDynamicFieldChange(fieldId, formatted);
+    };
+
+    const getValueForField = (fieldId: string, fieldType: string) => {
+        const field = usedFormFields.find(f => f.id === fieldId);
+        if (fieldType === 'date') {
+            return field ? dayjs(field.value).isValid() ? dayjs(field.value) : null : null;
+        }
+        return field ? field.value : null;
     }
 
     useEffect(() => {
@@ -167,25 +248,26 @@ function NewOccurrence() {
                                         date={field === 'event_date'}
                                         dateType={field === 'event_date' ? ['day', 'month', 'year'] : undefined}
                                         onChangeDate={(date: Date | null) => {
-                                            setOccurrenceData({ ...occurrenceData, [field]: date?.toISOString().split('T')[0] || '' });
+                                            setOccurrenceData({
+                                                ...occurrenceData,
+                                                [field]: date ? dayjs(date).format('YYYY-MM-DD') : ''
+                                            });
                                         }}
                                         required={true}
                                     />
                                 ))}
                             </Box>
-                            <DropdownSelector
-                                data={nomenclatureOptions}
-                                onChange={(ids) => setSelectedNomenclatureId(ids)}
-                                isSingleSelect={true}
-                                dataType={'nomenclature'}
-                                selectedIds={selectedNomenclatureId}
+                            <OccurrencesFormAutoComplete
+                                label="Nomenclature associated with the occurrence"
+                                options={nomenclatureOptions}
+                                value={selectedNomenclatureId}
+                                onChange={(id) => setSelectedNomenclatureId(id ? id : undefined)}
                             />
-                            <DropdownSelector
-                                data={projectOptions}
-                                onChange={(ids) => setSelectedProjectId(ids)}
-                                isSingleSelect={true}
-                                dataType={'projects'}
-                                selectedIds={selectedProjectId}
+                            <OccurrencesFormAutoComplete
+                                label="Project associated with the occurrence"
+                                options={projectOptions}
+                                value={selectedProjectId}
+                                onChange={(id) => setSelectedProjectId(id)}
                             />
                         </Box>
                     )}
@@ -195,7 +277,7 @@ function NewOccurrence() {
                             <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
                                 2. Additional Required Fields
                             </Typography>
-                            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
+                            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, marginBottom: '20px' }}>
                                 {requiredFormFields.map((field) => {
                                     if (!field.is_active) return null;
 
@@ -204,20 +286,11 @@ function NewOccurrence() {
                                             key={field.id}
                                             label={formatLabel(field.name)}
                                             helperText={field.label || ''}
-                                            value={
-                                                /*field.type === 'date'
-                                                    ? occurrenceData[field.name]
-                                                        ? dayjs(occurrenceData[field.name])
-                                                        : null
-                                                    : occurrenceData[field.name] || ''*/
-                                                null
-                                            }
-                                            onChange={(e) => console.log("Field change not implemented yet")}
+                                            value={getValueForField(field.id, field.type)}
+                                            onChange={(e) => handleDynamicFieldChange(field.id, e.target.value)}
                                             date={field.type === 'date'}
                                             dateType={field.type === 'date' ? ['day', 'month', 'year'] : undefined}
-                                            onChangeDate={(date: Date | null) => {
-                                                console.log("Field change not implemented yet");
-                                            }}
+                                            onChangeDate={(date: Date | null) => handleDynamicDateChange(field.id, date)}
                                             required={field.is_required}
                                         />
                                     );
@@ -230,10 +303,10 @@ function NewOccurrence() {
                                 <Box marginBottom={'20px'} key={group}>
                                     <StyledAccordion
                                         key={group}
-                                        title={formatLabel(group)}
-                                        expanded={notRequiredFormFieldsAccordion[group] || false}
+                                        title={`Expand to fill ${formatLabel(group)} information`}
+                                        expanded={notRequiredFormFieldsAccordions[group] || false}
                                         onToggle={() =>
-                                            setNotRequiredFormFieldsAccordion((prev) => ({
+                                            setNotRequiredFormFieldsAccordions((prev) => ({
                                                 ...prev,
                                                 [group]: !prev[group],
                                             }))
@@ -247,20 +320,11 @@ function NewOccurrence() {
                                                         key={field.id}
                                                         label={formatLabel(field.name)}
                                                         helperText={field.label || ''}
-                                                        value={
-                                                            /*field.type === 'date'
-                                                                ? occurrenceData[field.name]
-                                                                    ? dayjs(occurrenceData[field.name])
-                                                                    : null
-                                                                : occurrenceData[field.name] || ''*/
-                                                            null
-                                                        }
-                                                        onChange={(e) => console.log("Field change not implemented yet")}
+                                                        value={getValueForField(field.id, field.type)}
+                                                        onChange={(e) => handleDynamicFieldChange(field.id, e.target.value)}
                                                         date={field.type === 'date'}
                                                         dateType={field.type === 'date' ? ['day', 'month', 'year'] : undefined}
-                                                        onChangeDate={(date: Date | null) => {
-                                                            console.log("Field change not implemented yet");
-                                                        }}
+                                                        onChangeDate={(date: Date | null) => handleDynamicDateChange(field.id, date)}
                                                         required={false}
                                                     />
                                                 ))}
@@ -278,7 +342,7 @@ function NewOccurrence() {
                             </Typography>
                             <FormField
                                 label={"Files"}
-                                helperText={getHelperText('file', "nomenclature") || ''}
+                                helperText={getHelperText('file', "occurrence") || ''}
                                 value={selectedFiles}
                                 acceptedFileTypes={'.png, .jpg, .jpeg, .pdf, .docx, .xlsx'}
                                 fileUpload={true}

@@ -1,5 +1,5 @@
 import api from '../../utils/axios.ts';
-import {OCCURRENCE_ROUTES, COOKIE_ROUTE} from "../../routes/apiRoutes.ts";
+import {OCCURRENCE_ROUTES, COOKIE_ROUTE, NOMENCLATURE_ROUTES} from "../../routes/apiRoutes.ts";
 import {ROUTES} from "../../routes/frontendRoutes.ts";
 
 export const GetOccurrences = async () => {
@@ -23,14 +23,18 @@ export const DeleteOccurrence = async (occurrenceId: number) => {
     }
 }
 
-export const CreateOccurrence = async (data: any) => {
+export const CreateOccurrence = async (data: any, setLoading: (loading: boolean) => void, setError: (msg: string) => void, navigate: (url: string) => void) => {
     await api.get(COOKIE_ROUTE.csrf);
-    try {
-        const response = await api.post(OCCURRENCE_ROUTES.occurrences, data);
-        return response.data;
-    } catch (err: any) {
+    try{
+        setLoading(true);
+        await api.post(OCCURRENCE_ROUTES.occurrences, data);
+        setLoading(false);
+        navigate(ROUTES.occurrences);
+    }
+    catch (err: any) {
+        setLoading(false);
         const msg = err.response.data.message;
         const cutmsg = msg.substring(0, msg.lastIndexOf('.')).trim();
-        throw new Error(cutmsg);
+        setError(cutmsg);
     }
 }

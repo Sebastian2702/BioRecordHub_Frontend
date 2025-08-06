@@ -128,3 +128,8 @@ export const DeleteNomenclatureImage = async (id: number, imageId: number) => {
     const response = await api.delete(NOMENCLATURE_ROUTES.deleteNomenclatureImage(id, imageId));
     return response.data;
 }
+
+export const GetSpeciesAutocomplete = async () => {
+    const response = await api.get(NOMENCLATURE_ROUTES.speciesAutocomplete);
+    return response.data;
+}

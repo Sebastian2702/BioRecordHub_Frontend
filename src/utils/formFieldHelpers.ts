@@ -104,6 +104,7 @@ export const occurrenceFieldHelpers = [
     { key: 'decimal_latitude', helperText: 'Latitude of the occurrence in decimal degrees' },
     { key: 'decimal_longitude', helperText: 'Longitude of the occurrence in decimal degrees' },
     { key: 'basis_of_record', helperText: 'Type of record (e.g., HumanObservation, Specimen, etc.)' },
+    { key: 'file', helperText: '.png, .jpg, .jpeg, .pdf, .docx, .xlsx; files here, or browse your computer' }
 ];
 
 
