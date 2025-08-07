@@ -9,20 +9,25 @@ interface ImageListProps {
 }
 
 const CustomImageList: React.FC<ImageListProps> = ({
-    images,
-    altText = 'Image',
-    cols = 3,
-    rowHeight = 164
-}) => {
+                                                       images,
+                                                       altText = 'Image',
+                                                       cols = 3,
+                                                       rowHeight = 164
+                                                   }) => {
     return (
-        <ImageList sx={{ width: '100%' }} cols={cols} rowHeight={rowHeight}>
+        <ImageList sx={{width:'100%'}} cols={Math.min(images.length, cols)} rowHeight={rowHeight}>
             {images.map((image, index) => (
                 <ImageListItem key={index}>
                     <img
-                        src={`${image.url}?w=164&h=164&fit=crop&auto=format`}
-                        srcSet={`${image.url}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                        src={image.url}
                         alt={altText}
                         loading="lazy"
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'contain',
+                            borderRadius: 4,
+                        }}
                     />
                 </ImageListItem>
             ))}

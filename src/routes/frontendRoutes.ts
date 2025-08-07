@@ -29,4 +29,5 @@ export const ADMIN_ROUTES = {
     bibliographyEdit: '/bibliography/edit/:id',
     nomenclatureEdit: '/nomenclature/edit/:id',
     projectsEdit: '/projects/edit/:id',
+    occurrencesEdit: '/occurrences/edit/:id',
 }

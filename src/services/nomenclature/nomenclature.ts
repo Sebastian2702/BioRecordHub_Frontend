@@ -133,3 +133,4 @@ export const GetSpeciesAutocomplete = async () => {
     const response = await api.get(NOMENCLATURE_ROUTES.speciesAutocomplete);
     return response.data;
 }
+

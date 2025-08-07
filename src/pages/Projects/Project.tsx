@@ -128,21 +128,26 @@ function Project() {
                                 </Box>
                             ))
                         }
-                            <Typography sx={{ fontSize: FONT_SIZES.medium, color: COLORS.black,textShadow: '0px 4px 12px rgba(0,0,0,0.15)', }}>Files:</Typography>
-                            <Box display="flex" flexDirection="row" width="100%" gap = {2} flexWrap="wrap">
+                        <Typography sx={{ fontSize: FONT_SIZES.medium, color: COLORS.black,textShadow: '0px 4px 12px rgba(0,0,0,0.15)', }}>Files:</Typography>
+                        <Box display="flex" flexDirection="row" width="100%" gap = {2} flexWrap="wrap">
                             {
-                                Object.entries(data.files).map(([key, value]) => (
-                                   <AccessFile url={value.url} fileName={value.filename} />
-                                ))
+                                data.files && data.files.length > 0 ? (
+                                    Object.entries(data.files).map(([key, value]) => (
+                                       <AccessFile url={value.url} fileName={value.filename} extension={value.extension} />
+                                    ))
+                                ) : (
+                                    <Typography variant='h6'>
+                                        No files available for this project entry.
+                                    </Typography>
+                                )
 
                             }
-
                         </Box>
                     </Box>
                     {occurrences && occurrences.length > 0 ? (
                         <Box sx={{ padding: 1 }}>
                             <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
-                                Occurrences:
+                                Occurrences
                             </Typography>
                             <DataTable
                                 data={occurrences}
@@ -155,7 +160,7 @@ function Project() {
                                 viewButton={true}
                                 viewLink={"/occurrence/"}
                                 deleteButton={false}
-                                trashCanButton={true}
+                                trashCanButton={false}
                                 dataType={"occurrence"}
                                 referenceId={data.id}
                                 setError={setError}

@@ -11,7 +11,7 @@ export interface Option {
 interface OccurrencesFormAutoCompleteProps {
     options: Option[];
     label: string;
-    value: Option | null;
+    value: number | null;
     onChange: (value: number | null) => void;
 }
 
@@ -21,11 +21,18 @@ const OccurrencesFormAutoComplete: React.FC<OccurrencesFormAutoCompleteProps> = 
                                                                                value,
                                                                                onChange
                                                                            }) => {
+
+    const getValue = (id: number | null): Option | null => {
+        if (id === null) return null;
+        const option = options.find(option => option.id === id);
+        return option || null;
+    }
+
     return (
         <Box sx={{ width: '100%', marginBottom: '20px' }}>
             <Autocomplete
                 options={options}
-                value={value}
+                value={getValue(value)}
                 getOptionLabel={(option) => option.label}
                 isOptionEqualToValue={(option, val) => option.id === val?.id}
                 onChange={(_, selectedValue) => onChange(selectedValue?.id ?? null)}

@@ -103,7 +103,7 @@ function Occurrences() {
                         ]}
                         editButton={false}
                         viewButton={true}
-                        viewLink={"/occurrence/"}
+                        viewLink={"/occurrences/"}
                         deleteButton={false}
                         trashCanButton={true}
                         dataType={"occurrence"}

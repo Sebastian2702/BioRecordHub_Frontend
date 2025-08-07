@@ -9,40 +9,36 @@ import {formatLabel, truncateString} from "../../utils/helperFunctions.ts";
 import StyledButton from "../../components/StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
 import {toast, ToastContainer} from "react-toastify";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import {formatContributors, splitFieldsByRequirement} from "../../utils/helperFunctions.ts";
 import {GetSpeciesAutocomplete} from "../../services/nomenclature/nomenclature.ts";
 import {GetProjectAutoComplete} from "../../services/project/project.ts";
 import {GetOccurrenceFields} from "../../services/admin/admin.ts";
-import {CreateOccurrence} from "../../services/occurrences/occurrences.ts";
 import {getHelperText, occurrenceFieldKeys, occurrenceGroupKeys} from "../../utils/formFieldHelpers.ts";
 import dayjs from "dayjs";
 import StyledAccordion from "../../components/StyledAccordion.tsx";
 import OccurrencesFormAutoComplete from "../../components/OccurrencesFormAutoComplete.tsx";
+import {GetOccurrencesById} from "../../services/occurrences/occurrences.ts";
+import FilesEditor from "../../components/FilesEditor.tsx";
 
-function NewOccurrence() {
+
+function EditOccurrence() {
     const {user} = useAuth();
-    const [error, setError] = useState("");
-    const navigate = useNavigate();
-    const [loading, setLoading] = useState(false);
-    const [requiredFormFields, setRequiredFormFields] = useState<any[]>([]);
-    const [notRequiredFormFields, setNotRequiredFormFields] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [occurrenceData, setOccurrenceData] = useState<any>(null);
     const [nomenclatureOptions, setNomenclatureOptions] = useState<any[]>([]);
     const [projectOptions, setProjectOptions] = useState<any[]>([]);
     const [selectedProjectId, setSelectedProjectId] = useState<number>();
     const [selectedNomenclatureId, setSelectedNomenclatureId] = useState<number>();
-    const [occurrenceData, setOccurrenceData] = useState({
-        scientific_name: '',
-        event_date: '',
-        country: '',
-        locality: '',
-        decimal_latitude: '',
-        decimal_longitude: '',
-        basis_of_record: '',
-    });
-    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    const [requiredFormFields, setRequiredFormFields] = useState<any[]>([]);
+    const [notRequiredFormFields, setNotRequiredFormFields] = useState<any[]>([]);
+    const [files, setFiles] = useState<File[]>([]);
+    const [images, setImages] = useState<string[]>([]);
     const [usedFormFields, setUsedFormFields] = useState<{ id: string, value: string }[]>([]);
+    const [error, setError] = useState("");
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    const { id } = useParams();
     const [notRequiredFormFieldsAccordions, setNotRequiredFormFieldsAccordions] = useState({
         geographic: false,
         event: false,
@@ -55,36 +51,23 @@ function NewOccurrence() {
         location: false,
         other: false
     });
-    const [currentStep, setCurrentStep] = useState(1); // 1: Basic, 2: Fields, 3: Files
+    const [currentStep, setCurrentStep] = useState(1); // 1: Basic, 2: Fields, 3: Edit Files, 4: New Files
 
-    const getData = async () => {
-        setLoading(true);
-        try {
-            const [fieldsResponse, nomenclatureResponse, projectsResponse] = await Promise.all([
-                GetOccurrenceFields(),
-                GetSpeciesAutocomplete(),
-                GetProjectAutoComplete()
-            ]);
-            const { required, nonRequired } = splitFieldsByRequirement(fieldsResponse);
-            setRequiredFormFields(required);
-            setNotRequiredFormFields(nonRequired);
 
-            const formattedNomenclature = nomenclatureResponse.map((item: any) => ({
-                id: item.id,
-                label: `${item.species} - ${item.author}`
-            }));
-            const formattedProjects = projectsResponse.map((item: any) => ({
-                id: item.id,
-                label: `${item.title} - ${formatLabel(item.research_type)} - ${truncateString(item.description, 50)}`
-            }));
-            setNomenclatureOptions(formattedNomenclature);
-            setProjectOptions(formattedProjects);
-        } catch (err: any) {
-            setError(err.message || "Failed to fetch data");
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        if (error) {
+            toast.error(error, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            setError("");
         }
-    }
+    }, [error]);
 
     const goToNextStep = () => {
         if (currentStep < 3) {
@@ -97,6 +80,70 @@ function NewOccurrence() {
             setCurrentStep(currentStep - 1);
         }
     };
+
+    const fetchData = async (id: number) => {
+        setLoading(true);
+        try {
+            const [fieldsResponse, nomenclatureResponse, projectsResponse, occurrenceResponse] = await Promise.all([
+                GetOccurrenceFields(),
+                GetSpeciesAutocomplete(),
+                GetProjectAutoComplete(),
+                GetOccurrencesById(id)
+            ]);
+            const { required, nonRequired } = splitFieldsByRequirement(fieldsResponse);
+            const formattedNomenclature = nomenclatureResponse.map((item: any) => ({
+                id: item.id,
+                label: `${item.species} - ${item.author}`
+            }));
+            const formattedProjects = projectsResponse.map((item: any) => ({
+                id: item.id,
+                label: `${item.title} - ${formatLabel(item.research_type)} - ${truncateString(item.description, 50)}`
+            }));
+            const formattedUsedFields = occurrenceResponse.fields.map((field: any) => ({
+                id: field.pivot.occurrence_field_id,
+                value: field.pivot.value,
+            }))
+
+            setRequiredFormFields(required);
+            setNotRequiredFormFields(nonRequired);
+            setNomenclatureOptions(formattedNomenclature);
+            setProjectOptions(formattedProjects);
+            setSelectedProjectId(occurrenceResponse.project ? occurrenceResponse.project.id : undefined);
+            setSelectedNomenclatureId(occurrenceResponse.nomenclature ? occurrenceResponse.nomenclature.id : undefined);
+            setFiles(occurrenceResponse.files || []);
+            setImages(occurrenceResponse.images || []);
+            setUsedFormFields(formattedUsedFields);
+            setOccurrenceData({ ...occurrenceResponse, nomenclature: undefined, project: undefined, files: undefined, fields: undefined, images: undefined });
+        } catch (error) {
+            console.error("Error fetching occurrenceData:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDynamicFieldChange = (fieldId: string, value: string) => {
+        setUsedFormFields(prevFields => {
+            const exists = prevFields.find(f => f.id === fieldId);
+            if (exists) {
+                return prevFields.map(f => f.id === fieldId ? { ...f, value } : f);
+            } else {
+                return [...prevFields, { id: fieldId, value }];
+            }
+        });
+    };
+
+    const handleDynamicDateChange = (fieldId: string, date: Date | null) => {
+        const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
+        handleDynamicFieldChange(fieldId, formatted);
+    };
+
+    const getValueForField = (fieldId: string, fieldType: string) => {
+        const field = usedFormFields.find(f => f.id === fieldId);
+        if (fieldType === 'date') {
+            return field ? dayjs(field.value).isValid() ? dayjs(field.value) : null : null;
+        }
+        return field ? field.value : null;
+    }
 
     const handleSave = () => {
         const missingBasicFields = Object.entries(occurrenceData).filter(([_, value]) => !value);
@@ -146,53 +193,15 @@ function NewOccurrence() {
             formData.append('fields', JSON.stringify(usedFormFields));
         }
 
-        CreateOccurrence(formData, setLoading, setError, navigate);
+        console.log(formData);
 
-    }
-
-    const handleDynamicFieldChange = (fieldId: string, value: string) => {
-        setUsedFormFields(prevFields => {
-            const exists = prevFields.find(f => f.id === fieldId);
-            if (exists) {
-                return prevFields.map(f => f.id === fieldId ? { ...f, value } : f);
-            } else {
-                return [...prevFields, { id: fieldId, value }];
-            }
-        });
-    };
-
-    const handleDynamicDateChange = (fieldId: string, date: Date | null) => {
-        const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
-        handleDynamicFieldChange(fieldId, formatted);
-    };
-
-    const getValueForField = (fieldId: string, fieldType: string) => {
-        const field = usedFormFields.find(f => f.id === fieldId);
-        if (fieldType === 'date') {
-            return field ? dayjs(field.value).isValid() ? dayjs(field.value) : null : null;
-        }
-        return field ? field.value : null;
     }
 
 
     useEffect(() => {
-        if (error) {
-            toast.error(error, {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            setError("");
-        }
-    }, [error]);
-
-    useEffect(() => {
-        getData();
-    }, []);
+        if (!id) return;
+        fetchData(Number(id));
+    }, [id]);
 
     return (
         <Box sx={{
@@ -336,10 +345,24 @@ function NewOccurrence() {
                         </Box>
                     )}
 
-                    {currentStep === 3 && (
+                    {
+                        currentStep === 3 && (
+                            <Box sx={{ padding: '0px 10px', marginBottom: '30px' }}>
+                                <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
+                                    3. Files and Images
+                                </Typography>
+                                <Box display={'flex'} flexDirection={'column'} gap={'100px'}>
+                                    <FilesEditor files={images} altText={"Occurrence Image"} deleteImage={(index) => {handleDeleteImage(index)}} images={true} />
+                                    <FilesEditor files={files} altText={"Occurrence File"} deleteImage={(index) => {handleDeleteImage(index)}} images={false} />
+                                </Box>
+                            </Box>
+                        )
+                    }
+
+                    {currentStep === 4 && (
                         <Box sx={{ padding: '0px 10px', marginBottom: '30px' }}>
                             <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
-                                4. Attachments
+                                5. Attachments
                             </Typography>
                             <FormField
                                 label={"Files"}
@@ -368,7 +391,7 @@ function NewOccurrence() {
                         {currentStep > 1 && (
                             <StyledButton label="Back" color="secondary" size="large" onClick={goToPreviousStep} />
                         )}
-                        {currentStep < 3 ? (
+                        {currentStep < 4 ? (
                             <StyledButton label="Next" color="primary" size="large" onClick={goToNextStep} />
                         ) : (
                             <StyledButton label="Submit" color="primary" size="large" onClick={handleSave} icon={<SaveIcon/>}/>
@@ -381,4 +404,4 @@ function NewOccurrence() {
     )
 }
 
-export default NewOccurrence;
+export default EditOccurrence;

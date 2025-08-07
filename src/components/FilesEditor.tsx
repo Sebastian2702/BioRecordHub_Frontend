@@ -47,7 +47,7 @@ const FilesEditor: React.FC<FilesEditorProps> = ({
                                     </Box>
                                 ):
                                     <Box alignItems={"center"} display={"flex"} flexDirection={"column"} justifyContent={"center"} gap={2} marginLeft={'20px'}>
-                                        <AccessFile url={file.url} fileName={file.filename}/>
+                                        <AccessFile url={file.url} fileName={file.filename} extension={file.extension}/>
                                         <StyledButton label={"Delete"} color={'delete'} size={'small'} onClick={() => deleteImage(file.id)} icon={<DeleteIcon/>}/>
                                     </Box>
                                 }

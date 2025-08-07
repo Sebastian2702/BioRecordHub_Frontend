@@ -23,7 +23,7 @@ function Nomenclature() {
     const [data, setData] = useState<any>(null);
     const [bibliographies, setBiblipgraphies] = useState<any>(null);
     const [images, setImages] = useState<File[]>([]);
-    const [occurrences, setOccurrences] = useState<any[]>([]);
+    const [occurrences, setOccurrences] = useState<any>([]);
     const [bibliographiesAccordion, setBibliographiesAccordion] = useState(false);
     const [occurrencesAccordion, setOccurrencesAccordion] = useState(false);
     const [error, setError] = useState("");
@@ -45,6 +45,7 @@ function Nomenclature() {
     }, [error]);
 
     const fetchData = async (id: number) => {
+        setLoading(true);
         try {
             const response = await GetNomenclatureById(id);
             setBiblipgraphies(response.bibliographies);
@@ -204,7 +205,7 @@ function Nomenclature() {
                                                          viewButton={true}
                                                          viewLink={"/occurrence/"}
                                                          deleteButton={false}
-                                                         trashCanButton={true}
+                                                         trashCanButton={false}
                                                          dataType={"occurrence"}
                                                          referenceId={data.id}
                                                          setError={setError}
