@@ -6,7 +6,7 @@ import {useEffect, useState} from "react";
 import StyledButton from "../../components/StyledButton.tsx";
 import SearchIcon from '@mui/icons-material/Search';
 import StyledAutoComplete from "../../components/StyledAutoComplete.tsx";
-import ExtraFieldAccordion from "../../components/ExtraFieldAccordion.tsx";
+import StyledAccordion from "../../components/StyledAccordion.tsx";
 import {toast, ToastContainer} from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
 import {GetAutocompleteNomenclature, SearchNomenclature, GetNomenclature} from "../../services/nomenclature/nomenclature.ts";
@@ -191,7 +191,7 @@ function Nomenclature() {
                             </Box>
                         </Box>
                         <Box sx={{marginBottom: '20px'}}>
-                            <ExtraFieldAccordion
+                            <StyledAccordion
                                 title={"Extra taxonomic fields for more precise search!"}
                                 children={
                                     <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>

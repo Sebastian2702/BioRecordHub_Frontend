@@ -4,14 +4,14 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {BORDER, COLORS, FONT_SIZES} from '../constants/ui';
 
-interface ExtraFieldAccordionProps {
+interface StyledAccordionProps {
     title: string;
     children: React.ReactNode;
     expanded?: boolean;
     onToggle?: () => void;
 }
 
-const ExtraFieldAccordion: React.FC<ExtraFieldAccordionProps> = ({title, children, expanded, onToggle}) => {
+const StyledAccordion: React.FC<StyledAccordionProps> = ({title, children, expanded, onToggle}) => {
     return (
         <Accordion
             expanded={expanded}
@@ -22,6 +22,7 @@ const ExtraFieldAccordion: React.FC<ExtraFieldAccordionProps> = ({title, childre
             sx={{
                 border: `2px solid ${COLORS.primary}`,
                 backgroundColor: COLORS.white,
+                borderRadius: BORDER.radius,
 
                 '&.MuiAccordion-root:last-of-type':{
                     borderRadius: BORDER.radius,
@@ -58,4 +59,4 @@ const ExtraFieldAccordion: React.FC<ExtraFieldAccordionProps> = ({title, childre
     );
 };
 
-export default ExtraFieldAccordion;
+export default StyledAccordion;

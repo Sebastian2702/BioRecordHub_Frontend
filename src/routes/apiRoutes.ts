@@ -22,6 +22,7 @@ export const NOMENCLATURE_ROUTES = {
     nomenclatureById: (id: number) => `/api/nomenclature/${id}`,
     nomenclatureFromExcel: '/api/nomenclature/multiple',
     autocompleteNomenclature: '/api/nomenclature/getAutoComplete',
+    speciesAutocomplete: '/api/nomenclature/speciesAutocomplete',
     searchNomenclature: '/api/nomenclature/search',
     deleteBibliographyFromNomenclature: (id: number, bibliographyId: number) => `/api/nomenclature/${id}/bibliographies/${bibliographyId}`,
     deleteNomenclatureImage: (id: number, imageId: number) => `/api/nomenclature/${id}/image/${imageId}`,
@@ -43,5 +44,12 @@ export const Admin_ROUTES = {
 export const PROJECT_ROUTES = {
     projects: '/api/project',
     projectsById: (id: number) => `/api/project/${id}`,
+    projectAutoComplete: '/api/project/getAutoComplete',
     deleteProjectFileById: (id: number, fileID: number) => `/api/project/${id}/file/${fileID}`,
+}
+
+export const  OCCURRENCE_ROUTES = {
+    occurrences: '/api/occurrence',
+    occurrencesById: (id: number) => `/api/occurrence/${id}`,
+    occurrenceFile: (occurrenceId: number, fileId: number) => `/api/occurrence/${occurrenceId}/file/${fileId}`,
 }

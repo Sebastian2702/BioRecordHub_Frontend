@@ -63,3 +63,8 @@ export const DeleteProjectFile = async (id: number, fileID: number) => {
         throw new Error(cutmsg);
     }
 }
+
+export const GetProjectAutoComplete = async () => {
+    const response = await api.get(PROJECT_ROUTES.projectAutoComplete);
+    return response.data;
+}

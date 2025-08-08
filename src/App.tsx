@@ -24,6 +24,10 @@ import Project from "./pages/Projects/Project.tsx";
 import 'react-toastify/dist/ReactToastify.css';
 import NewProject from "./pages/Projects/NewProject.tsx";
 import EditProject from "./pages/Projects/EditProject.tsx";
+import Occurrences from "./pages/occurrences/Occurrences.tsx";
+import NewOccurrence from "./pages/occurrences/NewOccurrence.tsx";
+import Occurrence from "./pages/occurrences/Occurrence.tsx";
+import EditOccurrence from "./pages/occurrences/EditOccurrence.tsx";
 
 function App() {
 
@@ -49,7 +53,9 @@ function App() {
                         <Route path={ROUTES.bibliographyId} element={<Bibliography />} />
                         <Route path={ROUTES.bibliographyCreate} element={<NewBibliography />} />
                         <Route path={ROUTES.bibliographyFileUpload} element={<NewBibliographyFileUpload />} />
-                        <Route path={ROUTES.occurrences} element={<Dashboard />} />
+                        <Route path={ROUTES.occurrences} element={<Occurrences />} />
+                        <Route path={ROUTES.occurrenceCreate} element={<NewOccurrence />} />
+                        <Route path={ROUTES.occurrenceId} element={<Occurrence/>}/>
                         <Route path={ROUTES.projects} element={<Projects />} />
                         <Route path={ROUTES.projectsCreate} element={<NewProject/>}/>
                         <Route path={ROUTES.projectsId} element={<Project />} />
@@ -62,6 +68,7 @@ function App() {
                         <Route path={ADMIN_ROUTES.bibliographyEdit} element={<EditBibliography />} />
                         <Route path={ADMIN_ROUTES.nomenclatureEdit} element={<EditNomenclature />} />
                         <Route path={ADMIN_ROUTES.projectsEdit} element={<EditProject />} />
+                        <Route path={ADMIN_ROUTES.occurrencesEdit} element={<EditOccurrence/>} />s
                     </Route>
                 </Route>
 

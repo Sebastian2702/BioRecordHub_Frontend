@@ -20,6 +20,8 @@ export const ROUTES = {
     nomenclatureSearchResults: '/nomenclature/search_results',
     projectsId: '/projects/:id',
     projectsCreate: '/projects/new',
+    occurrenceCreate: '/occurrences/new',
+    occurrenceId: '/occurrences/:id',
 }
 
 export const ADMIN_ROUTES = {
@@ -27,4 +29,5 @@ export const ADMIN_ROUTES = {
     bibliographyEdit: '/bibliography/edit/:id',
     nomenclatureEdit: '/nomenclature/edit/:id',
     projectsEdit: '/projects/edit/:id',
+    occurrencesEdit: '/occurrences/edit/:id',
 }
