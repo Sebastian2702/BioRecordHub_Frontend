@@ -16,10 +16,10 @@ import {GetSpeciesAutocomplete} from "../../services/nomenclature/nomenclature.t
 import {GetProjectAutoComplete} from "../../services/project/project.ts";
 import {GetOccurrenceFields} from "../../services/admin/admin.ts";
 import {CreateOccurrence} from "../../services/occurrences/occurrences.ts";
-import {getHelperText, occurrenceFieldKeys, occurrenceGroupKeys} from "../../utils/formFieldHelpers.ts";
+import {getHelperText, occurrenceFieldKeys} from "../../utils/formFieldHelpers.ts";
 import dayjs from "dayjs";
-import StyledAccordion from "../../components/StyledAccordion.tsx";
 import OccurrencesFormAutoComplete from "../../components/OccurrencesFormAutoComplete.tsx";
+import {FieldsGrid} from "../../components/FieldsGrid.tsx";
 
 function NewOccurrence() {
     const {user} = useAuth();
@@ -150,6 +150,15 @@ function NewOccurrence() {
 
     }
 
+    const notRequiredFormFieldsByGroup = notRequiredFormFields.reduce((groups, field) => {
+        const groupName = field.group || "Other";
+        if (!groups[groupName]) {
+            groups[groupName] = [];
+        }
+        groups[groupName].push(field);
+        return groups;
+    }, {} as Record<string, Field[]>);
+
     const handleDynamicFieldChange = (fieldId: string, value: string) => {
         setUsedFormFields(prevFields => {
             const exists = prevFields.find(f => f.id === fieldId);
@@ -161,18 +170,6 @@ function NewOccurrence() {
         });
     };
 
-    const handleDynamicDateChange = (fieldId: string, date: Date | null) => {
-        const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
-        handleDynamicFieldChange(fieldId, formatted);
-    };
-
-    const getValueForField = (fieldId: string, fieldType: string) => {
-        const field = usedFormFields.find(f => f.id === fieldId);
-        if (fieldType === 'date') {
-            return field ? dayjs(field.value).isValid() ? dayjs(field.value) : null : null;
-        }
-        return field ? field.value : null;
-    }
 
 
     useEffect(() => {
@@ -278,60 +275,24 @@ function NewOccurrence() {
                             <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
                                 2. Additional Required Fields
                             </Typography>
-                            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, marginBottom: '20px' }}>
-                                {requiredFormFields.map((field) => {
-                                    if (!field.is_active) return null;
-
-                                    return (
-                                        <FormField
-                                            key={field.id}
-                                            label={formatLabel(field.name)}
-                                            helperText={field.label || ''}
-                                            value={getValueForField(field.id, field.type)}
-                                            onChange={(e) => handleDynamicFieldChange(field.id, e.target.value)}
-                                            date={field.type === 'date'}
-                                            dateType={field.type === 'date' ? ['day', 'month', 'year'] : undefined}
-                                            onChangeDate={(date: Date | null) => handleDynamicDateChange(field.id, date)}
-                                            required={field.is_required}
-                                        />
-                                    );
-                                })}
-                            </Box>
+                            <FieldsGrid
+                                fields={requiredFormFields}
+                                usedFormFields={usedFormFields}
+                                setUsedFormFields={setUsedFormFields}
+                            />
                             <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
                                 3. Additional Non-Required Fields
                             </Typography>
-                            {occurrenceGroupKeys.map((group) => (
-                                <Box marginBottom={'20px'} key={group}>
-                                    <StyledAccordion
-                                        key={group}
-                                        title={`Expand to fill ${formatLabel(group)} information`}
-                                        expanded={notRequiredFormFieldsAccordions[group] || false}
-                                        onToggle={() =>
-                                            setNotRequiredFormFieldsAccordions((prev) => ({
-                                                ...prev,
-                                                [group]: !prev[group],
-                                            }))
-                                        }
-                                    >
-                                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
-                                            {notRequiredFormFields
-                                                .filter((field) => field.group === group && field.is_active)
-                                                .map((field) => (
-                                                    <FormField
-                                                        key={field.id}
-                                                        label={formatLabel(field.name)}
-                                                        helperText={field.label || ''}
-                                                        value={getValueForField(field.id, field.type)}
-                                                        onChange={(e) => handleDynamicFieldChange(field.id, e.target.value)}
-                                                        date={field.type === 'date'}
-                                                        dateType={field.type === 'date' ? ['day', 'month', 'year'] : undefined}
-                                                        onChangeDate={(date: Date | null) => handleDynamicDateChange(field.id, date)}
-                                                        required={false}
-                                                    />
-                                                ))}
-                                        </Box>
-                                    </StyledAccordion>
-                                </Box>
+                            {Object.entries(notRequiredFormFieldsByGroup).map(([group, fields]) => (
+                                <FieldsGrid
+                                    key={group}
+                                    fields={fields}
+                                    usedFormFields={usedFormFields}
+                                    setUsedFormFields={setUsedFormFields}
+                                    accordionGroup={group}
+                                    accordionState={notRequiredFormFieldsAccordions}
+                                    setAccordionState={setNotRequiredFormFieldsAccordions}
+                                />
                             ))}
                         </Box>
                     )}

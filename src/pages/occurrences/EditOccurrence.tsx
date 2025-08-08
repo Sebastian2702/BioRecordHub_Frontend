@@ -4,7 +4,7 @@ import { COLORS, BORDER, FONT_SIZES } from '../../constants/ui.ts';
 import Typography from '@mui/material/Typography';
 import BackButton from "../../components/BackButton.tsx";
 import FormField from "../../components/FormField.tsx";
-import {useEffect, useState} from "react";
+import { useState, useEffect } from 'react';
 import {formatLabel, truncateString} from "../../utils/helperFunctions.ts";
 import StyledButton from "../../components/StyledButton.tsx";
 import SaveIcon from '@mui/icons-material/Save';
@@ -15,15 +15,14 @@ import {formatContributors, splitFieldsByRequirement} from "../../utils/helperFu
 import {GetSpeciesAutocomplete} from "../../services/nomenclature/nomenclature.ts";
 import {GetProjectAutoComplete} from "../../services/project/project.ts";
 import {GetOccurrenceFields} from "../../services/admin/admin.ts";
-import {getHelperText, occurrenceFieldKeys, occurrenceGroupKeys} from "../../utils/formFieldHelpers.ts";
+import {getHelperText, occurrenceFieldKeys} from "../../utils/formFieldHelpers.ts";
 import dayjs from "dayjs";
-import StyledAccordion from "../../components/StyledAccordion.tsx";
 import OccurrencesFormAutoComplete from "../../components/OccurrencesFormAutoComplete.tsx";
 import {GetOccurrencesById} from "../../services/occurrences/occurrences.ts";
 import FilesEditor from "../../components/FilesEditor.tsx";
 import {DeleteOccurrenceFile, EditOccurrenceRequest} from "../../services/occurrences/occurrences.ts";
 import CustomDialog from "../../components/CustomDialog.tsx";
-
+import {FieldsGrid} from "../../components/FieldsGrid.tsx";
 
 function EditOccurrence() {
     const navigate = useNavigate();
@@ -38,22 +37,11 @@ function EditOccurrence() {
     const [notRequiredFormFields, setNotRequiredFormFields] = useState<any[]>([]);
     const [files, setFiles] = useState<File[]>([]);
     const [images, setImages] = useState<string[]>([]);
-    const [usedFormFields, setUsedFormFields] = useState<{ id: string, value: string }[]>([]);
+    const [usedFormFields, setUsedFormFields] = useState<Record<string, string>>({});
     const [error, setError] = useState("");
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const { id } = useParams();
-    const [notRequiredFormFieldsAccordions, setNotRequiredFormFieldsAccordions] = useState({
-        geographic: false,
-        event: false,
-        occurrence: false,
-        organism: false,
-        identification: false,
-        collection: false,
-        dataset: false,
-        record: false,
-        location: false,
-        other: false
-    });
+    const [notRequiredFormFieldsAccordions, setNotRequiredFormFieldsAccordions] = useState<Record<string, boolean>>({});
     const [currentStep, setCurrentStep] = useState(1); // 1: Basic, 2: Fields, 3: Edit Files, 4: New Files
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [dialogLoading, setDialogLoading] = useState(false);
@@ -138,29 +126,6 @@ function EditOccurrence() {
         setDeleteDialogOpen(true);
     };
 
-    const handleDynamicFieldChange = (fieldId: string, value: string) => {
-        setUsedFormFields(prevFields => {
-            const exists = prevFields.find(f => f.id === fieldId);
-            if (exists) {
-                return prevFields.map(f => f.id === fieldId ? { ...f, value } : f);
-            } else {
-                return [...prevFields, { id: fieldId, value }];
-            }
-        });
-    };
-
-    const handleDynamicDateChange = (fieldId: string, date: Date | null) => {
-        const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
-        handleDynamicFieldChange(fieldId, formatted);
-    };
-
-    const getValueForField = (fieldId: string, fieldType: string) => {
-        const field = usedFormFields.find(f => f.id === fieldId);
-        if (fieldType === 'date') {
-            return field ? dayjs(field.value).isValid() ? dayjs(field.value) : null : null;
-        }
-        return field ? field.value : null;
-    }
 
     const handleSave = () => {
        const missingBasicFields = occurrenceFieldKeys.filter((key) => !occurrenceData[key]);
@@ -219,7 +184,7 @@ function EditOccurrence() {
 
     const handleDeleteFile = async (fileId: number) => {
         try{
-            setLoading(true);
+            setDialogLoading(true);
             await DeleteOccurrenceFile(Number(id), fileId);
             setImages(prev => prev.filter((img) => Number(img.id) !== Number(fileId)));
             setFiles(prev => prev.filter((file) => Number(file.id) !== Number(fileId)));
@@ -233,10 +198,10 @@ function EditOccurrence() {
                 draggable: true,
                 progress: undefined,
             });
-            setLoading(false);
+            setDialogLoading(false);
         }
         catch(error:any) {
-            setLoading(false);
+            setDialogLoading(false);
             setError("Failed to delete file");
         }
 
@@ -249,6 +214,15 @@ function EditOccurrence() {
             </Typography>
         </Box>
     )
+
+    const notRequiredFormFieldsByGroup = notRequiredFormFields.reduce((groups, field) => {
+        const groupName = field.group || "Other";
+        if (!groups[groupName]) {
+            groups[groupName] = [];
+        }
+        groups[groupName].push(field);
+        return groups;
+    }, {} as Record<string, Field[]>);
 
     useEffect(() => {
         if (!id) return;
@@ -350,60 +324,24 @@ function EditOccurrence() {
                             <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
                                 2. Additional Required Fields
                             </Typography>
-                            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, marginBottom: '20px' }}>
-                                {requiredFormFields.map((field) => {
-                                    if (!field.is_active) return null;
-
-                                    return (
-                                        <FormField
-                                            key={field.id}
-                                            label={formatLabel(field.name)}
-                                            helperText={field.label || ''}
-                                            value={getValueForField(field.id, field.type)}
-                                            onChange={(e) => handleDynamicFieldChange(field.id, e.target.value)}
-                                            date={field.type === 'date'}
-                                            dateType={field.type === 'date' ? ['day', 'month', 'year'] : undefined}
-                                            onChangeDate={(date: Date | null) => handleDynamicDateChange(field.id, date)}
-                                            required={field.is_required}
-                                        />
-                                    );
-                                })}
-                            </Box>
+                            <FieldsGrid
+                                fields={requiredFormFields}
+                                usedFormFields={usedFormFields}
+                                setUsedFormFields={setUsedFormFields}
+                            />
                             <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
                                 3. Additional Non-Required Fields
                             </Typography>
-                            {occurrenceGroupKeys.map((group) => (
-                                <Box marginBottom={'20px'} key={group}>
-                                    <StyledAccordion
-                                        key={group}
-                                        title={`Expand to fill ${formatLabel(group)} information`}
-                                        expanded={notRequiredFormFieldsAccordions[group] || false}
-                                        onToggle={() =>
-                                            setNotRequiredFormFieldsAccordions((prev) => ({
-                                                ...prev,
-                                                [group]: !prev[group],
-                                            }))
-                                        }
-                                    >
-                                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
-                                            {notRequiredFormFields
-                                                .filter((field) => field.group === group && field.is_active)
-                                                .map((field) => (
-                                                    <FormField
-                                                        key={field.id}
-                                                        label={formatLabel(field.name)}
-                                                        helperText={field.label || ''}
-                                                        value={getValueForField(field.id, field.type)}
-                                                        onChange={(e) => handleDynamicFieldChange(field.id, e.target.value)}
-                                                        date={field.type === 'date'}
-                                                        dateType={field.type === 'date' ? ['day', 'month', 'year'] : undefined}
-                                                        onChangeDate={(date: Date | null) => handleDynamicDateChange(field.id, date)}
-                                                        required={false}
-                                                    />
-                                                ))}
-                                        </Box>
-                                    </StyledAccordion>
-                                </Box>
+                            {Object.entries(notRequiredFormFieldsByGroup).map(([group, fields]) => (
+                                <FieldsGrid
+                                    key={group}
+                                    fields={fields}
+                                    usedFormFields={usedFormFields}
+                                    setUsedFormFields={setUsedFormFields}
+                                    accordionGroup={group}
+                                    accordionState={notRequiredFormFieldsAccordions}
+                                    setAccordionState={setNotRequiredFormFieldsAccordions}
+                                />
                             ))}
                         </Box>
                     )}

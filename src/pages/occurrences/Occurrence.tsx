@@ -207,11 +207,10 @@ function Occurrences() {
                             <DataTable
                                 data={project}
                                 columns={[
-                                    { id: 'species', label: 'Species' },
-                                    { id: 'author', label: 'Author' },
-                                    { id: 'genus', label: 'Genus' },
-                                    { id: 'family', label: 'Family' },
-                                    { id: 'order', label: 'Order' }
+                                    { id: 'title', label: 'Title' },
+                                    { id: 'research_type', label: 'Research Type' },
+                                    { id: 'advisor', label: 'Advisor(s)' },
+                                    { id: 'course', label: 'Course' },
                                 ]}
                                 editButton={false}
                                 viewButton={true}
