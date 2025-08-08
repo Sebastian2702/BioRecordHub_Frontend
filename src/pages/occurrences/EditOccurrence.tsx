@@ -21,9 +21,12 @@ import StyledAccordion from "../../components/StyledAccordion.tsx";
 import OccurrencesFormAutoComplete from "../../components/OccurrencesFormAutoComplete.tsx";
 import {GetOccurrencesById} from "../../services/occurrences/occurrences.ts";
 import FilesEditor from "../../components/FilesEditor.tsx";
+import {DeleteOccurrenceFile, EditOccurrenceRequest} from "../../services/occurrences/occurrences.ts";
+import CustomDialog from "../../components/CustomDialog.tsx";
 
 
 function EditOccurrence() {
+    const navigate = useNavigate();
     const {user} = useAuth();
     const [loading, setLoading] = useState(true);
     const [occurrenceData, setOccurrenceData] = useState<any>(null);
@@ -52,6 +55,10 @@ function EditOccurrence() {
         other: false
     });
     const [currentStep, setCurrentStep] = useState(1); // 1: Basic, 2: Fields, 3: Edit Files, 4: New Files
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [dialogLoading, setDialogLoading] = useState(false);
+    const [deleteTitle, setDeleteTitle] = useState("");
+    const [deleteId, setDeleteId] = useState<number | null>(null);
 
 
     useEffect(() => {
@@ -70,7 +77,7 @@ function EditOccurrence() {
     }, [error]);
 
     const goToNextStep = () => {
-        if (currentStep < 3) {
+        if (currentStep < 4) {
             setCurrentStep(currentStep + 1);
         }
     };
@@ -121,6 +128,16 @@ function EditOccurrence() {
         }
     };
 
+    const handleDeleteDialogClose = () => {
+        setDeleteDialogOpen(false);
+    };
+
+    const handleDeleteDialogOpen = (id:number, title:string) => {
+        setDeleteId(id);
+        setDeleteTitle(title);
+        setDeleteDialogOpen(true);
+    };
+
     const handleDynamicFieldChange = (fieldId: string, value: string) => {
         setUsedFormFields(prevFields => {
             const exists = prevFields.find(f => f.id === fieldId);
@@ -146,7 +163,7 @@ function EditOccurrence() {
     }
 
     const handleSave = () => {
-        const missingBasicFields = Object.entries(occurrenceData).filter(([_, value]) => !value);
+       const missingBasicFields = occurrenceFieldKeys.filter((key) => !occurrenceData[key]);
         const missingProjectOrNomenclature = !selectedProjectId || !selectedNomenclatureId;
 
         const requiredIds = requiredFormFields
@@ -174,7 +191,7 @@ function EditOccurrence() {
         const formData = new FormData();
 
         Object.entries(occurrenceData).forEach(([key, value]) => {
-            if (value) {
+            if (value && key !== 'project_id' && key !== 'nomenclature_id') {
                 formData.append(key, value);
             }
         });
@@ -193,10 +210,45 @@ function EditOccurrence() {
             formData.append('fields', JSON.stringify(usedFormFields));
         }
 
-        console.log(formData);
+        formData.append('_method', 'PUT');
+
+        EditOccurrenceRequest(Number(id), formData, setLoading, setError, navigate)
 
     }
 
+
+    const handleDeleteFile = async (fileId: number) => {
+        try{
+            setLoading(true);
+            await DeleteOccurrenceFile(Number(id), fileId);
+            setImages(prev => prev.filter((img) => Number(img.id) !== Number(fileId)));
+            setFiles(prev => prev.filter((file) => Number(file.id) !== Number(fileId)));
+            handleDeleteDialogClose();
+            toast.success("File deleted successfully", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            setLoading(false);
+        }
+        catch(error:any) {
+            setLoading(false);
+            setError("Failed to delete file");
+        }
+
+    }
+
+    const deleteDialogContent = (
+        <Box>
+            <Typography variant="body1">
+                Are you sure you want to delete <strong>"{deleteTitle}"</strong>?
+            </Typography>
+        </Box>
+    )
 
     useEffect(() => {
         if (!id) return;
@@ -215,6 +267,17 @@ function EditOccurrence() {
             overflow: 'auto',
         }}>
             <ToastContainer/>
+            <CustomDialog
+                open={deleteDialogOpen}
+                onClose={handleDeleteDialogClose}
+                title="Confirm Deletion"
+                contentText={deleteDialogContent}
+                content={"delete"}
+                dialogLoading={dialogLoading}
+                action={() => {
+                    handleDeleteFile(deleteId || 0);
+                }}
+            />
             {loading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
                         <CircularProgress/>
@@ -232,11 +295,11 @@ function EditOccurrence() {
                                 left: '50%',
                                 transform: 'translateX(-50%)',
                                 fontWeight: 'bold',
-                                fontSize: FONT_SIZES.xlarge,
+                                fontSize: FONT_SIZES.large,
                                 textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
                             }}
                         >
-                            New Occurrence
+                            Edit {occurrenceData.scientific_name} - {occurrenceData.event_date} - {occurrenceData.locality}
                         </Typography>
                     </Box>
                     {currentStep === 1 && (
@@ -349,11 +412,11 @@ function EditOccurrence() {
                         currentStep === 3 && (
                             <Box sx={{ padding: '0px 10px', marginBottom: '30px' }}>
                                 <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
-                                    3. Files and Images
+                                    4. Files and Images
                                 </Typography>
-                                <Box display={'flex'} flexDirection={'column'} gap={'100px'}>
-                                    <FilesEditor files={images} altText={"Occurrence Image"} deleteImage={(index) => {handleDeleteImage(index)}} images={true} />
-                                    <FilesEditor files={files} altText={"Occurrence File"} deleteImage={(index) => {handleDeleteImage(index)}} images={false} />
+                                <Box display={'flex'} flexDirection={'column'} gap={'150px'}>
+                                    <FilesEditor files={images} altText={"Occurrence Image"} deleteImage={(index) => {handleDeleteDialogOpen(index, "this image")}} images={true} />
+                                    <FilesEditor files={files} altText={"Occurrence File"} deleteImage={(index) => {handleDeleteDialogOpen(index, "this file")}} images={false} />
                                 </Box>
                             </Box>
                         )

@@ -51,4 +51,5 @@ export const PROJECT_ROUTES = {
 export const  OCCURRENCE_ROUTES = {
     occurrences: '/api/occurrence',
     occurrencesById: (id: number) => `/api/occurrence/${id}`,
+    occurrenceFile: (occurrenceId: number, fileId: number) => `/api/occurrence/${occurrenceId}/file/${fileId}`,
 }
