@@ -252,6 +252,7 @@ function NewOccurrence() {
                                             });
                                         }}
                                         required={true}
+                                        multiline={field === 'occurrence_remarks'}
                                     />
                                 ))}
                             </Box>

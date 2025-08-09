@@ -29,8 +29,10 @@ export const NOMENCLATURE_ROUTES = {
 }
 
 export const EXCEL_ROUTES = {
-    bibliography: '/api/excel_import/bibliography',
-    nomenclature: '/api/excel_import/nomenclature',
+    bibliographyImport: '/api/excel_import/bibliography',
+    nomenclatureImport: '/api/excel_import/nomenclature',
+    occurrenceExport: '/api/excel_export/occurrence',
+    occurrenceExportById: (id: number) => `/api/excel_export/occurrence/${id}`,
 }
 
 export const Admin_ROUTES = {
@@ -52,4 +54,5 @@ export const  OCCURRENCE_ROUTES = {
     occurrences: '/api/occurrence',
     occurrencesById: (id: number) => `/api/occurrence/${id}`,
     occurrenceFile: (occurrenceId: number, fileId: number) => `/api/occurrence/${occurrenceId}/file/${fileId}`,
+    occurrenceGetCsv: (occurrenceId: number) => `/api/occurrence/${occurrenceId}/export/csv`,
 }

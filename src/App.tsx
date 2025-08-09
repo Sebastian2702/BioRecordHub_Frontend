@@ -24,10 +24,10 @@ import Project from "./pages/Projects/Project.tsx";
 import 'react-toastify/dist/ReactToastify.css';
 import NewProject from "./pages/Projects/NewProject.tsx";
 import EditProject from "./pages/Projects/EditProject.tsx";
-import Occurrences from "./pages/occurrences/Occurrences.tsx";
-import NewOccurrence from "./pages/occurrences/NewOccurrence.tsx";
-import Occurrence from "./pages/occurrences/Occurrence.tsx";
-import EditOccurrence from "./pages/occurrences/EditOccurrence.tsx";
+import Occurrences from "./pages/Occurrences/Occurrences.tsx";
+import NewOccurrence from "./pages/Occurrences/NewOccurrence.tsx";
+import Occurrence from "./pages/Occurrences/Occurrence.tsx";
+import EditOccurrence from "./pages/Occurrences/EditOccurrence.tsx";
 
 function App() {
 

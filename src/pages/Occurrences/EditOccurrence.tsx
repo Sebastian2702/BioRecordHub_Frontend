@@ -301,6 +301,7 @@ function EditOccurrence() {
                                             });
                                         }}
                                         required={true}
+                                        multiline={field === 'occurrence_remarks'}
                                     />
                                 ))}
                             </Box>

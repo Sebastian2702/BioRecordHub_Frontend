@@ -97,11 +97,11 @@ const DataDisplay: React.FC<DataDisplayProps> = ({ label, value,id }) => {
     }
     else{
         return (
-            <Box display="flex" gap={1}>
-                <Typography sx={{ fontSize: FONT_SIZES.medium, color: COLORS.black,textShadow: '0px 4px 12px rgba(0,0,0,0.15)', }}>
+            <Box display="flex" flexDirection="column" gap={0.5} alignItems="flex-start">
+                <Typography sx={{ fontSize: FONT_SIZES.medium, fontWeight: 'bold', color: COLORS.primary,textShadow: '0px 4px 12px rgba(0,0,0,0.15)', }}>
                     {label}:
                 </Typography>
-                <Typography sx={{ fontSize: FONT_SIZES.medium, color: COLORS.primary, fontWeight: 'bold',textShadow: '0px 4px 12px rgba(0,0,0,0.15)', }}>
+                <Typography sx={{ fontSize: FONT_SIZES.small, color: COLORS.black,textShadow: '0px 4px 12px rgba(0,0,0,0.15)', marginLeft: '10px' }}>
                     {displayValue}
                 </Typography>
             </Box>

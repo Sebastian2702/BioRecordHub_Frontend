@@ -4,7 +4,7 @@ export const ROUTES = {
     dashboard: '/dashboard',
     nomenclature: '/nomenclature',
     bibliography: '/bibliography',
-    occurrences: '/occurrences',
+    occurrences: '/Occurrences',
     projects: '/projects',
     reports: '/reports',
     logout: '/logout',
@@ -20,8 +20,8 @@ export const ROUTES = {
     nomenclatureSearchResults: '/nomenclature/search_results',
     projectsId: '/projects/:id',
     projectsCreate: '/projects/new',
-    occurrenceCreate: '/occurrences/new',
-    occurrenceId: '/occurrences/:id',
+    occurrenceCreate: '/Occurrences/new',
+    occurrenceId: '/Occurrences/:id',
 }
 
 export const ADMIN_ROUTES = {
@@ -29,5 +29,5 @@ export const ADMIN_ROUTES = {
     bibliographyEdit: '/bibliography/edit/:id',
     nomenclatureEdit: '/nomenclature/edit/:id',
     projectsEdit: '/projects/edit/:id',
-    occurrencesEdit: '/occurrences/edit/:id',
+    occurrencesEdit: '/Occurrences/edit/:id',
 }

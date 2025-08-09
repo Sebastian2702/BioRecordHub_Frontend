@@ -104,7 +104,17 @@ export const occurrenceFieldHelpers = [
     { key: 'decimal_latitude', helperText: 'Latitude of the occurrence in decimal degrees' },
     { key: 'decimal_longitude', helperText: 'Longitude of the occurrence in decimal degrees' },
     { key: 'basis_of_record', helperText: 'Type of record (e.g., HumanObservation, Specimen, etc.)' },
-    { key: 'file', helperText: '.png, .jpg, .jpeg, .pdf, .docx, .xlsx; files here, or browse your computer' }
+    { key: 'file', helperText: '.png, .jpg, .jpeg, .pdf, .docx, .xlsx; files here, or browse your computer' },
+    { key: 'institution_code', helperText: 'Code of the institution where the record is stored' },
+    { key: 'collection_code', helperText: 'Code of the collection within the institution' },
+    { key: 'catalog_number', helperText: 'Unique identifier for the record in the collection' },
+    { key: 'recorded_by', helperText: 'Name of the person who recorded the occurrence' },
+    { key: 'identified_by', helperText: 'Name of the person who identified the occurrence' },
+    { key: 'date_identified', helperText: 'Date when the occurrence was identified' },
+    { key: 'occurrence_remarks', helperText: 'Remarks about the occurrence' },
+    { key: 'language', helperText: 'Language of the record' },
+    { key: 'license', helperText: 'License under which the record is shared' }
+
 ];
 
 
@@ -113,11 +123,23 @@ export const nomenclatureFieldKeys = [
 ]
 
 export const occurrenceFieldKeys = [
-    'scientific_name', 'event_date', 'country', 'locality', 'decimal_latitude', 'decimal_longitude', 'basis_of_record'
+    'scientific_name',
+    'event_date',
+    'country',
+    'locality',
+    'decimal_latitude',
+    'decimal_longitude',
+    'basis_of_record',
+    'institution_code',
+    'collection_code',
+    'catalog_number',
+    'recorded_by',
+    'identified_by',
+    'date_identified',
+    'occurrence_remarks',
+    'language',
+    'license',
 ]
 
-export const occurrenceGroupKeys = [
-    'geographic', 'event', 'occurrence', 'organism', 'identification', 'collection', 'dataset', 'record', 'location', 'other'
-]
 
 
