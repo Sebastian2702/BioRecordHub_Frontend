@@ -5,7 +5,7 @@ import getIcon from "../utils/getIconHelper.tsx";
 
 interface SideMenuButtonProps {
     url: string;
-    type: "Dashboard" | "Nomenclature" | "Bibliography" | "Occurrences" | "Projects" | "Reports" | "Logout" | "Admin";
+    type: "Dashboard" | "Nomenclature" | "Bibliography" | "Occurrences" | "Projects" | "Reports" | "Logout" | "Administrator";
     onClick?: () => void;
 }
 
@@ -36,7 +36,7 @@ const SideMenuButton: React.FC<SideMenuButtonProps> = ({ url, type, onClick }) =
                 '&:hover': {
                     backgroundColor: currentPage
                         ? darken(COLORS.secondary, 0.1)
-                        : 'rgba(255, 255, 255, 0.05)', // subtle glow
+                        : 'rgba(255, 255, 255, 0.05)',
                     boxShadow: 'none',
                 },
                 '&:focus, &:active, &.Mui-focusVisible': {
