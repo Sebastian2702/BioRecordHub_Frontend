@@ -1,12 +1,12 @@
 import { useAuth } from '../context/AuthContext';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { COLORS,BORDER } from '../constants/ui';
+import {COLORS, BORDER} from '../constants/ui';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../routes/frontendRoutes';
 import { capitalize } from "../utils/helperFunctions.ts";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import TopBarBreadcrumbs from "./TopBarBreadcrumbs.tsx";
 
 const Header = () => {
     const { user } = useAuth();
@@ -27,15 +27,11 @@ const Header = () => {
                 margin: '20px auto',
             }}
         >
+            <TopBarBreadcrumbs />
 
-            <Box>
-                <NotificationsIcon fontSize="large" />
-            </Box>
 
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <img src="/flag_USA.svg" alt="USA Flag" style={{ width: '40px', height: '30px' }} />
-                <Typography variant="body1">English</Typography>
                 <Box onClick={() => navigate(ROUTES.profile)} sx={{ cursor: 'pointer', marginLeft: '20px' }}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                         {user?.name || 'User Dashboard'}

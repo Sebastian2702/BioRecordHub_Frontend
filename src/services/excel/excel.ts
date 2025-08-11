@@ -13,7 +13,7 @@ export const ImportBibliographyExcel = async (
 
     try {
         setLoading(true);
-        const response = await api.post(EXCEL_ROUTES.bibliography, formData, {
+        const response = await api.post(EXCEL_ROUTES.bibliographyImport, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -41,7 +41,7 @@ export const ImportNomenclatureExcel = async (
 
     try {
         setLoading(true);
-        const response = await api.post(EXCEL_ROUTES.nomenclature, formData, {
+        const response = await api.post(EXCEL_ROUTES.nomenclatureImport, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },

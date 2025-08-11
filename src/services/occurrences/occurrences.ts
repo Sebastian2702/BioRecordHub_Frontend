@@ -1,5 +1,5 @@
 import api from '../../utils/axios.ts';
-import {OCCURRENCE_ROUTES, COOKIE_ROUTE, NOMENCLATURE_ROUTES} from "../../routes/apiRoutes.ts";
+import {OCCURRENCE_ROUTES, COOKIE_ROUTE, NOMENCLATURE_ROUTES, EXCEL_ROUTES} from "../../routes/apiRoutes.ts";
 import {ROUTES} from "../../routes/frontendRoutes.ts";
 
 export const GetOccurrences = async () => {
@@ -64,3 +64,37 @@ export const DeleteOccurrenceFile = async (occurrenceId: number, fileId: number)
         throw new Error(cutmsg);
     }
 }
+
+export const GetOccurrenceFile = async (occurrenceId: number, type: 'csv' | 'xlsx', setExportLoading: (loading: boolean)  => void, setError: (msg: string) => void ) => {
+    setExportLoading(true);
+    await api.get(COOKIE_ROUTE.csrf);
+    let route;
+    let fileExtension;
+
+    if (type === 'csv') {
+        route = OCCURRENCE_ROUTES.occurrenceGetCsv(occurrenceId);
+        fileExtension = 'csv';
+    } else {
+        route = EXCEL_ROUTES.occurrenceExportById(occurrenceId);
+        fileExtension = 'xlsx';
+    }
+    try{
+        const response = await api.get(route, { responseType: 'blob' });
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `occurrence_${occurrenceId}.${fileExtension}`);
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    }catch (error: any) {
+        setError("Error downloading file. Please try again later.");
+    }finally {
+        setExportLoading(false);
+    }
+
+
+};

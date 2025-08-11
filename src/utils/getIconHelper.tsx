@@ -16,7 +16,7 @@ const getIcon = (type: string) => {
         case "Projects": return <AnalyticsIcon sx={{  width: 'clamp(3rem, 1.5vw + 0.5rem, 5rem)', height: 'clamp(2.5rem, 1.5vw + 0.5rem, 4rem)',marginRight: '1rem'}}/>;
         case "Reports": return <StorageIcon sx={{  width: 'clamp(3rem, 1.5vw + 0.5rem, 5rem)', height: 'clamp(2.5rem, 1.5vw + 0.5rem, 4rem)',marginRight: '1rem'}}/>;
         case "Logout": return <LogoutIcon sx={{  width: 'clamp(3rem, 1.5vw + 0.5rem, 5rem)', height: 'clamp(2.5rem, 1.5vw + 0.5rem, 4rem)',marginRight: '1rem'}}/>;
-        case "Admin": return <AdminPanelSettingsIcon sx={{  width: 'clamp(3rem, 1.5vw + 0.5rem, 5rem)', height: 'clamp(2.5rem, 1.5vw + 0.5rem, 4rem)',marginRight: '1rem'}}/>;
+        case "Administrator": return <AdminPanelSettingsIcon sx={{  width: 'clamp(3rem, 1.5vw + 0.5rem, 5rem)', height: 'clamp(2.5rem, 1.5vw + 0.5rem, 4rem)',marginRight: '1rem'}}/>;
         default: return null;
     }
 };

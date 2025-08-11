@@ -56,7 +56,7 @@ const SideMenu = () => {
                 <SideMenuButton url={ROUTES.projects} type="Projects" onClick={() => {navigate(ROUTES.projects)}}/>
 
                 {isAdmin && (
-                    <SideMenuButton url={ROUTES.admin} type="Admin" onClick={() => navigate(ROUTES.admin)} />
+                    <SideMenuButton url={ROUTES.admin} type="Administrator" onClick={() => navigate(ROUTES.admin)} />
                 )}
 
                 <SideMenuButton url={ROUTES.logout} type="Logout" onClick={onLogoutClick}/>

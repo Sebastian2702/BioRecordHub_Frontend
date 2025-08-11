@@ -5,14 +5,15 @@ export const COLORS = {
     black: '#000000',
     edit: '#C8C81B',
     delete: '#EC1C24',
+    gray: '#A9A9A9',
 }
 
 export const FONT_SIZES = {
-    xsmall: '10px',
-    small: '15px',
-    medium: '20px',
-    large: '30px',
-    xlarge: '40px',
+    xsmall: '13px',
+    small: '18px',
+    medium: '23px',
+    large: '33px',
+    xlarge: '43px',
 }
 
 export const BORDER = {
