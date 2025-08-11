@@ -3,6 +3,8 @@ export const AUTH_ROUTES = {
     register: '/register',
     logout: '/logout',
     user: '/api/user',
+    resetPassword: 'api/user/password',
+    resetEmail: 'api/user/email',
 }
 
 export const COOKIE_ROUTE = {

@@ -7,7 +7,7 @@ export const register = async (data: {
     password: string;
     password_confirmation: string;
 }) => {
-    await api.get(COOKIE_ROUTE.csrf); // Required
+    await api.get(COOKIE_ROUTE.csrf);
     const response = await api.post(AUTH_ROUTES.register, data);
     return response.data;
 };
@@ -29,3 +29,15 @@ export const getUser = async () => {
 export const logout = async () => {
     await api.post(AUTH_ROUTES.logout);
 };
+
+export const resetPassword = async (data:any) => {
+    await api.get(COOKIE_ROUTE.csrf);
+    const response = await api.post(AUTH_ROUTES.resetPassword, data);
+    return response.data;
+}
+
+export const resetEmail = async (data:any) => {
+    await api.get(COOKIE_ROUTE.csrf);
+    const response = await api.post(AUTH_ROUTES.resetEmail, data);
+    return response.data;
+}
