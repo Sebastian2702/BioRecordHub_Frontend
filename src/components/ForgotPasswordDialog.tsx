@@ -12,6 +12,7 @@ import InputTextField from "./InputTextField.tsx";
 import {forgotPassword} from "../services/auth/auth.ts";
 import {toast, ToastContainer} from "react-toastify";
 import {formatLabel} from "../utils/helperFunctions.ts";
+import SaveIcon from '@mui/icons-material/Save';
 
 interface ForgotPasswordDialogProps {
     open: boolean;
@@ -96,7 +97,7 @@ const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({ open, onClo
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <StyledButton label={'Send'} color={'primary'} size={'medium'} onClick={handleSave} disabled={loading}/>
+                <StyledButton label={'Save'} color={'primary'} size={'medium'} onClick={handleSave} disabled={loading} icon={<SaveIcon/>}/>
             </DialogActions>
         </Dialog>
     )
