@@ -56,3 +56,7 @@ export const  OCCURRENCE_ROUTES = {
     occurrenceFile: (occurrenceId: number, fileId: number) => `/api/occurrence/${occurrenceId}/file/${fileId}`,
     occurrenceGetCsv: (occurrenceId: number) => `/api/occurrence/${occurrenceId}/export/csv`,
 }
+
+export const DASHBOARD_ROUTES = {
+    dashboard: '/api/dashboard',
+}
