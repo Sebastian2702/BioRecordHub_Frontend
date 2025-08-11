@@ -1,4 +1,6 @@
 import { ROUTES } from "../../routes/frontendRoutes.ts";
+import api from "../../utils/axios.ts";
+import {AUTH_ROUTES, COOKIE_ROUTE} from "../../routes/apiRoutes.ts";
 
 export const handleLogin = async ({
     email,
@@ -69,6 +71,8 @@ export const handleLogout = async ({
     contextLogout: () => Promise<void>;
 }) => {
     try {
+        await api.get(COOKIE_ROUTE.csrf);
+        await api.post(AUTH_ROUTES.first_login);
         await contextLogout();
         navigate(ROUTES.login);
     } catch (err) {

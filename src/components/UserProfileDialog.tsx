@@ -12,7 +12,7 @@ import Typography from "@mui/material/Typography";
 import {useAuth} from "../context/AuthContext.tsx";
 import {useState, useEffect} from "react";
 import InputTextField from "./InputTextField.tsx";
-import {resetEmail, resetPassword} from "../services/auth/auth.ts";
+import {resetEmail, resetPassword, firstLogin, resetPasswordToken} from "../services/auth/auth.ts";
 import {toast, ToastContainer} from "react-toastify";
 import SaveIcon from '@mui/icons-material/Save';
 import { useNavigate } from 'react-router-dom';
@@ -49,7 +49,7 @@ const UserProfileDialog: React.FC<UserProfileDialogProps> = ({ open, onClose }) 
         }
     }
 
-    const handleClose = () => {
+    const handleClose =  () => {
         setEditEmail(false);
         setEditPassword(false);
         onClose();
@@ -141,6 +141,11 @@ const UserProfileDialog: React.FC<UserProfileDialogProps> = ({ open, onClose }) 
                             <Typography variant="h6" sx={{color: COLORS.black}}>Name: <strong style={{color:COLORS.primary, fontWeight:'bold'}}>{user?.name}</strong></Typography>
                             <Typography variant="h6" sx={{color: COLORS.black}}>Email: <strong style={{color:COLORS.primary,fontWeight:'bold'}}>{user?.email}</strong></Typography>
                             <Typography variant="h6" sx={{color: COLORS.black}}>Role: <strong style={{color:COLORS.primary, fontWeight:'bold'}}>{formatLabel(user?.role)}</strong></Typography>
+                            {
+                                user?.first_login ? (
+                                    <Typography variant="h6" sx={{color: COLORS.black}}>Reset Password Token: <strong style={{color:COLORS.primary, fontWeight:'bold'}}>{user?.reset_password_token}</strong> (save this code in a safe place, will not be showed again)</Typography>
+                                ): (<></>)
+                            }
                         </>
                     </DialogContentText>
                 </DialogContent>

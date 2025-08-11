@@ -5,6 +5,9 @@ export const AUTH_ROUTES = {
     user: '/api/user',
     resetPassword: 'api/user/password',
     resetEmail: 'api/user/email',
+    forgotPassword: '/api/user/forgot-password',
+    first_login: '/api/user/first-login',
+    reset_password_token: 'api/user/reset-password-token',
 }
 
 export const COOKIE_ROUTE = {

@@ -41,3 +41,16 @@ export const resetEmail = async (data:any) => {
     const response = await api.post(AUTH_ROUTES.resetEmail, data);
     return response.data;
 }
+
+export const forgotPassword = async (data:any) => {
+    await api.get(COOKIE_ROUTE.csrf);
+    const response = await api.post(AUTH_ROUTES.forgotPassword, data);
+    return response.data;
+}
+
+
+export const resetPasswordToken = async (data:any) => {
+    await api.get(COOKIE_ROUTE.csrf);
+    const response = await api.post(AUTH_ROUTES.reset_password_token, data);
+    return response.data;
+}

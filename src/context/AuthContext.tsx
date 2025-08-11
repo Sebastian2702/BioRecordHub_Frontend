@@ -11,6 +11,8 @@ interface User {
     name: string;
     email: string;
     role: string;
+    first_login: boolean;
+    reset_password_token: string;
 }
 
 interface AuthContextType {
@@ -79,6 +81,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         logout,
         isAdmin: user?.role === 'admin',
         isManager: user?.role === 'manager',
+        isFirstLogin: user?.first_login,
+        reset_password_token : user?.reset_password_token || '',
         isAuthenticated: !!user,
     };
 

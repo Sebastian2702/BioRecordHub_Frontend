@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import {COLORS, BORDER} from '../constants/ui';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../routes/frontendRoutes';
 import { capitalize } from "../utils/helperFunctions.ts";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import TopBarBreadcrumbs from "./TopBarBreadcrumbs.tsx";
@@ -12,8 +11,8 @@ import { useState } from 'react';
 
 const Header = () => {
     const { user } = useAuth();
-    const navigate = useNavigate();
-    const [profileDialogOpen, setProfileDialogOpen] = useState(false);
+    const [profileDialogOpen, setProfileDialogOpen] = useState(user?.first_login);
+
 
     return (
         <Box
