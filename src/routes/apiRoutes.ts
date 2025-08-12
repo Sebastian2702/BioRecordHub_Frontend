@@ -38,6 +38,7 @@ export const EXCEL_ROUTES = {
     nomenclatureImport: '/api/excel_import/nomenclature',
     occurrenceExport: '/api/excel_export/occurrence',
     occurrenceExportById: (id: number) => `/api/excel_export/occurrence/${id}`,
+    exportData: (dataType: string) => `/api/excel_export/${dataType}`,
 }
 
 export const Admin_ROUTES = {

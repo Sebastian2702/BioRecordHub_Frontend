@@ -164,6 +164,7 @@ function Project() {
                                 dataType={"occurrence"}
                                 referenceId={data.id}
                                 setError={setError}
+                                exportData={false}
                             />
                         </Box>
                     ) : (

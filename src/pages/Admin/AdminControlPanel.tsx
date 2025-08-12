@@ -265,6 +265,7 @@ function AdminControlPanel() {
                                 trashCanButton={false}
                                 dataType={"users"}
                                 setError={setError}
+                                exportData={false}
                             />
                         </Box>
 
@@ -423,6 +424,7 @@ function AdminControlPanel() {
                                 trashCanButton={false}
                                 dataType={"occurrenceFields"}
                                 setError={setError}
+                                exportData={false}
                             />
                         </Box>
 
