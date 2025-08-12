@@ -12,7 +12,7 @@ import Typography from "@mui/material/Typography";
 import {useAuth} from "../context/AuthContext.tsx";
 import {useState, useEffect} from "react";
 import InputTextField from "./InputTextField.tsx";
-import {resetEmail, resetPassword, firstLogin, resetPasswordToken} from "../services/auth/auth.ts";
+import {resetEmail, resetPassword,} from "../services/auth/auth.ts";
 import {toast, ToastContainer} from "react-toastify";
 import SaveIcon from '@mui/icons-material/Save';
 import { useNavigate } from 'react-router-dom';
@@ -91,7 +91,7 @@ const UserProfileDialog: React.FC<UserProfileDialogProps> = ({ open, onClose }) 
                     draggable: true,
                     progress: undefined,
                 });
-                handleLogout({navigate, contextLogout});
+                handleLogout({navigate, contextLogout, isFirstLogin: user?.first_login});
 
             } catch (error) {
                 setLoading(false);
@@ -120,7 +120,7 @@ const UserProfileDialog: React.FC<UserProfileDialogProps> = ({ open, onClose }) 
                     draggable: true,
                     progress: undefined,
                 });
-                handleLogout({navigate, contextLogout});
+                handleLogout({navigate, contextLogout, isFirstLogin: user?.first_login});
             } catch (error) {
                 setLoading(false);
                 const msg = error.response.data.message;
@@ -143,7 +143,7 @@ const UserProfileDialog: React.FC<UserProfileDialogProps> = ({ open, onClose }) 
                             <Typography variant="h6" sx={{color: COLORS.black}}>Role: <strong style={{color:COLORS.primary, fontWeight:'bold'}}>{formatLabel(user?.role)}</strong></Typography>
                             {
                                 user?.first_login ? (
-                                    <Typography variant="h6" sx={{color: COLORS.black}}>Reset Password Token: <strong style={{color:COLORS.primary, fontWeight:'bold'}}>{user?.reset_password_token}</strong> (save this code in a safe place, will not be showed again)</Typography>
+                                    <Typography variant="h6" sx={{color: COLORS.black}}>Forgot Password Token: <strong style={{color:COLORS.primary, fontWeight:'bold'}}>{user?.reset_password_token}</strong> (save this code in a safe place, will not be showed again)</Typography>
                                 ): (<></>)
                             }
                         </>

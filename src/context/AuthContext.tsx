@@ -28,6 +28,7 @@ interface AuthContextType {
     logout: () => Promise<void>;
     isAdmin: boolean;
     isManager: boolean;
+    isFirstLogin: boolean;
     isAuthenticated: boolean;
 }
 
