@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { COLORS,BORDER } from '../../constants/ui.ts';
 import SearchFilter from "../../components/SearchFilter.tsx";
 import {useEffect, useState} from "react";
-import RefreshButton from "../../components/RefreshButton.tsx";
+import ClearFiltersButton from "../../components/ClearFiltersButton.tsx";
 import StyledButton from "../../components/StyledButton.tsx";
 import DataTable from "../../components/DataTable.tsx";
 import CircularProgress from '@mui/material/CircularProgress';
@@ -18,7 +18,6 @@ import { GetProject } from "../../services/project/project.ts";
 
 function Projects() {
     const [data, setData] = useState<any[]>([]);
-    const [refresh, setRefresh] = useState(false);
     const [dropdownValue, setDropdownValue] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -29,8 +28,9 @@ function Projects() {
         setSearchValue(e.target.value);
     };
 
-    const handleRefresh = () => {
-        setRefresh(prev => !prev);
+    const handleClearFilters = () => {
+        setSearchValue('');
+        setDropdownValue('');
     };
 
     const handleDropdownChange = (event: SelectChangeEvent) => {
@@ -51,7 +51,7 @@ function Projects() {
 
     useEffect(() => {
         fetchData();
-    }, [refresh]);
+    }, []);
 
     useEffect(() => {
         if (error) {
@@ -67,6 +67,20 @@ function Projects() {
             setError("");
         }
     }, [error]);
+
+    const filteredData = data.filter(item => {
+        const searchLower = searchValue.toLowerCase();
+        const matchesSearch =
+            item.title?.toLowerCase().includes(searchLower) ||
+            item.advisor?.toLowerCase().includes(searchLower) ||
+            item.department?.toLowerCase().includes(searchLower);
+
+        const matchesType = dropdownValue
+            ? item.research_type === dropdownValue
+            : true;
+
+        return matchesSearch && matchesType;
+    });
 
     return(
         <Box sx={{
@@ -84,10 +98,10 @@ function Projects() {
                     <SearchFilter value={searchValue} onChange={handleSearchChange} label={"Search for title, advisor name or department name"}/>
                 </Box>
                 <Box sx={{ flex: 1, minWidth: '150px' }}>
-                    <DropdownInput value={dropdownValue} options={dropdownProjectOptions} onChange={handleDropdownChange} label={"Type"} filter={true}/>
+                    <DropdownInput value={dropdownValue} options={dropdownProjectOptions} onChange={handleDropdownChange} label={"Research Type"} filter={true}/>
                 </Box>
                 <Box sx={{ flexShrink: 0 }}>
-                    <RefreshButton onClick={handleRefresh} />
+                    <ClearFiltersButton onClick={handleClearFilters} />
                 </Box>
                 <Box sx={{ flexShrink: 0, minWidth: '150px'}}>
                     <StyledButton label={'New Entry'} onClick={() => {navigate('/projects/new')}} color={'primary'} size={'medium'} icon={<AddIcon/>}/>
@@ -100,7 +114,7 @@ function Projects() {
                         </Box>
                     ):
                     <DataTable
-                        data={data}
+                        data={filteredData}
                         columns={[
                             { id: 'title', label: 'Title' },
                             { id: 'research_type', label: 'Research Type' },

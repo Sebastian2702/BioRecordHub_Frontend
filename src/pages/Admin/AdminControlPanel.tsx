@@ -15,6 +15,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import StyledButton from "../../components/StyledButton.tsx";
 import AddIcon from '@mui/icons-material/Add';
 import {unformatLabel} from "../../utils/helperFunctions.ts";
+import ClearFiltersButton from "../../components/ClearFiltersButton.tsx";
 
 function AdminControlPanel() {
     const [loading, setLoading] = useState(true);
@@ -22,8 +23,8 @@ function AdminControlPanel() {
     const [userSearch, setUserSearch] = useState('');
     const [roleFilter, setRoleFilter] = useState('');
     const [fildSearch, setFieldSearch] = useState('');
-    const [mandatoryFilter, setMandatoryFilter] = useState('');
-    const [activeFilter, setActiveFilter] = useState('');
+    const [mandatoryFilter, setMandatoryFilter] = useState<boolean>(null);
+    const [activeFilter, setActiveFilter] = useState<boolean>(null);
     const [infoUsersDialogOpen, setInfoUsersDialogOpen] = useState(false);
     const [newOccurrenceFieldOpen, setNewOccurrenceFieldOpen] = useState(false);
     const [users, setUsers] = useState<any[]>([]);
@@ -151,6 +152,46 @@ function AdminControlPanel() {
         }
     }, [error]);
 
+    const handleClearFiltersUsers = () => {
+        setUserSearch('');
+        setRoleFilter('');
+    }
+
+    const handleClearFiltersFields = () => {
+        setFieldSearch('');
+        setMandatoryFilter(null);
+        setActiveFilter(null);
+    }
+
+    const filteredUsersData = users.filter(item => {
+        const searchLower = userSearch.toLowerCase();
+        const matchesSearch =
+            item.name?.toLowerCase().includes(searchLower);
+
+        const matchesType = roleFilter
+            ? item.role === roleFilter
+            : true;
+
+        return matchesSearch && matchesType;
+    });
+
+    const filteredFields = fields.filter(item => {
+        const searchLower = fildSearch.toLowerCase();
+        const matchesSearch =
+            item.name?.toLowerCase().includes(searchLower) ||
+            item.label?.toLowerCase().includes(searchLower);
+
+        const matchesMandatory = mandatoryFilter !== null
+            ? item.is_required === mandatoryFilter
+            : true;
+
+        const matchesActive = activeFilter !== null
+            ? item.is_active === activeFilter
+            : true;
+
+        return matchesSearch && matchesMandatory && matchesActive;
+    });
+
     return(
         <Box sx={{
             height: 'calc(100vh - 150px)',
@@ -236,6 +277,18 @@ function AdminControlPanel() {
                                         filter={true}
                                     />
                                 </Box>
+                                <Box
+                                    sx={{
+                                        flex: 1,
+                                        minWidth: {
+                                            xs: '100%',
+                                            sm: '50px',
+                                            md: '50px',
+                                        },
+                                    }}
+                                >
+                                    <ClearFiltersButton onClick={handleClearFiltersUsers}/>
+                                </Box>
 
                                 <InfoIcon
                                     sx={{
@@ -252,7 +305,7 @@ function AdminControlPanel() {
                         </Box>
                         <Box sx={{overflowY: 'auto', padding: '20px'}}>
                             <DataTable
-                                data={users}
+                                data={filteredUsersData}
                                 columns=
                                     {[
                                         { id: 'name', label: 'Name' },
@@ -280,7 +333,7 @@ function AdminControlPanel() {
                     color: COLORS.primary,
                     borderRadius: BORDER.radius,
                     margin: 'auto',
-                    paddingTop: "20px",
+                    padding: '20px 0px'
 
                 }}
             >
@@ -384,6 +437,18 @@ function AdminControlPanel() {
                                         filter={true}
                                     />
                                 </Box>
+                                <Box
+                                    sx={{
+                                        flex: 1,
+                                        minWidth: {
+                                            xs: '100%',
+                                            sm: '50px',
+                                            md: '50px',
+                                        },
+                                    }}
+                                >
+                                    <ClearFiltersButton onClick={handleClearFiltersFields}/>
+                                </Box>
 
                                 <Box
                                     sx={{
@@ -408,7 +473,7 @@ function AdminControlPanel() {
                         </Box>
                         <Box sx={{overflowY: 'auto', padding: '20px',}}>
                             <DataTable
-                                data={fields}
+                                data={filteredFields}
                                 columns=
                                     {[
                                         { id: 'name', label: 'Name' },

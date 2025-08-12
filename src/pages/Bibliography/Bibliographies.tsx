@@ -4,7 +4,7 @@ import { COLORS,BORDER } from '../../constants/ui.ts';
 import SearchFilter from "../../components/SearchFilter.tsx";
 import {useEffect, useState} from "react";
 import DateInput from "../../components/DateInput.tsx";
-import RefreshButton from "../../components/RefreshButton.tsx";
+import ClearFiltersButton from "../../components/ClearFiltersButton.tsx";
 import NewEntryButton from "../../components/NewEntryButton.tsx";
 import DataTable from "../../components/DataTable.tsx";
 import CircularProgress from '@mui/material/CircularProgress';
@@ -16,7 +16,6 @@ function Bibliographies(){
     const [searchValue, setSearchValue] = useState('');
     const [dateInput, setDateInput] = useState<Dayjs | null>(null);
     const [data, setData] = useState<any[]>([]);
-    const [refresh, setRefresh] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -24,9 +23,11 @@ function Bibliographies(){
         setSearchValue(e.target.value);
     };
 
-    const handleRefresh = () => {
-        setRefresh(prev => !prev);
+    const handleClearFilters = () => {
+        setSearchValue('');
+        setDateInput(null);
     };
+
 
     const fetchData = async () => {
         try {
@@ -42,7 +43,7 @@ function Bibliographies(){
 
     useEffect(() => {
         fetchData();
-    }, [refresh]);
+    }, []);
 
     useEffect(() => {
         if (error) {
@@ -59,7 +60,19 @@ function Bibliographies(){
         }
     }, [error]);
 
+    const filteredData = data.filter(item => {
+        const searchLower = searchValue.toLowerCase();
+        const matchesSearch =
+            item.title?.toLowerCase().includes(searchLower) ||
+            item.author?.toLowerCase().includes(searchLower) ||
+            item.publication_title?.toLowerCase().includes(searchLower);
 
+        const matchesDate = dateInput
+            ? item.publication_year === dateInput.year()
+            : true;
+
+        return matchesSearch && matchesDate;
+    });
 
     return (
         <Box sx={{
@@ -74,13 +87,13 @@ function Bibliographies(){
             <ToastContainer />
             <Box display="flex" padding={"0px 10px"} gap={2} flexWrap="wrap">
                 <Box sx={{ flex: 2, minWidth: '200px' }}>
-                    <SearchFilter value={searchValue} onChange={handleSearchChange} label={"Search for key, title and author"}/>
+                    <SearchFilter value={searchValue} onChange={handleSearchChange} label={"Search for title, author and publication"}/>
                 </Box>
                 <Box sx={{ flex: 1, minWidth: '160px'}}>
-                    <DateInput label={"Year"} type={["year"]} value={dateInput} onChange={(e)=>setDateInput(e.target.value)} />
+                    <DateInput label={"Year"} type={["year"]} value={dateInput} onChange={(e)=>setDateInput(e)} />
                 </Box>
                 <Box sx={{ flexShrink: 0 }}>
-                    <RefreshButton onClick={handleRefresh} />
+                    <ClearFiltersButton onClick={handleClearFilters} />
                 </Box>
                 <Box sx={{ flexShrink: 0, minWidth: '150px' }}>
                     <NewEntryButton manualEntryLink={"/bibliography/new"} fileUploadLink={"/bibliography/new_file_upload"} />
@@ -93,7 +106,7 @@ function Bibliographies(){
                     </Box>
                 ):
                     <DataTable
-                        data={data}
+                        data={filteredData}
                         columns={[
                             { id: 'author', label: 'Author' },
                             { id: 'publication_year', label: 'Publication Year' },

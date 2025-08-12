@@ -9,10 +9,10 @@ import { useAuth} from "../context/AuthContext.tsx";
 const SideMenu = () => {
 
     const navigate = useNavigate();
-    const { isAdmin, logout: contextLogout, user } = useAuth();
+    const { isAdmin, logout: contextLogout } = useAuth();
 
     const onLogoutClick = () => {
-        handleLogout({ navigate, contextLogout, isFirstLogin: user?.first_login });
+        handleLogout({ navigate, contextLogout});
     }
 
     return (

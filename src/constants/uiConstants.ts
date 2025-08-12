@@ -24,20 +24,19 @@ export const dropdownProjectOptions: { display: string; value: string }[] = [
 
 
 export const dropdownFilterAdminUserOptions: { display: string; value: string }[] = [
-    { display: "admin", value: "admin" },
-    { display: "Manager", value: "Manager" },
-    { display: "Biologist", value: "user" },
+    { display: "Manager", value: "manager" },
+    { display: "User", value: "user" },
 
 ]
 
-export const dropdownFilterAdminMandatoryFieldsOptions: { display: string; value: string }[] = [
-    { display: "Mandatory", value: "true" },
-    { display: "Optional", value: "false" },
+export const dropdownFilterAdminMandatoryFieldsOptions: { display: string; value: boolean }[] = [
+    { display: "Required", value: true },
+    { display: "Optional", value: false },
 ]
 
-export const dropdownFilterAdminFiledStatusOptions: { display: string; value: string }[] = [
-    { display: "Active", value: "true" },
-    { display: "Inactive", value: "false" },
+export const dropdownFilterAdminFiledStatusOptions: { display: string; value: boolean }[] = [
+    { display: "Active", value: true },
+    { display: "Inactive", value: false },
 ]
 
 export const dropdownEditUserRoleOptions: { display: string; value: string }[] = [
