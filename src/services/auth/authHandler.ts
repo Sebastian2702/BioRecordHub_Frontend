@@ -66,16 +66,10 @@ export const handleRegister = async ({
 export const handleLogout = async ({
     navigate,
     contextLogout,
-    isFirstLogin = false,
    }: {
     navigate: (url: string) => void;
     contextLogout: () => Promise<void>;
-    isFirstLogin: boolean;
 }) => {
-    if (isFirstLogin) {
-        await api.get(COOKIE_ROUTE.csrf);
-        await api.post(AUTH_ROUTES.first_login);
-    }
     try {
         await contextLogout();
         navigate(ROUTES.login);

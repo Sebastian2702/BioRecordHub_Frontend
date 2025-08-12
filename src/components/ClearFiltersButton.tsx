@@ -2,14 +2,14 @@ import Button from '@mui/material/Button';
 import { COLORS, BORDER } from '../constants/ui.ts';
 import { darken } from '@mui/system';
 import Box from "@mui/material/Box";
-import RefreshIcon from '@mui/icons-material/Refresh';
+import ClearIcon from '@mui/icons-material/Clear';
 
-interface RegisterInputCardProps {
+interface ClearFiltersButtonProps {
     onClick: () => void;
 }
 
 
-const RegisterInputCard: React.FC<RegisterInputCardProps> = ({ onClick }) => {
+const ClearFiltersButton: React.FC<ClearFiltersButtonProps> = ({ onClick }) => {
     return (
         <Box
             sx={{ display: 'flex', flexDirection: 'row', gap:'10px', alignItems: 'center', height: '55px', paddingTop: '8px', width: '100%' }}
@@ -39,11 +39,11 @@ const RegisterInputCard: React.FC<RegisterInputCardProps> = ({ onClick }) => {
                     },
                 }}
             >
-                <RefreshIcon sx={{ fontSize: '38px' }} />
+                <ClearIcon sx={{ fontSize: '38px' }} />
             </Button>
         </Box>
 
     );
 }
 
-export default RegisterInputCard;
+export default ClearFiltersButton;

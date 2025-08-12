@@ -18,6 +18,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useNavigate } from 'react-router-dom';
 import {handleLogout} from "../services/auth/authHandler.ts";
 
+
 interface UserProfileDialogProps {
     open: boolean;
     onClose: () => void;
@@ -50,9 +51,11 @@ const UserProfileDialog: React.FC<UserProfileDialogProps> = ({ open, onClose }) 
     }
 
     const handleClose =  () => {
+        setLoading(true);
         setEditEmail(false);
         setEditPassword(false);
         onClose();
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -91,7 +94,7 @@ const UserProfileDialog: React.FC<UserProfileDialogProps> = ({ open, onClose }) 
                     draggable: true,
                     progress: undefined,
                 });
-                handleLogout({navigate, contextLogout, isFirstLogin: user?.first_login});
+                handleLogout({navigate, contextLogout});
 
             } catch (error) {
                 setLoading(false);
@@ -120,7 +123,7 @@ const UserProfileDialog: React.FC<UserProfileDialogProps> = ({ open, onClose }) 
                     draggable: true,
                     progress: undefined,
                 });
-                handleLogout({navigate, contextLogout, isFirstLogin: user?.first_login});
+                handleLogout({navigate, contextLogout});
             } catch (error) {
                 setLoading(false);
                 const msg = error.response.data.message;
@@ -137,16 +140,23 @@ const UserProfileDialog: React.FC<UserProfileDialogProps> = ({ open, onClose }) 
                 <DialogContent>
                     <DialogContentText>
                         <ToastContainer />
-                        <>
-                            <Typography variant="h6" sx={{color: COLORS.black}}>Name: <strong style={{color:COLORS.primary, fontWeight:'bold'}}>{user?.name}</strong></Typography>
-                            <Typography variant="h6" sx={{color: COLORS.black}}>Email: <strong style={{color:COLORS.primary,fontWeight:'bold'}}>{user?.email}</strong></Typography>
-                            <Typography variant="h6" sx={{color: COLORS.black}}>Role: <strong style={{color:COLORS.primary, fontWeight:'bold'}}>{formatLabel(user?.role)}</strong></Typography>
-                            {
-                                user?.first_login ? (
-                                    <Typography variant="h6" sx={{color: COLORS.black}}>Forgot Password Token: <strong style={{color:COLORS.primary, fontWeight:'bold'}}>{user?.reset_password_token}</strong> (save this code in a safe place, will not be showed again)</Typography>
-                                ): (<></>)
-                            }
-                        </>
+                        {
+                            loading ? (
+                                    <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100px'}}>
+                                        <CircularProgress />
+                                    </Box>
+                                ) :
+                                    <>
+                                        <Typography variant="h6" sx={{color: COLORS.black}}>Name: <strong style={{color:COLORS.primary, fontWeight:'bold'}}>{user?.name}</strong></Typography>
+                                        <Typography variant="h6" sx={{color: COLORS.black}}>Email: <strong style={{color:COLORS.primary,fontWeight:'bold'}}>{user?.email}</strong></Typography>
+                                        <Typography variant="h6" sx={{color: COLORS.black}}>Role: <strong style={{color:COLORS.primary, fontWeight:'bold'}}>{formatLabel(user?.role)}</strong></Typography>
+                                        {
+                                            user?.first_login ? (
+                                                <Typography variant="h6" sx={{color: COLORS.black}}>Forgot Password Token: <strong style={{color:COLORS.primary, fontWeight:'bold'}}>{user?.reset_password_token}</strong> (save this code in a safe place, when you click on the button close this token will not be showed again)</Typography>
+                                            ): (<></>)
+                                        }
+                                    </>
+                        }
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions sx={{display: 'flex', justifyContent: 'space-between', padding: '0 20px', marginBottom: '20px'}}>

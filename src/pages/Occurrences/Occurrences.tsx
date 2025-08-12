@@ -2,22 +2,20 @@ import { Box } from "@mui/material";
 import { COLORS,BORDER } from '../../constants/ui.ts';
 import SearchFilter from "../../components/SearchFilter.tsx";
 import {useEffect, useState} from "react";
-import RefreshButton from "../../components/RefreshButton.tsx";
+import ClearFiltersButton from "../../components/ClearFiltersButton.tsx";
 import StyledButton from "../../components/StyledButton.tsx";
 import DataTable from "../../components/DataTable.tsx";
 import CircularProgress from '@mui/material/CircularProgress';
 import {toast, ToastContainer} from "react-toastify";
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate} from "react-router-dom";
-import DropdownInput from "../../components/DropdownInput.tsx";
-import { SelectChangeEvent } from '@mui/material/Select';
-import {dropdownProjectOptions} from "../../constants/uiConstants.ts";
 import { GetOccurrences } from "../../services/occurrences/occurrences.ts";
+import DateInput from "../../components/DateInput.tsx";
+import {Dayjs} from "dayjs";
 
 function Occurrences() {
     const [data, setData] = useState<any[]>([]);
-    const [refresh, setRefresh] = useState(false);
-    const [dropdownValue, setDropdownValue] = useState('');
+    const [dateInput, setDateInput] = useState<Dayjs | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [searchValue, setSearchValue] = useState('');
@@ -27,13 +25,11 @@ function Occurrences() {
         setSearchValue(e.target.value);
     };
 
-    const handleRefresh = () => {
-        setRefresh(prev => !prev);
+    const handleClearFilters = () => {
+        setSearchValue('');
+        setDateInput(null);
     };
 
-    const handleDropdownChange = (event: SelectChangeEvent) => {
-        setDropdownValue(event.target.value);
-    };
 
     const fetchData = async () => {
         try {
@@ -49,7 +45,7 @@ function Occurrences() {
 
     useEffect(() => {
         fetchData();
-    }, [refresh]);
+    }, []);
 
     useEffect(() => {
         if (error) {
@@ -66,6 +62,19 @@ function Occurrences() {
         }
     }, [error]);
 
+    const filteredData = data.filter(item => {
+        const searchLower = searchValue.toLowerCase();
+        const matchesSearch =
+            item.scientific_name?.toLowerCase().includes(searchLower) ||
+            item.locality?.toLowerCase().includes(searchLower);
+
+        const matchesDate = dateInput
+            ? item.event_date === dateInput.format('YYYY-MM-DD')
+            : true;
+
+        return matchesSearch && matchesDate;
+    });
+
     return (
         <Box sx={{
             width: '97%',
@@ -81,8 +90,11 @@ function Occurrences() {
                 <Box sx={{ flex: 2, minWidth: '200px' }}>
                     <SearchFilter value={searchValue} onChange={handleSearchChange} label={"Search for scientific name or locality"}/>
                 </Box>
+                <Box sx={{ flex: 1, minWidth: '160px'}}>
+                    <DateInput label={"Event Date"} type={['day', 'month', 'year']} value={dateInput} onChange={(e)=>setDateInput(e)} />
+                </Box>
                 <Box sx={{ flexShrink: 0 }}>
-                    <RefreshButton onClick={handleRefresh} />
+                    <ClearFiltersButton onClick={handleClearFilters} />
                 </Box>
                 <Box sx={{ flexShrink: 0, minWidth: '150px'}}>
                     <StyledButton label={'New Entry'} onClick={() => {navigate('/occurrences/new')}} color={'primary'} size={'medium'} icon={<AddIcon/>}/>
@@ -95,7 +107,7 @@ function Occurrences() {
                     </Box>
                 ):
                     <DataTable
-                        data={data}
+                        data={filteredData}
                         columns={[
                             { id: 'scientific_name', label: 'Scientific Name' },
                             { id: 'event_date', label: 'Event Date' },
