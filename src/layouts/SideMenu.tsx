@@ -6,14 +6,13 @@ import { ROUTES } from "../routes/frontendRoutes.ts";
 import { useNavigate } from "react-router-dom";
 import {handleLogout} from "../services/auth/authHandler.ts";
 import { useAuth} from "../context/AuthContext.tsx";
-
 const SideMenu = () => {
 
     const navigate = useNavigate();
-    const { isAdmin, logout: contextLogout } = useAuth();
+    const { isAdmin, logout: contextLogout, user } = useAuth();
 
     const onLogoutClick = () => {
-        handleLogout({navigate, contextLogout});
+        handleLogout({ navigate, contextLogout, isFirstLogin: user?.first_login });
     }
 
     return (

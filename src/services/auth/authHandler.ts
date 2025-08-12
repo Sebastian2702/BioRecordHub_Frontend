@@ -1,4 +1,6 @@
 import { ROUTES } from "../../routes/frontendRoutes.ts";
+import api from "../../utils/axios.ts";
+import {AUTH_ROUTES, COOKIE_ROUTE} from "../../routes/apiRoutes.ts";
 
 export const handleLogin = async ({
     email,
@@ -64,10 +66,16 @@ export const handleRegister = async ({
 export const handleLogout = async ({
     navigate,
     contextLogout,
+    isFirstLogin = false,
    }: {
     navigate: (url: string) => void;
     contextLogout: () => Promise<void>;
+    isFirstLogin: boolean;
 }) => {
+    if (isFirstLogin) {
+        await api.get(COOKIE_ROUTE.csrf);
+        await api.post(AUTH_ROUTES.first_login);
+    }
     try {
         await contextLogout();
         navigate(ROUTES.login);
@@ -75,3 +83,9 @@ export const handleLogout = async ({
         console.error("Logout error:", err);
     }
 };
+
+export const handleFirstLogin = async () => {
+    await api.get(COOKIE_ROUTE.csrf);
+    const response = await api.post(AUTH_ROUTES.first_login);
+    return response.data;
+}

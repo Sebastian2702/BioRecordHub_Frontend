@@ -3,14 +3,16 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import {COLORS, BORDER} from '../constants/ui';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../routes/frontendRoutes';
 import { capitalize } from "../utils/helperFunctions.ts";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import TopBarBreadcrumbs from "./TopBarBreadcrumbs.tsx";
+import UserProfileDialog from "./UserProfileDialog.tsx";
+import { useState } from 'react';
 
 const Header = () => {
     const { user } = useAuth();
-    const navigate = useNavigate();
+    const [profileDialogOpen, setProfileDialogOpen] = useState(user?.first_login);
+
 
     return (
         <Box
@@ -27,12 +29,13 @@ const Header = () => {
                 margin: '20px auto',
             }}
         >
+            <UserProfileDialog open={profileDialogOpen} onClose={() => setProfileDialogOpen(false)} />
             <TopBarBreadcrumbs />
 
 
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Box onClick={() => navigate(ROUTES.profile)} sx={{ cursor: 'pointer', marginLeft: '20px' }}>
+                <Box onClick={() => setProfileDialogOpen(true)} sx={{ cursor: 'pointer', marginLeft: '20px' }}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                         {user?.name || 'User Dashboard'}
                     </Typography>
@@ -44,7 +47,9 @@ const Header = () => {
                     sx={{
                         width: 'clamp(3rem, 1.5vw + 0.5rem, 5rem)',
                         height: 'clamp(4rem, 2vw + 0.5rem, 5rem)',
+                        cursor: 'pointer'
                     }}
+                    onClick={() => setProfileDialogOpen(true)}
                 />
             </Box>
         </Box>
