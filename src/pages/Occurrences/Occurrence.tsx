@@ -234,7 +234,6 @@ function Occurrences() {
                                     dataType={"occurrenceNomenclature"}
                                     referenceId={data.id}
                                     setError={setError}
-                                    exportData={false}
                                 />
                             </Box>
                         ) : (
@@ -266,7 +265,6 @@ function Occurrences() {
                                     dataType={"occurrenceProject"}
                                     referenceId={data.id}
                                     setError={setError}
-                                    exportData={false}
                                 />
                             </Box>
                         ) : (

@@ -144,7 +144,6 @@ function Bibliography() {
                                 dataType={"bibliographyNomenclature"}
                                 referenceId={data.id}
                                 setError={setError}
-                                exportData={false}
                             />
                         </Box>
                     ) : (

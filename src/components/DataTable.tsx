@@ -253,8 +253,25 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
             setError("No rows selected for export.");
             return;
         }
-        console.log(selectedRows);
-        await ExportDataToExcel(selectedRows, dataType, setError, setLoadingExport);
+        let type;
+        switch (dataType) {
+            case 'occurrenceNomenclature':
+                 type = 'nomenclature';
+                break;
+            case 'occurrenceProject':
+                type = 'projects';
+                break;
+            case 'nomenclatureBibliography':
+                type = 'bibliography';
+                break;
+            case 'bibliographyNomenclature':
+                type = 'nomenclature';
+                break;
+            default:
+                type = dataType;
+                break;
+        }
+        await ExportDataToExcel(selectedRows, type, setError, setLoadingExport);
     }
 
     const deleteDialogContent = (
