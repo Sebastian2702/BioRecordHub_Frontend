@@ -56,3 +56,31 @@ export const ImportNomenclatureExcel = async (
         return [];
     }
 };
+
+export const ExportDataToExcel = async (ids: number[],
+                                        dataType: 'nomenclature' | 'bibliography' | 'occurrence' | 'projects',
+                                        setError: (msg: string) => void,
+                                        setLoading: (loading: boolean) => void,) => {
+    await api.get(COOKIE_ROUTE.csrf);
+    setLoading(true)
+    try {
+        const response = await api.post(EXCEL_ROUTES.exportData(dataType), { ids }, {
+            responseType: 'blob',
+        });
+        setLoading(false);
+
+        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${dataType}_export.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (err: any) {
+        setLoading(false);
+        const msg = err.response?.data?.message || 'An error occurred while exporting data to Excel.';
+        setError(msg);
+        console.error("Error exporting data to Excel:", err);
+    }
+}

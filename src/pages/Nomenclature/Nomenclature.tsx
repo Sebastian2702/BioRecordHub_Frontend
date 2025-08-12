@@ -209,6 +209,7 @@ function Nomenclature() {
                                                          dataType={"occurrence"}
                                                          referenceId={data.id}
                                                          setError={setError}
+                                                         exportData={false}
                                                      />
                                                  </Box>
                                              }

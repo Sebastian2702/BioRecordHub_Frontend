@@ -19,7 +19,8 @@ import Box from '@mui/material/Box';
 import Typography from "@mui/material/Typography";
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
-import {dateTimePickerTabsClasses} from "@mui/x-date-pickers";
+import Checkbox from '@mui/material/Checkbox';
+import { ExportDataToExcel } from '../services/excel/excel.ts';
 
 
 interface DataTableProps {
@@ -32,10 +33,11 @@ interface DataTableProps {
     viewLink?: string;
     dataType: string;
     referenceId?: number;
-    setError: (msg: string) => void
+    setError: (msg: string) => void;
+    exportData?: boolean;
 }
 
-const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewButton, viewLink, deleteButton, trashCanButton, dataType, referenceId, setError }) => {
+const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewButton, viewLink, deleteButton, trashCanButton, dataType, referenceId, setError, exportData = true }) => {
     const [loadingId, setLoadingId] = useState<number | null>(null);
     const { isAdmin, isManager } = useAuth();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -55,6 +57,26 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
         is_required: false,
         is_active: false,
     });
+    const [selectedRows, setSelectedRows] = useState<number[]>([]);
+    const [loaddingExport, setLoadingExport] = useState(false);
+
+    const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.checked) {
+            const allIds = data.map(row => row.id);
+            setSelectedRows(allIds);
+        } else {
+            setSelectedRows([]);
+        }
+    };
+
+    const handleSelectRow = (id: number) => {
+        setSelectedRows(prev =>
+            prev.includes(id) ? prev.filter(rowId => rowId !== id) : [...prev, id]
+        );
+    };
+
+    const isAllSelected = data.length > 0 && selectedRows.length === data.length;
+    const isIndeterminate = selectedRows.length > 0 && selectedRows.length < data.length;
 
     const handleDeleteDialogClose = () => {
         setDeleteDialogOpen(false);
@@ -226,6 +248,15 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
         }
     }
 
+    const handleExport = async () => {
+        if (selectedRows.length === 0) {
+            setError("No rows selected for export.");
+            return;
+        }
+        console.log(selectedRows);
+        await ExportDataToExcel(selectedRows, dataType, setError, setLoadingExport);
+    }
+
     const deleteDialogContent = (
         <Box>
             <Typography variant="body1">
@@ -277,6 +308,21 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                 <Table stickyHeader>
                     <TableHead sx={{width:'100%'}}>
                         <TableRow>
+                            {
+                                exportData ? (
+                                    <TableCell padding="checkbox" sx={{ borderBottom: `2px solid ${COLORS.primary}` }}>
+                                        <Checkbox
+                                            indeterminate={isIndeterminate}
+                                            checked={isAllSelected}
+                                            onChange={handleSelectAll}
+                                            inputProps={{ 'aria-label': 'select all rows' }}
+                                        />
+                                    </TableCell>
+                                    )
+                                    :
+                                    <TableCell sx={{ borderBottom: `2px solid ${COLORS.primary}` }} />
+                            }
+
                             {columns.map((column) => (
                                 <TableCell key={column.id} sx={{ fontWeight: 'bold', color: COLORS.primary, borderBottom: `2px solid ${COLORS.primary}`  }} align={'center'}>
                                     {column.label}
@@ -296,6 +342,18 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                     <TableBody>
                         {data.map((row, index) =>  (
                             <TableRow key={index}>
+                                <TableCell padding="checkbox" sx={{ borderBottom: `2px solid ${COLORS.primary}` }}>
+                                    {
+                                        exportData && (
+                                            <Checkbox
+                                                checked={selectedRows.includes(row.id)}
+                                                onChange={() => handleSelectRow(row.id)}
+                                                inputProps={{ 'aria-label': `select row ${row.id}` }}
+                                            />
+                                        )
+                                    }
+
+                                </TableCell>
                                 {columns.map((column) => (
                                     <TableCell
                                         key={column.id}
@@ -366,7 +424,29 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                         ))}
                     </TableBody>
                 </Table>
+                {
+                    loaddingExport ? (
+                        <Box display={'flex'} justifyContent={'center'} marginTop={2}>
+                            <CircularProgress />
+                        </Box>
+                    ) :
+                    exportData && (
+                        <Box margin={2} display={'flex'} justifyContent={'flex-end'}>
+                            <StyledButton
+                                label="Export Selected"
+                                color="primary"
+                                size="medium"
+                                onClick={() => {
+                                    handleExport()
+                                }}
+                                disabled={selectedRows.length === 0}
+                            />
+                        </Box>
+                    )
+                }
+
             </TableContainer>
+
         </Box>
 
     );
