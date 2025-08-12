@@ -198,6 +198,7 @@ function Dashboard () {
                           trashCanButton={false}
                           dataType={"occurrence"}
                           setError={setError}
+                          exportData={false}
                       />
                   </Box>
               }
