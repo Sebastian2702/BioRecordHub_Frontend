@@ -447,7 +447,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                             <CircularProgress />
                         </Box>
                     ) :
-                    exportData && (
+                    exportData &&  selectedRows.length > 0 &&(
                         <Box margin={2} display={'flex'} justifyContent={'flex-end'}>
                             <StyledButton
                                 label="Export Selected"

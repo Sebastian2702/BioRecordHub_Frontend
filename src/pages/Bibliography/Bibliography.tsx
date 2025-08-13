@@ -13,6 +13,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useAuth } from "../../context/AuthContext.tsx";
 import DataTable from "../../components/DataTable.tsx";
 import {toast, ToastContainer} from "react-toastify";
+import { ExportDataToExcel } from '../../services/excel/excel.ts';
+import { DeleteBibliography } from '../../services/bibliography/bibliography.ts';
+import CustomDialog from "../../components/CustomDialog.tsx";
+import { useNavigate } from "react-router-dom";
+import {ROUTES} from "../../routes/frontendRoutes.ts";
+import DeleteIcon from '@mui/icons-material/Delete';
+import DownloadIcon from '@mui/icons-material/Download';
 
 
 function Bibliography() {
@@ -21,7 +28,10 @@ function Bibliography() {
     const [data, setData] = useState<any>(null);
     const [nomenclature, setNomenclature] = useState<any>(null);
     const [error, setError] = useState("");
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [dialogLoading, setDialogLoading] = useState(false);
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const fetchData = async (id: number) => {
         try {
@@ -34,6 +44,45 @@ function Bibliography() {
             setLoading(false);
         }
     };
+
+    const handleDeleteDialogClose = () => {
+        setDeleteDialogOpen(false);
+    };
+
+    const handleExportToExcel = async () => {
+        if (!data) {
+            toast.error("No data available to export", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            return;
+        }
+
+        const bibliographyId = [Number(id)];
+
+        await ExportDataToExcel(bibliographyId, 'bibliography', setError, setLoading);
+    }
+
+    const handleDelete = async () =>{
+        try{
+            setDialogLoading(true)
+            await DeleteBibliography(Number(id));
+            setDialogLoading(false);
+            navigate(ROUTES.bibliography);
+
+        }catch(error){
+            setDialogLoading(false);
+            console.error("Error deleting nomenclature:", error);
+            console.log(error)
+            setError(error.response.data.message);
+        }
+
+    }
 
     useEffect(() => {
         if (!id) return;
@@ -151,6 +200,28 @@ function Bibliography() {
                             No nomenclatures available for this bibliography entry.
                         </Typography>
                     )}
+                    <Box sx={{display: 'flex', justifyContent: 'flex-end', gap:2, margin: '10px 0px 10px' }}>
+                        <CustomDialog
+                            open={deleteDialogOpen}
+                            onClose={handleDeleteDialogClose}
+                            title="Confirm Deletion"
+                            contentText={
+                                <Box>
+                                    <Typography variant="body1">
+                                        Are you sure you want to delete <strong>{data.author} {data.publication_year}</strong>?
+                                    </Typography>
+                                </Box>
+                            }
+                            content={"delete"}
+                            dialogLoading={dialogLoading}
+                            action={handleDelete}
+                        />
+                        {
+                            (isAdmin || isManager) &&
+                            <StyledButton label={'Delete'} color={'delete'} size={'medium'} onClick={() => setDeleteDialogOpen(true)} icon={<DeleteIcon/>} />
+                        }
+                        <StyledButton label={'Excel'} color={'primary'} size={'medium'} onClick={handleExportToExcel} icon={<DownloadIcon/> }/>
+                    </Box>
                 </Box>
 
             }
