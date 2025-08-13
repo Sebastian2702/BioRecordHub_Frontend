@@ -16,6 +16,11 @@ import AccessFile from "../../components/AccessFile.tsx";
 import ImageList from "../../components/ImageList.tsx";
 import { GetOccurrencesById, GetOccurrenceFile } from "../../services/occurrences/occurrences.ts";
 import DownloadIcon from '@mui/icons-material/Download';
+import CustomDialog from "../../components/CustomDialog.tsx";
+import { useNavigate } from "react-router-dom";
+import {ROUTES} from "../../routes/frontendRoutes.ts";
+import DeleteIcon from '@mui/icons-material/Delete';
+import {DeleteOccurrence} from "../../services/occurrences/occurrences.ts";
 
 function Occurrences() {
     const { isAdmin, isManager } = useAuth();
@@ -28,7 +33,10 @@ function Occurrences() {
     const [fields, setFields] = useState<any[]>([]);
     const [error, setError] = useState("");
     const [buttonExportLoading, setButtonExportLoading] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [dialogLoading, setDialogLoading] = useState(false);
     const { id } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (error) {
@@ -64,6 +72,24 @@ function Occurrences() {
 
     const handleDownloadFile = (occurrenceId: number, type: 'csv' | 'xlsx') => {
         GetOccurrenceFile(occurrenceId, type, setButtonExportLoading, setError)
+    }
+
+    const handleDeleteDialogClose = () => {
+        setDeleteDialogOpen(false);
+    };
+
+    const handleDelete = async () =>{
+        try{
+            setDialogLoading(true)
+            await DeleteOccurrence(Number(id));
+            setDialogLoading(false);
+            navigate(ROUTES.occurrences);
+
+        }catch(error){
+            setDialogLoading(false);
+            setError(error.response.data.message);
+        }
+
     }
 
     useEffect(() => {
@@ -127,7 +153,7 @@ function Occurrences() {
                                 )}
                             </Box>
 
-                            <Typography align={'left'} sx={{ fontSize: FONT_SIZES.large, color: COLORS.primary, fontWeight:'bold',textShadow: '0px 4px 12px rgba(0,0,0,0.15)',marginBottom:'20px' }}>Occurrence Details:</Typography>
+                            <Typography align={'center'} sx={{ fontSize: FONT_SIZES.large, color: COLORS.black, fontWeight:'bold',textShadow: '0px 4px 12px rgba(0,0,0,0.15)',marginBottom:'20px' }}>Occurrence Details</Typography>
                             <Box
                                 sx={{
                                     display: 'flex',
@@ -155,7 +181,7 @@ function Occurrences() {
                         borderRadius: BORDER.radius,
                         marginBottom: '10px',
                     }}>
-                        <Typography align={'left'} sx={{  fontSize: FONT_SIZES.large, color: COLORS.primary, fontWeight:'bold',textShadow: '0px 4px 12px rgba(0,0,0,0.15)',marginBottom:'20px' }}>Additional Information:</Typography>
+                        <Typography align={'center'} sx={{  fontSize: FONT_SIZES.large, color: COLORS.black, fontWeight:'bold',textShadow: '0px 4px 12px rgba(0,0,0,0.15)',marginBottom:'20px' }}>Additional Information</Typography>
                         <Box
                             sx={{
                                 display: 'flex',
@@ -181,7 +207,7 @@ function Occurrences() {
                         borderRadius: BORDER.radius,
                         marginBottom: '10px',
                     }}>
-                        <Typography align={'left'} sx={{  fontSize: FONT_SIZES.large, color: COLORS.primary, fontWeight:'bold',textShadow: '0px 4px 12px rgba(0,0,0,0.15)',marginBottom:'20px' }}>Files Uploaded:</Typography>
+                        <Typography align={'center'} sx={{  fontSize: FONT_SIZES.large, color: COLORS.black, fontWeight:'bold',textShadow: '0px 4px 12px rgba(0,0,0,0.15)',marginBottom:'20px' }}>Files Uploaded</Typography>
                         <Box display="flex" flexDirection="row" width="100%" gap = {2} flexWrap="wrap" marginTop={'20px'} alignItems={'center'}>
                             {images && images.length > 0 && (
                                 <Box sx={{ padding: 1 }}>
@@ -211,7 +237,7 @@ function Occurrences() {
                             marginBottom: '10px',
                         }}
                     >
-                        <Typography align={'left'} sx={{  fontSize: FONT_SIZES.large, color: COLORS.primary, fontWeight:'bold',textShadow: '0px 4px 12px rgba(0,0,0,0.15)',marginBottom:'20px' }}>Nomenclature and Project Data:</Typography>
+                        <Typography align={'center'} sx={{  fontSize: FONT_SIZES.large, color: COLORS.black, fontWeight:'bold',textShadow: '0px 4px 12px rgba(0,0,0,0.15)',marginBottom:'20px' }}>Nomenclature and Project Data</Typography>
                         {nomenclature && nomenclature.length > 0 ? (
                             <Box sx={{ padding: 1 }}>
                                 <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
@@ -234,7 +260,6 @@ function Occurrences() {
                                     dataType={"occurrenceNomenclature"}
                                     referenceId={data.id}
                                     setError={setError}
-                                    exportData={false}
                                 />
                             </Box>
                         ) : (
@@ -266,7 +291,6 @@ function Occurrences() {
                                     dataType={"occurrenceProject"}
                                     referenceId={data.id}
                                     setError={setError}
-                                    exportData={false}
                                 />
                             </Box>
                         ) : (
@@ -297,6 +321,25 @@ function Occurrences() {
                             )
                             :
                             <Box display={'flex'} gap={2} alignItems={'center'}>
+                                <CustomDialog
+                                    open={deleteDialogOpen}
+                                    onClose={handleDeleteDialogClose}
+                                    title="Confirm Deletion"
+                                    contentText={
+                                        <Box>
+                                            <Typography variant="body1">
+                                                Are you sure you want to delete <strong>{data.scientific_name}</strong>?
+                                            </Typography>
+                                        </Box>
+                                    }
+                                    content={"delete"}
+                                    dialogLoading={dialogLoading}
+                                    action={handleDelete}
+                                />
+                                {
+                                    (isAdmin || isManager) &&
+                                    <StyledButton label={'Delete'} color={'delete'} size={'medium'} onClick={() => setDeleteDialogOpen(true)} icon={<DeleteIcon/>} />
+                                }
                                 <StyledButton label={"DCF/CSV"} color={'secondary'} size={'medium'} onClick={() => {handleDownloadFile(data.id, 'csv')}} icon={<DownloadIcon/>}/>
                                 <StyledButton label={"Excel"} color={'primary'} size={'medium'} onClick={() => {handleDownloadFile(data.id, 'xlsx')}} icon={<DownloadIcon/>}/>
                             </Box>

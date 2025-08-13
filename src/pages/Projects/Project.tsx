@@ -14,6 +14,13 @@ import {toast, ToastContainer} from "react-toastify";
 import { GetProjectById } from "../../services/project/project.ts";
 import AccessFile from "../../components/AccessFile.tsx"
 import DataTable from "../../components/DataTable.tsx";
+import { ExportDataToExcel } from '../../services/excel/excel.ts';
+import { DeleteProject } from '../../services/project/project.ts';
+import CustomDialog from "../../components/CustomDialog.tsx";
+import { useNavigate } from "react-router-dom";
+import {ROUTES} from "../../routes/frontendRoutes.ts";
+import DeleteIcon from '@mui/icons-material/Delete';
+import DownloadIcon from '@mui/icons-material/Download';
 
 function Project() {
     const { isAdmin, isManager } = useAuth();
@@ -21,7 +28,10 @@ function Project() {
     const [data, setData] = useState<any>(null);
     const [occurrences, setOccurrences] = useState<any[]>([]);
     const [error, setError] = useState("");
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [dialogLoading, setDialogLoading] = useState(false);
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const fetchData = async (id: number) => {
         try {
@@ -55,15 +65,42 @@ function Project() {
         }
     }, [error]);
 
-    const handleDownload = async (url: string) => {
-        try {
-            window.open(url, '_blank');
-        } catch (error) {
-            setError("Failed to download file. Please try again later.");
-        } finally {
-            setLoading(false);
-        }
+    const handleDeleteDialogClose = () => {
+        setDeleteDialogOpen(false);
     };
+
+    const handleExportToExcel = async () => {
+        if (!data) {
+            toast.error("No data available to export", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            return;
+        }
+
+        const projectId = [Number(id)];
+
+        await ExportDataToExcel(projectId, 'projects', setError, setLoading);
+    }
+
+    const handleDelete = async () =>{
+        try{
+            setDialogLoading(true)
+            await DeleteProject(Number(id));
+            setDialogLoading(false);
+            navigate(ROUTES.projects);
+
+        }catch(error){
+            setDialogLoading(false);
+            setError(error.message);
+        }
+
+    }
 
     return (
         <Box sx={{
@@ -164,7 +201,6 @@ function Project() {
                                 dataType={"occurrence"}
                                 referenceId={data.id}
                                 setError={setError}
-                                exportData={false}
                             />
                         </Box>
                     ) : (
@@ -175,6 +211,28 @@ function Project() {
                         </Box>
 
                     )}
+                    <Box sx={{display: 'flex', justifyContent: 'flex-end', gap:2, margin: '10px 0px 10px' }}>
+                        <CustomDialog
+                            open={deleteDialogOpen}
+                            onClose={handleDeleteDialogClose}
+                            title="Confirm Deletion"
+                            contentText={
+                                <Box>
+                                    <Typography variant="body1">
+                                        Are you sure you want to delete <strong>{data.title}</strong>?
+                                    </Typography>
+                                </Box>
+                            }
+                            content={"delete"}
+                            dialogLoading={dialogLoading}
+                            action={handleDelete}
+                        />
+                        {
+                            (isAdmin || isManager) &&
+                            <StyledButton label={'Delete'} color={'delete'} size={'medium'} onClick={() => setDeleteDialogOpen(true)} icon={<DeleteIcon/>} />
+                        }
+                        <StyledButton label={'Excel'} color={'primary'} size={'medium'} onClick={handleExportToExcel} icon={<DownloadIcon/> }/>
+                    </Box>
                 </Box>
             }
             <ToastContainer />

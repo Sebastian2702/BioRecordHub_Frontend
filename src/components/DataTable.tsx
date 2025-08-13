@@ -253,8 +253,25 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
             setError("No rows selected for export.");
             return;
         }
-        console.log(selectedRows);
-        await ExportDataToExcel(selectedRows, dataType, setError, setLoadingExport);
+        let type;
+        switch (dataType) {
+            case 'occurrenceNomenclature':
+                 type = 'nomenclature';
+                break;
+            case 'occurrenceProject':
+                type = 'projects';
+                break;
+            case 'nomenclatureBibliography':
+                type = 'bibliography';
+                break;
+            case 'bibliographyNomenclature':
+                type = 'nomenclature';
+                break;
+            default:
+                type = dataType;
+                break;
+        }
+        await ExportDataToExcel(selectedRows, type, setError, setLoadingExport);
     }
 
     const deleteDialogContent = (
@@ -430,7 +447,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, editButton, viewBu
                             <CircularProgress />
                         </Box>
                     ) :
-                    exportData && (
+                    exportData &&  selectedRows.length > 0 &&(
                         <Box margin={2} display={'flex'} justifyContent={'flex-end'}>
                             <StyledButton
                                 label="Export Selected"
