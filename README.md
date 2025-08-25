@@ -31,4 +31,4 @@ This project is configured to run on port 5174 by default.
 
 Make sure this port is available.
 
-If you need to change it, update the VITE_PORT in your .env file and also update the corresponding FRONTEND_URL in your backend .env file to match:
+If you need to change it, update the PORT in your vite.config.ts file and also update the corresponding FRONTEND_URL in your backend .env file to match:
