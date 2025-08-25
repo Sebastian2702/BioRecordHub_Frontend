@@ -52,7 +52,8 @@ const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({ open, onClo
                 progress: undefined,
             });
         } catch (err: any) {
-            setError(formatLabel(err.message || 'Failed to send reset link'));
+            console.log(err)
+            setError(formatLabel(err.response.data.error || 'Failed to send reset link'));
         } finally {
             setLoading(false);
         }

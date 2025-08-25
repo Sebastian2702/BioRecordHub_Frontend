@@ -173,7 +173,12 @@ function EditNomenclature(){
                                 left: '50%',
                                 transform: 'translateX(-50%)',
                                 fontWeight: 'bold',
-                                fontSize: FONT_SIZES.large,
+                                fontSize: {
+                                    xs: FONT_SIZES.xsmall,
+                                    sm: FONT_SIZES.small,
+                                    md: FONT_SIZES.medium,
+                                    lg: FONT_SIZES.medium,
+                                },
                                 textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
                             }}
                         >

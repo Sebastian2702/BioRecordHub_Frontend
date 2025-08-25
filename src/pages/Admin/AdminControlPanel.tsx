@@ -388,8 +388,8 @@ function AdminControlPanel() {
                                         flex: 3,
                                         minWidth: {
                                             xs: '100%',
-                                            sm: '200px',
-                                            md: '300px',
+                                            sm: '150px',
+                                            md: '250px',
                                         },
                                     }}
                                 >
@@ -405,8 +405,8 @@ function AdminControlPanel() {
                                         flex: 1,
                                         minWidth: {
                                             xs: '100%',
-                                            sm: '100px',
-                                            md: '150px',
+                                            sm: '80px',
+                                            md: '120px',
                                         },
                                     }}
                                 >
@@ -424,8 +424,8 @@ function AdminControlPanel() {
                                         flex: 1,
                                         minWidth: {
                                             xs: '100%',
-                                            sm: '100px',
-                                            md: '150px',
+                                            sm: '80px',
+                                            md: '120px',
                                         },
                                     }}
                                 >
@@ -455,7 +455,7 @@ function AdminControlPanel() {
                                         maxHeight: '55px',
                                         minWidth: {
                                             xs: '100%',
-                                            sm: '100px',
+                                            sm: '80px',
                                         },
                                        marginTop:'10px',
                                     }}

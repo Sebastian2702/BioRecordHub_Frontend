@@ -99,7 +99,7 @@ export const GetBibliographyFile = async (id: number) => {
     const url = window.URL.createObjectURL(file);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `bibliography_${id}.zip`);
+    link.setAttribute('download', `bibliography_${id}.pdf`);
     document.body.appendChild(link);
     link.click();
 }
