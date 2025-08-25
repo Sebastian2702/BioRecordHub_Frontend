@@ -1,6 +1,6 @@
 # React + TypeScript + Vite Frontend
 
-This is the frontend application for **[Your Project Name]**, built with React, TypeScript, and Vite.
+This is the frontend application for BioRecordHub, built with React, TypeScript, and Vite.
 
 ---
 
