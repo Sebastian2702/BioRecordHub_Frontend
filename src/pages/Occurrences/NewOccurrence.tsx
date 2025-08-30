@@ -40,6 +40,15 @@ function NewOccurrence() {
         decimal_latitude: '',
         decimal_longitude: '',
         basis_of_record: '',
+        institution_code: '',
+        collection_code: '',
+        catalog_number: '',
+        recorded_by: '',
+        identified_by: '',
+        date_identified: '',
+        occurrence_remarks: '',
+        language: '',
+        license: '',
     });
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [usedFormFields, setUsedFormFields] = useState<{ id: string, value: string }[]>([]);
@@ -238,13 +247,13 @@ function NewOccurrence() {
                                         key={field}
                                         label={formatLabel(field)}
                                         helperText={getHelperText(field, "occurrence") || ''}
-                                        value={field === 'event_date' ? occurrenceData[field as keyof typeof occurrenceData]
+                                        value={field === 'event_date' || field === 'date_identified' ? occurrenceData[field as keyof typeof occurrenceData]
                                                 ? dayjs(occurrenceData[field as keyof typeof occurrenceData])
                                                 : null
                                             : occurrenceData[field as keyof typeof occurrenceData] || ''}
                                         onChange={(e) => setOccurrenceData({ ...occurrenceData, [field]: e.target.value })}
-                                        date={field === 'event_date'}
-                                        dateType={field === 'event_date' ? ['day', 'month', 'year'] : undefined}
+                                        date={field === 'event_date' || field === 'date_identified'}
+                                        dateType={field === 'event_date' || field === 'date_identified' ? ['day', 'month', 'year'] : undefined}
                                         onChangeDate={(date: Date | null) => {
                                             setOccurrenceData({
                                                 ...occurrenceData,
