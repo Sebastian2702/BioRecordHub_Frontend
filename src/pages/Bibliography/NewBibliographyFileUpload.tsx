@@ -198,7 +198,7 @@ function NewBibliographyFileUpload() {
                 acceptedFileTypes={'.xlsx, .xls'}
                 multiple={false}
             />
-            {loading ? (
+            {loading && !showData ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
                         <CircularProgress/>
                     </Box>
@@ -214,7 +214,15 @@ function NewBibliographyFileUpload() {
                     <Typography variant={"subtitle1"} color={COLORS.black}>
                         Review and edit the imported entries below:
                     </Typography>
-                    <ImportedDataEditor importedEntries={data} SetError={setError} setLoading={setLoading} dataType={'bibliography'}/>
+                    {
+                        loading ? (
+                                <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
+                                    <CircularProgress/>
+                                </Box>
+                            ):
+                            <ImportedDataEditor importedEntries={data} SetError={setError} setLoading={setLoading} dataType={'bibliography'}/>
+                    }
+
                 </Box>
 
             )}

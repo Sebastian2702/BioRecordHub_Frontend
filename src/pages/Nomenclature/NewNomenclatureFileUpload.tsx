@@ -200,7 +200,7 @@ function NewNomenclatureFileUpload() {
                 acceptedFileTypes={'.xlsx, .xls'}
                 multiple={false}
             />
-            {loading ? (
+            {loading && !showData ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
                         <CircularProgress/>
                     </Box>
@@ -216,7 +216,14 @@ function NewNomenclatureFileUpload() {
                     <Typography variant={"subtitle1"} color={COLORS.black}>
                         Review and edit the imported entries below:
                     </Typography>
-                    <ImportedDataEditor importedEntries={data} SetError={setError} setLoading={setLoading} dataType={'nomenclature'} bibliographies={bibliographies}/>
+                    {
+                        loading ? (
+                            <Box display="flex" justifyContent="center" alignItems="center" height="100%" marginTop={"50px"}>
+                                <CircularProgress/>
+                            </Box>
+                        ):
+                            <ImportedDataEditor importedEntries={data} SetError={setError} setLoading={setLoading} dataType={'nomenclature'} bibliographies={bibliographies}/>
+                    }
                 </Box>
 
             )}
