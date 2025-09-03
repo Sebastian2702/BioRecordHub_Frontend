@@ -14,6 +14,7 @@ import ImportedDataEditor from "../../components/ImportedDataEditor.tsx";
 import InfoIcon from '@mui/icons-material/Info';
 import CustomDialog from "../../components/CustomDialog.tsx";
 import {GetBibliography} from "../../services/bibliography/bibliography.ts";
+import WarningIcon from '@mui/icons-material/Warning';
 
 
 
@@ -189,10 +190,20 @@ function NewNomenclatureFileUpload() {
                 >
                     New Nomenclatures
                 </Typography>
-                <InfoIcon sx={{color: COLORS.primary, cursor: "pointer", fontSize: "35px"}} onClick={() => handleInfoDialogOpen()}/>
+                <Box sx={{ display: 'flex', alignItems: 'center', cursor: "pointer" }} onClick={handleInfoDialogOpen}>
+                    <InfoIcon sx={{ color: COLORS.primary, fontSize: "40px", mr: 1 }} />
+                    <Typography sx={{ fontWeight: 'bold', color: COLORS.primary }}>
+                        File Structure Help
+                    </Typography>
+                </Box>
             </Box>
 
             <CustomDialog open={infoDialogOpen} onClose={handleInfoDialogClose} title={"File Structure"} content={"information"} contentText={infoDialogContent}/>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', width:'100%', gap:2, justifyContent: 'center', }}>
+                <WarningIcon sx={{color: COLORS.delete}}/>
+                <Typography align={"center"} variant={"body1"} color={COLORS.delete} fontWeight={'bold'}>A specific excel file structure is required. Click the File Structure Help for details.</Typography>
+            </Box>
 
             <FileInput
                 label=".xlsx, .xls; files here, or browse your computer"

@@ -3,15 +3,14 @@ import { COLORS,BORDER } from '../../constants/ui.ts';
 import SearchFilter from "../../components/SearchFilter.tsx";
 import {useEffect, useState} from "react";
 import ClearFiltersButton from "../../components/ClearFiltersButton.tsx";
-import StyledButton from "../../components/StyledButton.tsx";
 import DataTable from "../../components/DataTable.tsx";
 import CircularProgress from '@mui/material/CircularProgress';
 import {toast, ToastContainer} from "react-toastify";
-import AddIcon from '@mui/icons-material/Add';
 import { useNavigate} from "react-router-dom";
 import { GetOccurrences } from "../../services/occurrences/occurrences.ts";
 import DateInput from "../../components/DateInput.tsx";
 import {Dayjs} from "dayjs";
+import NewEntryButton from "../../components/NewEntryButton.tsx";
 
 function Occurrences() {
     const [data, setData] = useState<any[]>([]);
@@ -97,7 +96,10 @@ function Occurrences() {
                     <ClearFiltersButton onClick={handleClearFilters} />
                 </Box>
                 <Box sx={{ flexShrink: 0, minWidth: '150px'}}>
-                    <StyledButton label={'New Entry'} onClick={() => {navigate('/occurrences/new')}} color={'primary'} size={'medium'} icon={<AddIcon/>}/>
+                    <NewEntryButton
+                        manualEntryLink="/occurrences/new"
+                        fileUploadLink="/occurrences/new_file_upload"
+                    />
                 </Box>
             </Box>
             <Box sx={{padding: '0px 10px', overflowY: 'hidden',}}>

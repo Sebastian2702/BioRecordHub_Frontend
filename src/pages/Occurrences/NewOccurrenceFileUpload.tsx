@@ -17,7 +17,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 
 
 
-function NewBibliographyFileUpload() {
+function NewOccurrenceFileUpload() {
     const [file, setFile] = useState<File | null>(null);
     const [disabled, setDisabled] = useState<boolean>(false);
     const [error, setError] = useState("");
@@ -186,7 +186,7 @@ function NewBibliographyFileUpload() {
                         textShadow: '0px 4px 12px rgba(0,0,0,0.15)',
                     }}
                 >
-                    New Bibliography
+                    New Occurrences
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', cursor: "pointer" }} onClick={handleInfoDialogOpen}>
                     <InfoIcon sx={{ color: COLORS.primary, fontSize: "40px", mr: 1 }} />
@@ -247,4 +247,4 @@ function NewBibliographyFileUpload() {
     );
 }
 
-export default NewBibliographyFileUpload;
+export default NewOccurrenceFileUpload;
