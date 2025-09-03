@@ -20,6 +20,7 @@ import {getHelperText, occurrenceFieldKeys} from "../../utils/formFieldHelpers.t
 import dayjs from "dayjs";
 import OccurrencesFormAutoComplete from "../../components/OccurrencesFormAutoComplete.tsx";
 import {FieldsGrid} from "../../components/FieldsGrid.tsx";
+import DropdownSelector from "../../components/DropdownSelector.tsx";
 
 function NewOccurrence() {
     const {user} = useAuth();
@@ -65,6 +66,8 @@ function NewOccurrence() {
         other: false
     });
     const [currentStep, setCurrentStep] = useState(1); // 1: Basic, 2: Fields, 3: Files
+    const [bibliographies, setBibliographies] = useState<string[]>([]);
+    const [selectedBibliographyIds, setSelectedBibliographyIds] = useState<string[]>([]);
 
     const getData = async () => {
         setLoading(true);
@@ -265,18 +268,41 @@ function NewOccurrence() {
                                     />
                                 ))}
                             </Box>
+                            <Typography
+                                align="left"
+                                sx={{
+                                    color: COLORS.primary,
+                                    fontSize: FONT_SIZES.medium,
+                                    fontWeight: 'bold',
+                                    marginBottom: '8px',
+                                }}
+                            >
+                                Nomenclature:
+                            </Typography>
                             <OccurrencesFormAutoComplete
                                 label="Nomenclature associated with the occurrence"
                                 options={nomenclatureOptions}
                                 value={selectedNomenclatureId}
                                 onChange={(id) => setSelectedNomenclatureId(id ? id : undefined)}
                             />
+                            <Typography
+                                align="left"
+                                sx={{
+                                    color: COLORS.primary,
+                                    fontSize: FONT_SIZES.medium,
+                                    fontWeight: 'bold',
+                                    marginBottom: '8px',
+                                }}
+                            >
+                                Project:
+                            </Typography>
                             <OccurrencesFormAutoComplete
                                 label="Project associated with the occurrence"
                                 options={projectOptions}
                                 value={selectedProjectId}
                                 onChange={(id) => setSelectedProjectId(id)}
                             />
+                            <DropdownSelector data={bibliographies} selectedIds={selectedBibliographyIds} onChange={setSelectedBibliographyIds} dataType={'bibliography'} isSingleSelect={false}/>
                         </Box>
                     )}
 

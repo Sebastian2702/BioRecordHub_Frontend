@@ -214,7 +214,9 @@ function NewNomenclature(){
                             />
                         ))}
                     </Box>
-                    <DropdownSelector data={bibliographies} selectedIds={selectedBibliographyIds} onChange={setSelectedBibliographyIds} dataType={'bibliography'} isSingleSelect={false}/>
+                    <Box sx={{padding: '0px 20px'}}>
+                        <DropdownSelector data={bibliographies} selectedIds={selectedBibliographyIds} onChange={setSelectedBibliographyIds} dataType={'bibliography'} isSingleSelect={false}/>
+                    </Box>
                     <Box padding={'0px 10px'}>
                         <FormField
                             label={"Files"}

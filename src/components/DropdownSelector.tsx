@@ -94,7 +94,7 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
     };
 
     return (
-        <Box sx={{ margin: '0 10px', padding: '0 10px' }}>
+        <Box sx={{ margin: '0 0px', padding: '0 0px' }}>
             <Typography
                 align="left"
                 sx={{
@@ -104,7 +104,7 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
                     marginBottom: '8px',
                 }}
             >
-                {getTitle()}
+                {getTitle()}:
             </Typography>
 
             <Box display="flex" gap={"20px"} height={"60px"} marginBottom={"20px"} alignItems={'center'}>
