@@ -28,6 +28,7 @@ import Occurrences from "./pages/Occurrences/Occurrences.tsx";
 import NewOccurrence from "./pages/Occurrences/NewOccurrence.tsx";
 import Occurrence from "./pages/Occurrences/Occurrence.tsx";
 import EditOccurrence from "./pages/Occurrences/EditOccurrence.tsx";
+import NewOccurrenceFileUpload from "./pages/Occurrences/NewOccurrenceFileUpload.tsx";
 
 function App() {
 
@@ -55,6 +56,7 @@ function App() {
                         <Route path={ROUTES.bibliographyFileUpload} element={<NewBibliographyFileUpload />} />
                         <Route path={ROUTES.occurrences} element={<Occurrences />} />
                         <Route path={ROUTES.occurrenceCreate} element={<NewOccurrence />} />
+                        <Route path={ROUTES.occurrenceFileUpload} element={<NewOccurrenceFileUpload/>}/>
                         <Route path={ROUTES.occurrenceId} element={<Occurrence/>}/>
                         <Route path={ROUTES.projects} element={<Projects />} />
                         <Route path={ROUTES.projectsCreate} element={<NewProject/>}/>

@@ -21,6 +21,7 @@ export const ROUTES = {
     projectsId: '/projects/:id',
     projectsCreate: '/projects/new',
     occurrenceCreate: '/Occurrences/new',
+    occurrenceFileUpload: '/occurrences/new_file_upload',
     occurrenceId: '/Occurrences/:id',
 }
 
